@@ -1,0 +1,96 @@
+import type { MaanikoProduct } from "@/types/product";
+
+export const fakeProducts: MaanikoProduct[] = [
+  {
+    id: "product-1",
+    slug: "premium-maternity-dress",
+    name: {
+      bn: "প্রিমিয়াম কটন ম্যাটারনিটি ড্রেস",
+      en: "Premium Cotton Maternity Dress",
+    },
+    description: {
+      bn: "নরম ও আরামদায়ক প্রিমিয়াম কটনে তৈরি, গর্ভাবস্থা ও দৈনন্দিন ব্যবহারের জন্য উপযোগী সুন্দর ডিজাইনের পোশাক।",
+      en: "A soft premium-cotton dress designed for everyday comfort throughout pregnancy and beyond.",
+    },
+    category: { bn: "ম্যাটারনিটি পোশাক", en: "Maternity Wear" },
+    badge: { bn: "বেস্ট সেলার", en: "Best seller" },
+    images: [
+      "https://images.unsplash.com/photo-1596755389378-c31d21fd1273?auto=format&fit=crop&w=900&q=85",
+      "https://images.unsplash.com/photo-1566174053879-31528523f8ae?auto=format&fit=crop&w=900&q=85",
+    ],
+    price: 2450,
+    compareAtPrice: 2900,
+    stock: 14,
+    rating: 4.8,
+    reviewCount: 126,
+  },
+  {
+    id: "product-2",
+    slug: "feeding-friendly-maxi-dress",
+    name: {
+      bn: "ফিডিং ফ্রেন্ডলি ম্যাক্সি ড্রেস",
+      en: "Feeding Friendly Maxi Dress",
+    },
+    description: {
+      bn: "সহজ ও আরামদায়ক নার্সিংয়ের জন্য গোপন জিপসহ আধুনিক কাটের হালকা ম্যাক্সি ড্রেস।",
+      en: "A lightweight modern maxi dress with discreet zips for easy and comfortable nursing.",
+    },
+    category: { bn: "নার্সিং পোশাক", en: "Nursing Wear" },
+    badge: { bn: "নতুন", en: "New" },
+    images: [
+      "https://images.unsplash.com/photo-1581338834647-b0fb40704e21?auto=format&fit=crop&w=900&q=85",
+      "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=900&q=85",
+    ],
+    price: 2250,
+    compareAtPrice: 2650,
+    stock: 7,
+    rating: 4.7,
+    reviewCount: 84,
+  },
+  {
+    id: "product-3",
+    slug: "mother-baby-diaper-bag",
+    name: {
+      bn: "মাদার অ্যান্ড বেবি ডায়াপার ব্যাগ",
+      en: "Mother and Baby Diaper Bag",
+    },
+    description: {
+      bn: "শিশুর প্রয়োজনীয় সব জিনিস গোছানো রাখতে একাধিক কম্পার্টমেন্ট ও আরামদায়ক স্ট্র্যাপসহ প্রশস্ত ব্যাগ।",
+      en: "A spacious multi-compartment bag with comfortable straps for keeping every baby essential organized.",
+    },
+    category: {
+      bn: "মা ও শিশুর প্রয়োজনীয় পণ্য",
+      en: "Mother & Baby Essentials",
+    },
+    badge: { bn: "জনপ্রিয়", en: "Popular" },
+    images: [
+      "https://images.unsplash.com/photo-1554342872-034a06541bad?auto=format&fit=crop&w=900&q=85",
+      "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=900&q=85",
+    ],
+    price: 1850,
+    compareAtPrice: 2200,
+    stock: 18,
+    rating: 4.9,
+    reviewCount: 203,
+  },
+  {
+    id: "product-4",
+    slug: "premium-nursing-pillow",
+    name: { bn: "প্রিমিয়াম নার্সিং পিলো", en: "Premium Nursing Pillow" },
+    description: {
+      bn: "মা ও শিশুর সঠিক ভঙ্গি এবং আরাম নিশ্চিত করতে নরম, সাপোর্টিভ ও সহজে পরিষ্কারযোগ্য নার্সিং পিলো।",
+      en: "A soft, supportive and easy-to-clean nursing pillow made for comfortable feeding posture.",
+    },
+    category: { bn: "মা ও শিশুর আরাম", en: "Mother & Baby Comfort" },
+    badge: { bn: "স্টক শেষ", en: "Sold out" },
+    images: [
+      "https://images.unsplash.com/photo-1591088398332-8a7791972843?auto=format&fit=crop&w=900&q=85",
+      "https://images.unsplash.com/photo-1616627451515-cbc80e5ece35?auto=format&fit=crop&w=900&q=85",
+    ],
+    price: 1350,
+    compareAtPrice: 1600,
+    stock: 0,
+    rating: 4.6,
+    reviewCount: 51,
+  },
+];
