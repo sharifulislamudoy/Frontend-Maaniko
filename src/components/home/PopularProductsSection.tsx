@@ -46,7 +46,7 @@ export default function PopularProductsSection({
   }
 
   return (
-    <section className="max-w-7xl mx-auto overflow-hidden bg-white py-10 sm:py-14">
+    <section className="max-w-7xl mx-auto overflow-hidden bg-white py-6 md:py-10 ">
       <div className="mx-auto w-full px-4 sm:px-6 lg:px-8">
         <div className="mb-7 flex items-end justify-between gap-4">
           <div className="min-w-0">
