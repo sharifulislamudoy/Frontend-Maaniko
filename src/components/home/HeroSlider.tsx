@@ -173,7 +173,7 @@ export default function HeroSlider() {
   return (
     <section
       aria-label={t("hero.sectionLabel")}
-      className="w-full bg-white pt-3 sm:pt-4 md:pt-6"
+      className="w-full bg-white"
     >
       <Swiper
         modules={[Autoplay, Pagination]}

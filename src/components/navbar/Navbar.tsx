@@ -13,7 +13,6 @@ import {
   LayoutGrid,
   Package,
   Phone,
-  Search,
   ShoppingBag,
   Truck,
 } from "lucide-react";
@@ -47,11 +46,18 @@ const drawerVariants = {
   closed: { x: "-100%" },
   open: {
     x: 0,
-    transition: { type: "spring" as const, stiffness: 360, damping: 36 },
+    transition: {
+      type: "spring" as const,
+      stiffness: 360,
+      damping: 36,
+    },
   },
   exit: {
     x: "-100%",
-    transition: { duration: 0.22, ease: "easeInOut" as const },
+    transition: {
+      duration: 0.22,
+      ease: "easeInOut" as const,
+    },
   },
 };
 
@@ -59,17 +65,30 @@ const drawerContentVariants = {
   closed: { opacity: 0 },
   open: {
     opacity: 1,
-    transition: { delayChildren: 0.08, staggerChildren: 0.035 },
+    transition: {
+      delayChildren: 0.08,
+      staggerChildren: 0.035,
+    },
   },
 };
 
 const drawerItemVariants = {
-  closed: { opacity: 0, x: -10 },
-  open: { opacity: 1, x: 0, transition: { duration: 0.18 } },
+  closed: {
+    opacity: 0,
+    x: -10,
+  },
+  open: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      duration: 0.18,
+    },
+  },
 };
 
 function isRouteActive(pathname: string, href: string) {
   if (href === "/") return pathname === "/";
+
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
@@ -126,11 +145,17 @@ function AnimatedMenuButton({
         animate={open ? { y: 0, rotate: 45 } : { y: -7, rotate: 0 }}
         transition={{ duration: 0.2 }}
       />
+
       <motion.span
         className={commonClass}
-        animate={open ? { opacity: 0, scaleX: 0 } : { opacity: 1, scaleX: 1 }}
+        animate={
+          open
+            ? { opacity: 0, scaleX: 0 }
+            : { opacity: 1, scaleX: 1 }
+        }
         transition={{ duration: 0.15 }}
       />
+
       <motion.span
         className={commonClass}
         animate={open ? { y: 0, rotate: -45 } : { y: 7, rotate: 0 }}
@@ -174,11 +199,19 @@ function DrawerLanguageToggle() {
                 <motion.span
                   layoutId="drawer-language-indicator"
                   className="absolute inset-0 -z-10 rounded-md bg-maaniko-blush"
-                  transition={{ type: "spring", stiffness: 420, damping: 34 }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 420,
+                    damping: 34,
+                  }}
                 />
               )}
+
               <span>{option.label}</span>
-              {selected && <Check className="size-4" strokeWidth={2.2} />}
+
+              {selected && (
+                <Check className="size-4" strokeWidth={2.2} />
+              )}
             </button>
           );
         })}
@@ -189,10 +222,21 @@ function DrawerLanguageToggle() {
 
 function ServiceBar() {
   const { t } = useLanguage();
+
   const serviceItems = [
-    { label: t("service.delivery"), icon: Truck },
-    { label: t("service.promise"), icon: Heart },
-    { label: t("service.help"), icon: Phone, href: "tel:+8801712345678" },
+    {
+      label: t("service.delivery"),
+      icon: Truck,
+    },
+    {
+      label: t("service.promise"),
+      icon: Heart,
+    },
+    {
+      label: t("service.help"),
+      icon: Phone,
+      href: "tel:+8801712345678",
+    },
   ];
 
   return (
@@ -200,13 +244,16 @@ function ServiceBar() {
       <div className="mx-auto grid min-h-[52px] w-full max-w-7xl grid-cols-3 items-center gap-1 px-2.5 sm:min-h-12 sm:gap-5 sm:px-6 xl:min-h-11 xl:px-8">
         {serviceItems.map((item, index) => {
           const Icon = item.icon;
+
           const alignment =
             index === 0
               ? "justify-self-start text-start"
               : index === 1
                 ? "justify-self-center text-center"
                 : "justify-self-end text-end";
+
           const className = `flex min-w-0 max-w-[112px] items-center gap-1 text-[9px] font-medium leading-[1.15] text-maaniko-navy sm:max-w-none sm:gap-2 sm:text-[11px] xl:gap-2.5 xl:text-[13px] ${alignment}`;
+
           const content = (
             <>
               <Icon
@@ -214,7 +261,10 @@ function ServiceBar() {
                 className="size-3.5 shrink-0 text-maaniko-pink sm:size-4 xl:size-[18px]"
                 strokeWidth={1.9}
               />
-              <span className="min-w-0 text-balance">{item.label}</span>
+
+              <span className="min-w-0 text-balance">
+                {item.label}
+              </span>
             </>
           );
 
@@ -241,35 +291,66 @@ export default function Navbar() {
   const pathname = usePathname();
   const { t } = useLanguage();
   const { cartCount, wishlistCount, openCart } = useShop();
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const desktopNavigation = [
-    { label: t("nav.home"), href: "/" },
-    { label: t("nav.shop"), href: "/shop" },
-    { label: t("nav.guide"), href: "/guide" },
+    {
+      label: t("nav.home"),
+      href: "/",
+    },
+    {
+      label: t("nav.shop"),
+      href: "/shop",
+    },
+    {
+      label: t("nav.guide"),
+      href: "/guide",
+    },
   ];
 
   const bottomNavigation: NavigationItem[] = [
-    { label: t("nav.home"), href: "/", icon: House },
-    { label: t("nav.shop"), href: "/shop", icon: LayoutGrid },
+    {
+      label: t("nav.home"),
+      href: "/",
+      icon: House,
+    },
+    {
+      label: t("nav.shop"),
+      href: "/shop",
+      icon: LayoutGrid,
+    },
     {
       label: t("nav.wishlist"),
       href: "/wishlist",
       icon: Heart,
       badgeCount: wishlistCount,
     },
-    { label: t("nav.guide"), href: "/guide", icon: BookOpen },
-    { label: t("nav.orders"), href: "/orders", icon: Package },
+    {
+      label: t("nav.guide"),
+      href: "/guide",
+      icon: BookOpen,
+    },
+    {
+      label: t("nav.orders"),
+      href: "/orders",
+      icon: Package,
+    },
   ];
 
-  useEffect(() => setIsMenuOpen(false), [pathname]);
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [pathname]);
 
   useEffect(() => {
     if (!isMenuOpen) return;
 
     const previousOverflow = document.body.style.overflow;
+
     function closeWithEscape(event: KeyboardEvent) {
-      if (event.key === "Escape") setIsMenuOpen(false);
+      if (event.key === "Escape") {
+        setIsMenuOpen(false);
+      }
     }
 
     document.body.style.overflow = "hidden";
@@ -286,7 +367,8 @@ export default function Navbar() {
       <header className="sticky top-0 z-50 border-b border-maaniko-line bg-white shadow-[0_3px_14px_rgba(6,42,84,0.035)]">
         <ServiceBar />
 
-        <div className="mx-auto hidden h-20 w-full max-w-7xl grid-cols-[auto_1fr_auto] items-center gap-5 px-6 xl:grid ">
+        {/* Desktop navbar */}
+        <div className="mx-auto hidden h-20 w-full max-w-7xl grid-cols-[auto_1fr_auto] items-center gap-5 px-6 xl:grid">
           <div className="flex items-center gap-3">
             <AnimatedMenuButton
               open={isMenuOpen}
@@ -294,7 +376,11 @@ export default function Navbar() {
               controls="maaniko-side-menu"
               onClick={() => setIsMenuOpen(true)}
             />
-            <BrandLogo className="h-10 w-[132px]" priority />
+
+            <BrandLogo
+              className="h-10 w-[132px]"
+              priority
+            />
           </div>
 
           <nav
@@ -303,6 +389,7 @@ export default function Navbar() {
           >
             {desktopNavigation.map((item) => {
               const active = isRouteActive(pathname, item.href);
+
               return (
                 <Link
                   key={item.href}
@@ -315,6 +402,7 @@ export default function Navbar() {
                   }`}
                 >
                   {item.label}
+
                   {active && (
                     <motion.span
                       layoutId="desktop-navigation-indicator"
@@ -332,29 +420,6 @@ export default function Navbar() {
           </nav>
 
           <div className="flex items-center gap-1.5">
-            <form
-              action="/shop"
-              method="get"
-              role="search"
-              className="me-1 flex h-10 w-[230px] items-center rounded-xl border border-maaniko-line bg-white transition-colors focus-within:border-maaniko-pink 2xl:w-[260px]"
-            >
-              <button
-                type="submit"
-                aria-label={t("actions.search")}
-                className="inline-flex h-full w-10 shrink-0 items-center justify-center text-maaniko-navy"
-              >
-                <Search className="size-[19px]" strokeWidth={1.8} />
-              </button>
-              <input
-                type="search"
-                name="search"
-                placeholder={t("actions.searchPlaceholder")}
-                aria-label={t("actions.search")}
-                autoComplete="off"
-                className="h-full min-w-0 flex-1 bg-transparent pe-3 text-[13px] text-maaniko-navy outline-none placeholder:text-slate-400"
-              />
-            </form>
-
             <Link
               href="/wishlist"
               aria-label={t("nav.wishlist")}
@@ -365,7 +430,11 @@ export default function Navbar() {
                   : "text-maaniko-navy"
               }`}
             >
-              <Heart className="size-[23px]" strokeWidth={1.8} />
+              <Heart
+                className="size-[23px]"
+                strokeWidth={1.8}
+              />
+
               <CountBadge count={wishlistCount} />
             </Link>
 
@@ -379,84 +448,78 @@ export default function Navbar() {
                   : "text-maaniko-navy"
               }`}
             >
-              <Package className="size-[23px]" strokeWidth={1.8} />
+              <Package
+                className="size-[23px]"
+                strokeWidth={1.8}
+              />
             </Link>
 
             <button
               type="button"
               onClick={openCart}
-              aria-label={t("actions.cartWithCount", { count: cartCount })}
+              aria-label={t("actions.cartWithCount", {
+                count: cartCount,
+              })}
               title={t("actions.cart")}
               className="relative inline-flex size-10 items-center justify-center rounded-full text-maaniko-navy transition-colors hover:bg-maaniko-blush hover:text-maaniko-pink"
             >
-              <ShoppingBag className="size-[23px]" strokeWidth={1.8} />
+              <ShoppingBag
+                className="size-[23px]"
+                strokeWidth={1.8}
+              />
+
               <CountBadge count={cartCount} />
             </button>
           </div>
         </div>
 
+        {/* Tablet and mobile navbar */}
         <div className="xl:hidden">
-          <div className="mx-auto grid h-[68px] w-full max-w-5xl grid-cols-[40px_1fr_40px] items-center gap-2 px-3.5 sm:h-[72px] sm:px-6">
+          <div className="mx-auto grid h-[50px] w-full max-w-5xl grid-cols-[40px_1fr_40px] items-center gap-2 px-3.5 sm:h-[72px] sm:px-6">
             <AnimatedMenuButton
               open={isMenuOpen}
               label={t("actions.openMenu")}
               controls="maaniko-side-menu"
               onClick={() => setIsMenuOpen(true)}
             />
+
             <BrandLogo
               className="h-9 w-[108px] justify-self-center sm:h-10 sm:w-32"
               priority
             />
+
             <button
               type="button"
               onClick={openCart}
-              aria-label={t("actions.cartWithCount", { count: cartCount })}
+              aria-label={t("actions.cartWithCount", {
+                count: cartCount,
+              })}
               className="relative inline-flex size-10 items-center justify-center justify-self-end rounded-full text-maaniko-navy transition-colors hover:bg-maaniko-blush hover:text-maaniko-pink"
             >
-              <ShoppingBag className="size-6" strokeWidth={1.8} />
+              <ShoppingBag
+                className="size-6"
+                strokeWidth={1.8}
+              />
+
               <CountBadge count={cartCount} />
             </button>
-          </div>
-
-          <div className="mx-auto w-full max-w-5xl px-3.5 pb-3 sm:px-6 sm:pb-3.5">
-            <form
-              action="/shop"
-              method="get"
-              role="search"
-              className="flex h-[46px] w-full items-center rounded-xl border border-maaniko-line bg-white transition-colors focus-within:border-maaniko-pink sm:h-12 sm:rounded-2xl"
-            >
-              <input
-                type="search"
-                name="search"
-                placeholder={t("actions.searchPlaceholder")}
-                aria-label={t("actions.search")}
-                autoComplete="off"
-                className="h-full min-w-0 flex-1 bg-transparent ps-4 text-sm text-maaniko-navy outline-none placeholder:text-slate-400 sm:ps-5 sm:text-[15px]"
-              />
-              <button
-                type="submit"
-                aria-label={t("actions.search")}
-                className="inline-flex h-full w-12 shrink-0 items-center justify-center text-maaniko-navy sm:w-14"
-              >
-                <Search
-                  className="size-[21px] sm:size-[22px]"
-                  strokeWidth={1.8}
-                />
-              </button>
-            </form>
           </div>
         </div>
       </header>
 
+      {/* Tablet and mobile bottom navigation */}
       <nav
         aria-label="Bottom navigation"
         className="fixed inset-x-0 bottom-0 z-50 border-t border-maaniko-line bg-white/95 shadow-[0_-5px_18px_rgba(6,42,84,0.045)] backdrop-blur-xl xl:hidden"
-        style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+        style={{
+          paddingBottom: "env(safe-area-inset-bottom)",
+        }}
       >
         <div className="mx-auto grid h-[72px] max-w-5xl grid-cols-5 sm:h-[76px]">
           {bottomNavigation.map((item) => {
             const Icon = item.icon;
             const active = isRouteActive(pathname, item.href);
+
             return (
               <Link
                 key={item.href}
@@ -472,17 +535,29 @@ export default function Navbar() {
                   <motion.span
                     layoutId="bottom-navigation-indicator"
                     className="absolute bottom-1 h-[3px] w-9 rounded-full bg-maaniko-pink"
-                    transition={{ type: "spring", stiffness: 420, damping: 34 }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 420,
+                      damping: 34,
+                    }}
                   />
                 )}
+
                 <motion.span
                   whileTap={{ scale: 0.82 }}
                   className="relative flex flex-col items-center gap-1"
                 >
                   <span className="relative">
-                    <Icon className="size-[23px] sm:size-6" strokeWidth={1.8} />
-                    <CountBadge count={item.badgeCount ?? 0} />
+                    <Icon
+                      className="size-[23px] sm:size-6"
+                      strokeWidth={1.8}
+                    />
+
+                    <CountBadge
+                      count={item.badgeCount ?? 0}
+                    />
                   </span>
+
                   <span className="max-w-full truncate text-[11px] leading-none sm:text-xs">
                     {item.label}
                   </span>
@@ -493,6 +568,7 @@ export default function Navbar() {
         </div>
       </nav>
 
+      {/* Side drawer */}
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div
@@ -522,6 +598,7 @@ export default function Navbar() {
             >
               <div className="flex h-[70px] shrink-0 items-center justify-between border-b border-maaniko-line px-4">
                 <BrandLogo className="h-9 w-32" />
+
                 <AnimatedMenuButton
                   open
                   label={t("actions.closeMenu")}
@@ -537,6 +614,7 @@ export default function Navbar() {
                 className="flex-1 px-3 py-5"
               >
                 <DrawerLanguageToggle />
+
                 <motion.p
                   variants={drawerItemVariants}
                   className="mb-2 px-3 text-[11px] font-bold uppercase tracking-[0.08em] text-slate-400"
@@ -546,7 +624,10 @@ export default function Navbar() {
 
                 <div className="space-y-0.5">
                   {informationRoutes.map((item) => (
-                    <motion.div key={item.href} variants={drawerItemVariants}>
+                    <motion.div
+                      key={item.href}
+                      variants={drawerItemVariants}
+                    >
                       <Link
                         href={item.href}
                         onClick={() => setIsMenuOpen(false)}
@@ -566,6 +647,7 @@ export default function Navbar() {
                   variants={drawerItemVariants}
                   className="my-4 border-t border-maaniko-line"
                 />
+
                 <motion.p
                   variants={drawerItemVariants}
                   className="mb-2 px-3 text-[11px] font-bold uppercase tracking-[0.08em] text-slate-400"
@@ -575,7 +657,10 @@ export default function Navbar() {
 
                 <div className="space-y-0.5">
                   {policyRoutes.map((item) => (
-                    <motion.div key={item.href} variants={drawerItemVariants}>
+                    <motion.div
+                      key={item.href}
+                      variants={drawerItemVariants}
+                    >
                       <Link
                         href={item.href}
                         onClick={() => setIsMenuOpen(false)}
