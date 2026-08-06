@@ -146,7 +146,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             aria-label={
               isAvailable ? t("actions.addToCart") : t("product.outOfStock")
             }
-            className={`group/cart relative flex h-11 w-full items-center justify-center overflow-hidden rounded-t-2xl px-4 text-xs font-extrabold shadow-[0_12px_30px_rgba(6,42,84,0.22)] transition-all duration-300 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#10a9e8]/25 sm:px-5 sm:text-sm ${
+            className={`group/cart relative flex h-9 md:h-11 w-full items-center justify-center overflow-hidden rounded-t-2xl px-4 text-xs font-extrabold shadow-[0_12px_30px_rgba(6,42,84,0.22)] transition-all duration-300 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#10a9e8]/25 sm:px-5 sm:text-sm ${
               isAvailable
                 ? "bg-[#ef4277] text-white hover:bg-[#10a9e8] active:scale-[0.98]"
                 : "cursor-not-allowed bg-slate-400 text-white"
