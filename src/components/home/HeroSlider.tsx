@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import Image, { type ImageLoaderProps } from "next/image";
+import Image from "next/image";
 import Link from "next/link";
 import { Autoplay, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -14,7 +14,8 @@ import type { Banner, BannerApiResponse } from "@/types/banner";
 
 import styles from "./HeroSlider.module.css";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL?.replace(/\/$/, "");
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_BACKEND_URL?.replace(/\/+$/, "") ?? "";
 
 const FALLBACK_BANNERS: Banner[] = [
   {
@@ -33,10 +34,6 @@ const FALLBACK_BANNERS: Banner[] = [
   },
 ];
 
-function passThroughImageLoader({ src }: ImageLoaderProps) {
-  return src;
-}
-
 function getBannerHref(productLink?: string | null) {
   const trimmedLink = productLink?.trim();
 
@@ -44,11 +41,14 @@ function getBannerHref(productLink?: string | null) {
     return "";
   }
 
-  if (/^https?:\/\//i.test(trimmedLink) || trimmedLink.startsWith("/")) {
+  if (
+    trimmedLink.startsWith("/") ||
+    /^https?:\/\//i.test(trimmedLink)
+  ) {
     return trimmedLink;
   }
 
-  return `/products/${trimmedLink}`;
+  return `/products/${encodeURIComponent(trimmedLink)}`;
 }
 
 function isExternalUrl(url: string) {
@@ -56,17 +56,33 @@ function isExternalUrl(url: string) {
 }
 
 function getBannerKey(banner: Banner, index: number) {
-  return `${banner.id || "banner"}-${index}`;
+  const bannerId =
+    typeof banner.id === "string" || typeof banner.id === "number"
+      ? String(banner.id)
+      : "banner";
+
+  return `${bannerId}-${index}`;
+}
+
+function isValidBanner(banner: Banner) {
+  return (
+    banner.isPublished !== false &&
+    typeof banner.imageUrl === "string" &&
+    banner.imageUrl.trim().length > 0
+  );
 }
 
 function HeroBannerSkeleton() {
   return (
-    <section aria-hidden="true" className="w-full bg-white pt-3 sm:pt-4 md:pt-6">
+    <section
+      aria-hidden="true"
+      className="w-full overflow-hidden bg-white"
+    >
       <div className="relative aspect-[8/3] w-full overflow-hidden bg-[#fff4f6]">
         <div className="absolute inset-0 animate-pulse bg-gradient-to-r from-[#fff4f6] via-white to-[#fff4f6]" />
 
         <div
-          className={`${styles.shimmer} absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/70 to-transparent`}
+          className={`${styles.shimmer} absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/75 to-transparent`}
         />
       </div>
     </section>
@@ -76,8 +92,11 @@ function HeroBannerSkeleton() {
 export default function HeroSlider() {
   const { t } = useLanguage();
 
-  const [banners, setBanners] = useState<Banner[]>(FALLBACK_BANNERS);
-  const [isLoading, setIsLoading] = useState(Boolean(API_BASE_URL));
+  const [banners, setBanners] =
+    useState<Banner[]>(FALLBACK_BANNERS);
+
+  const [isLoading, setIsLoading] =
+    useState<boolean>(Boolean(API_BASE_URL));
 
   useEffect(() => {
     if (!API_BASE_URL) {
@@ -86,12 +105,11 @@ export default function HeroSlider() {
     }
 
     const controller = new AbortController();
+    let isMounted = true;
 
     const timeoutId = window.setTimeout(() => {
       controller.abort();
     }, 8000);
-
-    let isMounted = true;
 
     async function loadBanners() {
       try {
@@ -108,21 +126,22 @@ export default function HeroSlider() {
         );
 
         if (!response.ok) {
-          throw new Error(`Banner request failed with ${response.status}`);
+          throw new Error(
+            `Banner request failed with status ${response.status}`,
+          );
         }
 
         const data = (await response.json()) as BannerApiResponse;
 
         const publishedBanners = Array.isArray(data.banners)
-          ? data.banners.filter(
-              (banner) =>
-                banner.isPublished !== false &&
-                typeof banner.imageUrl === "string" &&
-                banner.imageUrl.trim().length > 0,
-            )
+          ? data.banners.filter(isValidBanner)
           : [];
 
-        if (isMounted && data.success && publishedBanners.length > 0) {
+        if (
+          isMounted &&
+          data.success &&
+          publishedBanners.length > 0
+        ) {
           setBanners(publishedBanners);
         }
       } catch (error) {
@@ -132,7 +151,7 @@ export default function HeroSlider() {
           error.name !== "AbortError"
         ) {
           console.warn(
-            "Banner API unavailable. Showing fallback banner.",
+            "Banner API unavailable. Showing fallback banners.",
             error.message,
           );
         }
@@ -155,13 +174,11 @@ export default function HeroSlider() {
   }, []);
 
   const validBanners = useMemo(() => {
-    const filteredBanners = banners.filter(
-      (banner) =>
-        typeof banner.imageUrl === "string" &&
-        banner.imageUrl.trim().length > 0,
-    );
+    const filteredBanners = banners.filter(isValidBanner);
 
-    return filteredBanners.length > 0 ? filteredBanners : FALLBACK_BANNERS;
+    return filteredBanners.length > 0
+      ? filteredBanners
+      : FALLBACK_BANNERS;
   }, [banners]);
 
   if (isLoading) {
@@ -173,7 +190,7 @@ export default function HeroSlider() {
   return (
     <section
       aria-label={t("hero.sectionLabel")}
-      className="w-full bg-white"
+      className="w-full overflow-hidden bg-white"
     >
       <Swiper
         modules={[Autoplay, Pagination]}
@@ -184,6 +201,7 @@ export default function HeroSlider() {
         observer
         observeParents
         resizeObserver
+        watchOverflow
         speed={900}
         autoplay={
           hasMultipleBanners
@@ -201,19 +219,19 @@ export default function HeroSlider() {
               }
             : false
         }
-        className={`${styles.slider} w-full overflow-hidden bg-[#fff4f6]`}
+        className={`${styles.slider} w-full bg-[#fff4f6]`}
       >
         {validBanners.map((banner, index) => {
           const href = getBannerHref(banner.productLink);
 
-          const image = (
+          const bannerImage = (
             <div className="relative aspect-[8/3] w-full overflow-hidden bg-[#fff4f6]">
               <Image
-                loader={passThroughImageLoader}
-                src={banner.imageUrl}
+                src={banner.imageUrl.trim()}
                 alt={`${t("hero.bannerAlt")} ${index + 1}`}
                 fill
                 priority={index === 0}
+                unoptimized
                 sizes="100vw"
                 className="object-cover"
               />
@@ -222,28 +240,26 @@ export default function HeroSlider() {
 
           return (
             <SwiperSlide key={getBannerKey(banner, index)}>
-              {href ? (
-                isExternalUrl(href) ? (
-                  <a
-                    href={href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={`${t("hero.openBanner")} ${index + 1}`}
-                    className="block w-full focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-inset focus-visible:ring-[#ef4277]/35"
-                  >
-                    {image}
-                  </a>
-                ) : (
-                  <Link
-                    href={href}
-                    aria-label={`${t("hero.openBanner")} ${index + 1}`}
-                    className="block w-full focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-inset focus-visible:ring-[#ef4277]/35"
-                  >
-                    {image}
-                  </Link>
-                )
+              {!href ? (
+                bannerImage
+              ) : isExternalUrl(href) ? (
+                <a
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`${t("hero.openBanner")} ${index + 1}`}
+                  className="block w-full focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-inset focus-visible:ring-[#ef4277]/40"
+                >
+                  {bannerImage}
+                </a>
               ) : (
-                image
+                <Link
+                  href={href}
+                  aria-label={`${t("hero.openBanner")} ${index + 1}`}
+                  className="block w-full focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-inset focus-visible:ring-[#ef4277]/40"
+                >
+                  {bannerImage}
+                </Link>
               )}
             </SwiperSlide>
           );
