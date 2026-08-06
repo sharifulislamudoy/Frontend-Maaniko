@@ -48,13 +48,13 @@ export default function PopularProductsSection({
   return (
     <section className="max-w-7xl mx-auto overflow-hidden bg-white py-6 md:py-10 ">
       <div className="mx-auto w-full px-4 sm:px-6 lg:px-8">
-        <div className="mb-7 flex items-end justify-between gap-4">
-          <div className="min-w-0">
+        <div className="mb-4 flex items-end justify-between gap-4">
+          <div className="">
             <p className="mb-2 text-xs font-extrabold uppercase tracking-[0.2em] text-[#ef4277]">
               {t("home.collection")}
             </p>
 
-            <h2 className="text-2xl font-black tracking-tight text-[#062a54] sm:text-3xl">
+            <h2 className="text-2xl font-black tracking-tight text-[#062a54] ">
               {t("home.popularProducts")}
             </h2>
           </div>
