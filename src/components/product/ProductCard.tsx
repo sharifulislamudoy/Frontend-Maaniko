@@ -211,7 +211,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 
         <div className="mt-auto flex items-end justify-between gap-3 border-t border-[#dce3ec]/80 pt-2.5">
           <div className="flex flex-wrap items-baseline gap-2">
-            <span className="text-lg font-black text-[#ef4277]">
+            <span className="md:text-lg  font-black text-[#ef4277]">
               {priceFormatter.format(product.price)}
             </span>
 
@@ -231,7 +231,7 @@ export default function ProductCard({ product }: ProductCardProps) {
                 {product.rating.toFixed(1)}
               </span>
 
-              <span className=" text-[10px] text-slate-400 sm:inline">
+              <span className="mt-1 text-[8px] text-slate-400 sm:inline">
                 ({numberFormatter.format(product.reviewCount ?? 0)})
               </span>
             </div>
