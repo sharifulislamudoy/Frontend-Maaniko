@@ -28,7 +28,7 @@ const FALLBACK_BANNERS: Banner[] = [
   {
     id: "maaniko-default-hero-2",
     imageUrl:
-      "https://i.ibb.co.com/RGtHRw4b/maaniko-responsive-hero-banner-borderless-2048x768.png",
+      "https://i.ibb.co.com/q3ZGpBxx/Banner-2.png",
     productLink: "/shop",
     isPublished: true,
   },
@@ -41,10 +41,7 @@ function getBannerHref(productLink?: string | null) {
     return "";
   }
 
-  if (
-    trimmedLink.startsWith("/") ||
-    /^https?:\/\//i.test(trimmedLink)
-  ) {
+  if (trimmedLink.startsWith("/") || /^https?:\/\//i.test(trimmedLink)) {
     return trimmedLink;
   }
 
@@ -74,10 +71,7 @@ function isValidBanner(banner: Banner) {
 
 function HeroBannerSkeleton() {
   return (
-    <section
-      aria-hidden="true"
-      className="w-full overflow-hidden bg-white"
-    >
+    <section aria-hidden="true" className="w-full overflow-hidden bg-white">
       <div className="relative aspect-[8/3] w-full overflow-hidden bg-[#fff4f6]">
         <div className="absolute inset-0 animate-pulse bg-gradient-to-r from-[#fff4f6] via-white to-[#fff4f6]" />
 
@@ -92,11 +86,10 @@ function HeroBannerSkeleton() {
 export default function HeroSlider() {
   const { t } = useLanguage();
 
-  const [banners, setBanners] =
-    useState<Banner[]>(FALLBACK_BANNERS);
-
-  const [isLoading, setIsLoading] =
-    useState<boolean>(Boolean(API_BASE_URL));
+  const [banners, setBanners] = useState<Banner[]>(FALLBACK_BANNERS);
+  const [isLoading, setIsLoading] = useState<boolean>(
+    Boolean(API_BASE_URL),
+  );
 
   useEffect(() => {
     if (!API_BASE_URL) {
@@ -206,23 +199,24 @@ export default function HeroSlider() {
         autoplay={
           hasMultipleBanners
             ? {
-                delay: 4000,
-                disableOnInteraction: false,
-                pauseOnMouseEnter: true,
-              }
+              delay: 4000,
+              disableOnInteraction: false,
+              pauseOnMouseEnter: true,
+            }
             : false
         }
         pagination={
           hasMultipleBanners
             ? {
-                clickable: true,
-              }
+              clickable: true,
+            }
             : false
         }
         className={`${styles.slider} w-full bg-[#fff4f6]`}
       >
         {validBanners.map((banner, index) => {
           const href = getBannerHref(banner.productLink);
+          const isFirstBanner = index === 0;
 
           const bannerImage = (
             <div className="relative aspect-[8/3] w-full overflow-hidden bg-[#fff4f6]">
@@ -230,9 +224,10 @@ export default function HeroSlider() {
                 src={banner.imageUrl.trim()}
                 alt={`${t("hero.bannerAlt")} ${index + 1}`}
                 fill
-                priority={index === 0}
                 unoptimized
                 sizes="100vw"
+                loading={isFirstBanner ? "eager" : "lazy"}
+                fetchPriority={isFirstBanner ? "high" : "auto"}
                 className="object-cover"
               />
             </div>

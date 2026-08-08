@@ -12,8 +12,6 @@ import { useLanguage } from "@/context/LanguageContext";
 import { fakeProducts } from "@/data/fakeProducts";
 import type { MaanikoProduct } from "@/types/product";
 
-import "swiper/css";
-
 type PopularProductsSectionProps = {
   products?: MaanikoProduct[];
   isLoading?: boolean;
@@ -31,7 +29,12 @@ export default function PopularProductsSection({
   const { language, t } = useLanguage();
   const swiperRef = useRef<SwiperType | null>(null);
 
-  const canSlide = isLoading || products.length > 1;
+  const displayedItemsCount = isLoading
+    ? SKELETON_ITEMS.length
+    : products.length;
+
+  const canSlide = displayedItemsCount > 1;
+  const canLoop = !isLoading && products.length >= 5;
 
   function handlePreviousSlide() {
     swiperRef.current?.slidePrev();
@@ -46,15 +49,16 @@ export default function PopularProductsSection({
   }
 
   return (
-    <section className="max-w-7xl mx-auto overflow-hidden bg-white py-6 md:py-10 ">
-      <div className="mx-auto w-full px-4 sm:px-6 lg:px-8">
+    <section className="w-full overflow-hidden bg-white py-6 md:py-10">
+      {/* Hamburger button থেকে cart icon পর্যন্ত একই width */}
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-4 flex items-end justify-between gap-4">
-          <div className="">
+          <div className="min-w-0">
             <p className="mb-2 text-xs font-extrabold uppercase tracking-[0.2em] text-[#ef4277]">
               {t("home.collection")}
             </p>
 
-            <h2 className="text-2xl font-black tracking-tight text-[#062a54] ">
+            <h2 className="text-2xl font-black tracking-tight text-[#062a54]">
               {t("home.popularProducts")}
             </h2>
           </div>
@@ -65,7 +69,9 @@ export default function PopularProductsSection({
               onClick={handlePreviousSlide}
               disabled={!canSlide}
               aria-label={
-                language === "bn" ? "আগের পণ্য দেখুন" : "View previous products"
+                language === "bn"
+                  ? "আগের পণ্য দেখুন"
+                  : "View previous products"
               }
               className="grid size-10 place-items-center rounded-full border border-[#dce3ec] bg-white text-[#062a54] shadow-sm transition-all duration-300 hover:border-[#ef4277] hover:bg-[#ef4277] hover:text-white active:scale-95 disabled:cursor-not-allowed disabled:opacity-40 sm:size-11"
             >
@@ -77,7 +83,9 @@ export default function PopularProductsSection({
               onClick={handleNextSlide}
               disabled={!canSlide}
               aria-label={
-                language === "bn" ? "পরের পণ্য দেখুন" : "View next products"
+                language === "bn"
+                  ? "পরের পণ্য দেখুন"
+                  : "View next products"
               }
               className="grid size-10 place-items-center rounded-full border border-[#dce3ec] bg-white text-[#062a54] shadow-sm transition-all duration-300 hover:border-[#10a9e8] hover:bg-[#10a9e8] hover:text-white active:scale-95 disabled:cursor-not-allowed disabled:opacity-40 sm:size-11"
             >
@@ -95,18 +103,20 @@ export default function PopularProductsSection({
           slidesPerGroup={1}
           spaceBetween={14}
           speed={750}
-          rewind={canSlide}
+          loop={canLoop}
+          loopAdditionalSlides={2}
           grabCursor={canSlide}
           watchOverflow
           observer
           observeParents
           resizeObserver
           autoplay={
-            !isLoading && canSlide
+            canLoop
               ? {
                   delay: 3200,
                   disableOnInteraction: false,
                   pauseOnMouseEnter: true,
+                  stopOnLastSlide: false,
                 }
               : false
           }
@@ -124,7 +134,7 @@ export default function PopularProductsSection({
               spaceBetween: 20,
             },
           }}
-          className="!overflow-visible [&_.swiper-slide]:!h-auto [&_.swiper-wrapper]:items-stretch"
+          className="popular-products-swiper [&_.swiper-slide]:!h-auto [&_.swiper-wrapper]:items-stretch"
         >
           {isLoading
             ? SKELETON_ITEMS.map((item) => (
