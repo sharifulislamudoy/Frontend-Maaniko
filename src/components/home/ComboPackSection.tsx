@@ -21,7 +21,7 @@ export default function ComboPackSection() {
   });
 
   return (
-    <section className="bg-white py-8 sm:py-10 lg:py-12">
+    <section className="bg-white py-8">
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-6 flex flex-col items-center text-center sm:mb-8">
           <div className="flex items-center justify-center gap-3">
@@ -88,7 +88,7 @@ export default function ComboPackSection() {
         </div>
 
         {/* Mobile and tablet swipe indicator */}
-        <div className="mt-3 flex h-9 items-center justify-center md:hidden">
+        <div className="mt-3 flex h-9 items-center justify-center">
           <div
             aria-hidden={!showSwipeHint}
             className={`inline-flex items-center gap-2 rounded-full border border-[#dce3ec] bg-white px-4 py-2 text-xs font-bold text-slate-500 shadow-[0_5px_18px_rgba(6,42,84,0.08)] transition-all duration-500 sm:text-sm ${
