@@ -52,9 +52,15 @@ export default function PopularProductsSection({
     <section className="bg-white md:py-8 py-3">
       {/* Hamburger button থেকে cart icon পর্যন্ত একই width */}
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="mb-4 flex items-end justify-between gap-4">
-          <div className="min-w-0">
-            <p className="mb-2 text-xs font-extrabold uppercase tracking-[0.2em] text-[#ef4277]">
+        <div className="mb-5 flex items-end justify-between gap-4 sm:mb-6">
+          <div>
+            <p
+              className={`mb-2 text-xs font-extrabold uppercase text-[#ef4277] ${
+                language === "en"
+                  ? "tracking-[0.2em]"
+                  : "tracking-normal"
+              }`}
+            >
               {t("home.collection")}
             </p>
 
