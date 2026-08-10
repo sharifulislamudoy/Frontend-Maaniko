@@ -9,6 +9,14 @@
   --maaniko-navy: #062a54;
   --maaniko-blush: #fff4f6;
   --maaniko-line: #dce3ec;
+
+  /* Default English font */
+  --font-app-sans: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+/* Bangla font */
+html[lang="bn"] {
+  --font-app-sans: var(--font-baloo-da-2), Arial, Helvetica, sans-serif;
 }
 
 @theme inline {
@@ -19,7 +27,7 @@
   --color-maaniko-navy: var(--maaniko-navy);
   --color-maaniko-blush: var(--maaniko-blush);
   --color-maaniko-line: var(--maaniko-line);
-  --font-sans: "Noto Sans Bengali", Inter, Arial, Helvetica, sans-serif;
+  --font-sans: var(--font-app-sans);
 }
 
 * {
@@ -37,7 +45,7 @@ body {
   overflow-x: hidden;
   background: var(--background);
   color: var(--foreground);
-  font-family: "Noto Sans Bengali", Inter, Arial, Helvetica, sans-serif;
+  font-family: var(--font-app-sans);
 }
 
 button,
