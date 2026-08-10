@@ -95,7 +95,7 @@ export default function ComboPackCard({
         {pack.benefits.map((benefit, benefitIndex) => (
           <li
             key={`${pack.id}-benefit-${benefitIndex}`}
-            className="flex items-start gap-2.5 text-xs font-medium leading-5 text-slate-600 sm:text-[13px]"
+            className="flex items-start gap-2.5 text-sm font-medium leading-5 text-slate-600 "
           >
             <span
               className={`mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full ${styles.check}`}
