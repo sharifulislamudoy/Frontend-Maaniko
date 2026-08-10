@@ -21,7 +21,7 @@ export default function ComboPackSection() {
   });
 
   return (
-    <section className="bg-white py-8">
+    <section className="bg-white md:py-8 py-3">
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-6 flex flex-col items-center text-center sm:mb-8">
           <div className="flex items-center justify-center gap-3">

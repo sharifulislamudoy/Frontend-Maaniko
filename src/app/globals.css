@@ -2,32 +2,50 @@
 
 :root {
   color-scheme: light;
+
   --background: #ffffff;
   --foreground: #062a54;
+
   --maaniko-pink: #ef4277;
   --maaniko-blue: #10a9e8;
   --maaniko-navy: #062a54;
   --maaniko-blush: #fff4f6;
   --maaniko-line: #dce3ec;
 
-  /* Default English font */
-  --font-app-sans: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  /*
+   * English:
+   * Body and heading — Poppins
+   */
+  --font-app-body: var(--font-poppins), Arial, Helvetica, sans-serif;
+  --font-app-heading: var(--font-poppins), Arial, Helvetica, sans-serif;
 }
 
-/* Bangla font */
+/*
+ * Bangla:
+ * English characters — Poppins
+ * Bangla body — Hind Siliguri
+ * Bangla heading — Baloo Da 2
+ */
 html[lang="bn"] {
-  --font-app-sans: var(--font-baloo-da-2), Arial, Helvetica, sans-serif;
+  --font-app-body: var(--font-poppins), var(--font-hind-siliguri), Arial,
+    Helvetica, sans-serif;
+
+  --font-app-heading: var(--font-poppins), var(--font-baloo-da-2), Arial,
+    Helvetica, sans-serif;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+
   --color-maaniko-pink: var(--maaniko-pink);
   --color-maaniko-blue: var(--maaniko-blue);
   --color-maaniko-navy: var(--maaniko-navy);
   --color-maaniko-blush: var(--maaniko-blush);
   --color-maaniko-line: var(--maaniko-line);
-  --font-sans: var(--font-app-sans);
+
+  --font-sans: var(--font-app-body);
+  --font-heading: var(--font-app-heading);
 }
 
 * {
@@ -43,13 +61,45 @@ body {
   min-height: 100%;
   margin: 0;
   overflow-x: hidden;
+
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-app-sans);
+
+  font-family: var(--font-app-body);
+  font-weight: 400;
+}
+
+/*
+ * Default heading typography.
+ * Tailwind font-semibold/font-bold classes can override these weights.
+ */
+@layer base {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-app-heading);
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-weight: 700;
+  }
+
+  h4,
+  h5,
+  h6 {
+    font-weight: 600;
+  }
 }
 
 button,
-input {
+input,
+select,
+textarea {
   font: inherit;
 }
 

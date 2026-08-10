@@ -107,7 +107,7 @@ export default function WhyMaanikoSection() {
   });
 
   return (
-    <section className="bg-white py-8">
+    <section className="bg-white md:py-8 py-3">
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="overflow-hidden rounded-[26px] border border-[#f6dce4] bg-gradient-to-r from-[#fff9fa] via-[#fff4f6] to-[#f8fbff] px-4 py-7 shadow-[0_12px_35px_rgba(6,42,84,0.05)] sm:px-6 sm:py-8 lg:px-8">
           <h2 className="text-center text-2xl font-black tracking-tight text-[#ef4277] sm:text-3xl">

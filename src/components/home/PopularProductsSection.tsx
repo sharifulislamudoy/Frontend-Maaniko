@@ -49,7 +49,7 @@ export default function PopularProductsSection({
   }
 
   return (
-    <section className="bg-white py-8">
+    <section className="bg-white md:py-8 py-3">
       {/* Hamburger button থেকে cart icon পর্যন্ত একই width */}
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-4 flex items-end justify-between gap-4">

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Baloo_Da_2, Geist } from "next/font/google";
+import { Baloo_Da_2, Hind_Siliguri, Poppins } from "next/font/google";
 import { cookies } from "next/headers";
 import type { ReactNode } from "react";
 
@@ -14,12 +14,21 @@ import "./globals.css";
 const balooDa2 = Baloo_Da_2({
   variable: "--font-baloo-da-2",
   subsets: ["bengali", "latin"],
+  weight: ["600", "700"],
   display: "swap",
 });
 
-const geist = Geist({
-  variable: "--font-geist-sans",
+const hindSiliguri = Hind_Siliguri({
+  variable: "--font-hind-siliguri",
+  subsets: ["bengali", "latin"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+});
+
+const poppins = Poppins({
+  variable: "--font-poppins",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
@@ -44,7 +53,7 @@ export default async function RootLayout({
     <html
       lang={initialLanguage}
       dir="ltr"
-      className={`${balooDa2.variable} ${geist.variable}`}
+      className={`${balooDa2.variable} ${hindSiliguri.variable} ${poppins.variable}`}
     >
       <body>
         <LanguageProvider initialLanguage={initialLanguage}>
