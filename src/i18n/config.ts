@@ -85,6 +85,16 @@ export const resources: Resource = {
         popularProducts: "জনপ্রিয় পণ্যসমূহ",
       },
 
+      shopByJourney: {
+        eyebrow: "প্রতিটি ধাপের জন্য",
+        title: "আপনার যাত্রা অনুযায়ী শপ করুন",
+        subtitle:
+          "গর্ভাবস্থার প্রস্তুতি থেকে শিশুর স্বাস্থ্য ও নিরাপত্তা—প্রতিটি প্রয়োজন অনুযায়ী পণ্য খুঁজে নিন।",
+        seeMore: "আরও দেখুন",
+        explore: "দেখুন",
+        viewAll: "যাত্রা অনুযায়ী সব ক্যাটাগরি দেখুন",
+      },
+
       comboPack: {
         homeTitle: "ফেজ ওয়ান কম্বো প্যাক",
         homeSubtitle: "মা ও শিশুর জন্য আমাদের বাছাইকৃত ৬টি সেরা সমাধান",
@@ -183,6 +193,16 @@ export const resources: Resource = {
       home: {
         collection: "Maaniko Collection",
         popularProducts: "Popular Products",
+      },
+
+      shopByJourney: {
+        eyebrow: "For every stage",
+        title: "Shop by Your Journey",
+        subtitle:
+          "Find the right essentials for every stage, from pregnancy preparation to your baby's health and safety.",
+        seeMore: "See more",
+        explore: "Explore",
+        viewAll: "View all shop-by-journey categories",
       },
 
       comboPack: {
