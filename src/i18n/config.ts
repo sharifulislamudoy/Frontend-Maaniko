@@ -41,7 +41,7 @@ export const resources: Resource = {
 
       nav: {
         home: "হোম",
-        shop: "শপ",
+        shop: "মানিকো কালেকশন",
         wishlist: "উইশলিস্ট",
         guide: "গাইড",
         orders: "অর্ডার",
@@ -163,7 +163,7 @@ export const resources: Resource = {
 
       nav: {
         home: "Home",
-        shop: "Shop",
+        shop: "Maaniko Collection",
         wishlist: "Wishlist",
         guide: "Guide",
         orders: "Orders",

@@ -97,16 +97,21 @@ function BrandLogo({ className, priority = false }: BrandLogoProps) {
     <Link
       href="/"
       aria-label="Maaniko home"
-      className={`relative block shrink-0 ${className}`}
+      className={`relative block shrink-0 overflow-hidden ${className}`}
     >
-      <Image
-        src="/Logo.png"
-        alt="Maaniko"
-        fill
-        priority={priority}
-        sizes="(min-width: 1280px) 132px, (min-width: 640px) 128px, 108px"
-        className="object-contain"
-      />
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        disablePictureInPicture
+        preload={priority ? "auto" : "metadata"}
+        poster="/Logo.png"
+        aria-hidden="true"
+        className="absolute inset-0 size-full object-cover object-center"
+      >
+        <source src="/video.mp4" type="video/mp4" />
+      </video>
     </Link>
   );
 }
@@ -189,11 +194,10 @@ function DrawerLanguageToggle() {
               type="button"
               aria-pressed={selected}
               onClick={() => setLanguage(option.code)}
-              className={`relative z-10 flex h-10 items-center justify-center gap-1.5 rounded-md px-3 text-sm font-semibold transition-colors ${
-                selected
+              className={`relative z-10 flex h-10 items-center justify-center gap-1.5 rounded-md px-3 text-sm font-semibold transition-colors ${selected
                   ? "text-maaniko-pink"
                   : "text-maaniko-navy hover:text-maaniko-pink"
-              }`}
+                }`}
             >
               {selected && (
                 <motion.span
@@ -395,11 +399,10 @@ export default function Navbar() {
                   key={item.href}
                   href={item.href}
                   aria-current={active ? "page" : undefined}
-                  className={`relative flex h-full items-center px-1 text-[15px] font-semibold transition-colors ${
-                    active
+                  className={`relative flex h-full items-center px-1 text-[15px] font-semibold transition-colors ${active
                       ? "text-maaniko-pink"
                       : "text-maaniko-navy hover:text-maaniko-pink"
-                  }`}
+                    }`}
                 >
                   {item.label}
 
@@ -424,11 +427,10 @@ export default function Navbar() {
               href="/wishlist"
               aria-label={t("nav.wishlist")}
               title={t("nav.wishlist")}
-              className={`relative inline-flex size-10 items-center justify-center rounded-full transition-colors hover:bg-maaniko-blush ${
-                isRouteActive(pathname, "/wishlist")
+              className={`relative inline-flex size-10 items-center justify-center rounded-full transition-colors hover:bg-maaniko-blush ${isRouteActive(pathname, "/wishlist")
                   ? "text-maaniko-pink"
                   : "text-maaniko-navy"
-              }`}
+                }`}
             >
               <Heart
                 className="size-[23px]"
@@ -442,11 +444,10 @@ export default function Navbar() {
               href="/orders"
               aria-label={t("nav.orders")}
               title={t("nav.orders")}
-              className={`inline-flex size-10 items-center justify-center rounded-full transition-colors hover:bg-maaniko-blush ${
-                isRouteActive(pathname, "/orders")
+              className={`inline-flex size-10 items-center justify-center rounded-full transition-colors hover:bg-maaniko-blush ${isRouteActive(pathname, "/orders")
                   ? "text-maaniko-pink"
                   : "text-maaniko-navy"
-              }`}
+                }`}
             >
               <Package
                 className="size-[23px]"
@@ -525,11 +526,10 @@ export default function Navbar() {
                 key={item.href}
                 href={item.href}
                 aria-current={active ? "page" : undefined}
-                className={`relative flex min-w-0 flex-col items-center justify-center gap-1 px-0.5 font-medium transition-colors ${
-                  active
+                className={`relative flex min-w-0 flex-col items-center justify-center gap-1 px-0.5 font-medium transition-colors ${active
                     ? "text-maaniko-pink"
                     : "text-maaniko-navy hover:text-maaniko-pink"
-                }`}
+                  }`}
               >
                 {active && (
                   <motion.span
@@ -631,11 +631,10 @@ export default function Navbar() {
                       <Link
                         href={item.href}
                         onClick={() => setIsMenuOpen(false)}
-                        className={`block rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
-                          isRouteActive(pathname, item.href)
+                        className={`block rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${isRouteActive(pathname, item.href)
                             ? "bg-maaniko-blush text-maaniko-pink"
                             : "text-maaniko-navy hover:bg-maaniko-blush hover:text-maaniko-pink"
-                        }`}
+                          }`}
                       >
                         {t(`drawer.${item.key}`)}
                       </Link>
@@ -664,11 +663,10 @@ export default function Navbar() {
                       <Link
                         href={item.href}
                         onClick={() => setIsMenuOpen(false)}
-                        className={`block rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
-                          isRouteActive(pathname, item.href)
+                        className={`block rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${isRouteActive(pathname, item.href)
                             ? "bg-maaniko-blush text-maaniko-pink"
                             : "text-maaniko-navy hover:bg-maaniko-blush hover:text-maaniko-pink"
-                        }`}
+                          }`}
                       >
                         {t(`drawer.${item.key}`)}
                       </Link>
