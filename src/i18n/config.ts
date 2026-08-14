@@ -95,6 +95,18 @@ export const resources: Resource = {
         viewAll: "যাত্রা অনুযায়ী সব ক্যাটাগরি দেখুন",
       },
 
+      solutionBox: {
+        eyebrow: "মা ও শিশুর যত্নে",
+        title: "আপনার জন্য সাজানো Maaniko Solution Box",
+        subtitle:
+          "মা ও শিশুর প্রতিটি বিশেষ প্রয়োজনের জন্য প্রয়োজনীয় পণ্য নিয়ে সাজানো আমাদের সল্যুশন বক্সগুলো দেখুন।",
+        seeMore: "বিস্তারিত দেখুন",
+        explore: "দেখুন",
+        viewAll: "সব সল্যুশন বক্স দেখুন",
+        pageEyebrow: "মানিকো কিউরেটেড সল্যুশন",
+        pageTitle: "সকল Maaniko Solution Box",
+      },
+
       comboPack: {
         homeTitle: "ফেজ ওয়ান কম্বো প্যাক",
         homeSubtitle: "মা ও শিশুর জন্য আমাদের বাছাইকৃত ৬টি সেরা সমাধান",
@@ -203,6 +215,18 @@ export const resources: Resource = {
         seeMore: "See more",
         explore: "Explore",
         viewAll: "View all shop-by-journey categories",
+      },
+
+      solutionBox: {
+        eyebrow: "Care for mother and baby",
+        title: "Maaniko Solution Box, Curated for You",
+        subtitle:
+          "Explore thoughtfully curated solution boxes containing the essentials for every special mother-and-baby need.",
+        seeMore: "See more",
+        explore: "Explore",
+        viewAll: "View all solution boxes",
+        pageEyebrow: "Maaniko Curated Solutions",
+        pageTitle: "All Maaniko Solution Boxes",
       },
 
       comboPack: {
