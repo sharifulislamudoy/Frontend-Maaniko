@@ -24,12 +24,15 @@ export default function SolutionBoxCard({
 
   const priceFormatter = useMemo(
     () =>
-      new Intl.NumberFormat(language === "bn" ? "bn-BD" : "en-BD", {
-        style: "currency",
-        currency: "BDT",
-        currencyDisplay: "narrowSymbol",
-        maximumFractionDigits: 0,
-      }),
+      new Intl.NumberFormat(
+        language === "bn" ? "bn-BD" : "en-BD",
+        {
+          style: "currency",
+          currency: "BDT",
+          currencyDisplay: "narrowSymbol",
+          maximumFractionDigits: 0,
+        },
+      ),
     [language],
   );
 
@@ -58,6 +61,7 @@ export default function SolutionBoxCard({
 
   return (
     <article className="group/card relative isolate flex h-full flex-col overflow-hidden rounded-[20px] border border-[#dce3ec] bg-white shadow-[0_12px_34px_rgba(6,42,84,0.08)] transition duration-500 hover:-translate-y-1 hover:border-[#ef4277]/25 hover:shadow-[0_20px_48px_rgba(6,42,84,0.14)]">
+      {/* Image section */}
       <div className="relative aspect-[20/21] shrink-0 overflow-hidden bg-[#fff4f6]">
         <Link
           href={box.href}
@@ -85,18 +89,19 @@ export default function SolutionBoxCard({
         </Link>
 
         {discountPercentage > 0 && (
-          <div className="pointer-events-none absolute left-3 top-3 z-10">
-            <span className="inline-flex rounded-full bg-[#ef4277] px-2.5 py-1 text-[10px] font-extrabold text-white shadow-[0_8px_20px_rgba(239,66,119,0.3)]">
+          <div className="pointer-events-none absolute left-2 top-2 z-10 sm:left-3 sm:top-3">
+            <span className="inline-flex rounded-full bg-[#ef4277] px-2 py-1 text-[9px] font-extrabold text-white shadow-[0_8px_20px_rgba(239,66,119,0.3)] sm:px-2.5 sm:text-[10px]">
               -{numberFormatter.format(discountPercentage)}%
             </span>
           </div>
         )}
 
+        {/* See more button */}
         <div className="absolute inset-x-0 bottom-0 z-20 translate-y-0 opacity-100 transition-all duration-300 ease-out xl:translate-y-full xl:opacity-0 xl:group-hover/card:translate-y-0 xl:group-hover/card:opacity-100 xl:group-focus-within/card:translate-y-0 xl:group-focus-within/card:opacity-100">
           <Link
             href={box.href}
             aria-label={accessibilityLabel}
-            className="group/button relative flex h-9 w-full items-center justify-center overflow-hidden rounded-t-2xl bg-[#ef4277] px-4 text-xs font-extrabold text-white shadow-[0_12px_30px_rgba(6,42,84,0.22)] transition-all duration-300 hover:bg-[#10a9e8] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-inset focus-visible:ring-white/60 active:scale-[0.98] sm:text-sm md:h-11"
+            className="group/button relative flex h-9 w-full items-center justify-center overflow-hidden rounded-t-2xl bg-[#ef4277] px-2 text-[11px] font-extrabold text-white shadow-[0_12px_30px_rgba(6,42,84,0.22)] transition-all duration-300 hover:bg-[#10a9e8] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-inset focus-visible:ring-white/60 active:scale-[0.98] sm:px-4 sm:text-sm md:h-11"
           >
             <span className="transition-all duration-300 xl:group-hover/button:-translate-y-8 xl:group-hover/button:opacity-0 xl:group-focus-visible/button:-translate-y-8 xl:group-focus-visible/button:opacity-0">
               {t("solutionBox.seeMore")}
@@ -111,10 +116,12 @@ export default function SolutionBoxCard({
         </div>
       </div>
 
+      {/* Content section */}
       <div className="flex flex-1 flex-col p-3 sm:p-4">
         <Link
           href={box.href}
-          className="group/title focus-visible:outline-none"
+          aria-label={accessibilityLabel}
+          className="group/title focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ef4277]/40"
         >
           <h3 className="line-clamp-2 text-sm font-bold leading-5 text-[#062a54] transition-colors duration-300 group-hover/title:text-[#ef4277] sm:text-base sm:leading-6">
             {boxName}

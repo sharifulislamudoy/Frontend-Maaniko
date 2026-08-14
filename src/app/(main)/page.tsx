@@ -1,4 +1,3 @@
-import ComboPackSection from "@/components/home/ComboPackSection";
 import HeroSlider from "@/components/home/HeroSlider";
 import PopularProductsSection from "@/components/home/PopularProductsSection";
 import ShopByJourneySection from "@/components/home/ShopByJourneySection";
@@ -11,7 +10,6 @@ export default function HomePage() {
       <HeroSlider />
       <ShopByJourneySection />
       <SolutionBoxSection />
-      <ComboPackSection />
       <PopularProductsSection />
       <WhyMaanikoSection />
     </div>
