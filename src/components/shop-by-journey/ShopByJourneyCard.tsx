@@ -19,7 +19,7 @@ export default function ShopByJourneyCard({
   const accessibilityLabel = `${t("shopByJourney.explore")} ${itemName}`;
 
   return (
-    <article className="group/card relative isolate flex aspect-square w-full flex-col overflow-hidden rounded-[16px] border border-[#dce3ec] bg-white shadow-[0_8px_24px_rgba(6,42,84,0.08)] transition duration-500 hover:-translate-y-1 hover:border-[#ef4277]/25 hover:shadow-[0_18px_40px_rgba(6,42,84,0.14)] sm:rounded-[20px]">
+    <article className="group/card relative isolate flex aspect-square w-full flex-col overflow-hidden rounded-2xl border border-[#dce3ec] bg-white shadow-[0_8px_24px_rgba(6,42,84,0.08)] transition duration-500 hover:-translate-y-1 hover:border-[#ef4277]/25 hover:shadow-[0_18px_40px_rgba(6,42,84,0.14)] ">
       {/* Image section */}
       <div className="relative min-h-0 flex-1 overflow-hidden bg-[#fff4f6]">
         <Link
