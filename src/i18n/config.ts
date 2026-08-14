@@ -86,7 +86,6 @@ export const resources: Resource = {
       },
 
       shopByJourney: {
-        eyebrow: "প্রতিটি ধাপের জন্য",
         title: "আপনার যাত্রা অনুযায়ী শপ করুন",
         subtitle:
           "গর্ভাবস্থার প্রস্তুতি থেকে শিশুর স্বাস্থ্য ও নিরাপত্তা—প্রতিটি প্রয়োজন অনুযায়ী পণ্য খুঁজে নিন।",
@@ -209,7 +208,6 @@ export const resources: Resource = {
       },
 
       shopByJourney: {
-        eyebrow: "For every stage",
         title: "Shop by Your Journey",
         subtitle:
           "Find the right essentials for every stage, from pregnancy preparation to your baby's health and safety.",
