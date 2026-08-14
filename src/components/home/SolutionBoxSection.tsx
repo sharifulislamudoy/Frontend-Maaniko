@@ -29,7 +29,7 @@ export default function SolutionBoxSection() {
             <Link
               href="/solution-box"
               aria-label={t("solutionBox.viewAll")}
-              className="group flex items-center gap-1.5 rounded-full border border-[#dce3ec] bg-white px-3 py-1 text-xs font-extrabold text-[#062a54] shadow-sm transition-all duration-300 hover:border-[#ef4277] hover:bg-[#ef4277] hover:text-white focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#ef4277]/20 active:scale-95 sm:gap-2 sm:px-4 sm:text-sm"
+              className="group flex items-center gap-1.5 rounded-full border border-[#dce3ec] bg-white px-3 py-1 text-xs font-extrabold text-[#062a54] shadow-sm transition-all duration-300 hover:border-[#FF7897] hover:bg-[#FF7897] hover:text-white focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#FF7897]/20 active:scale-95 sm:gap-2 sm:px-4 sm:text-sm"
             >
               <span>{t("solutionBox.seeMore")}</span>
 

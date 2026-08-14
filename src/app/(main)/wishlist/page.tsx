@@ -16,7 +16,7 @@ export default function WishlistPage() {
     <div className="flex-1 bg-white py-10 sm:py-14">
       <section className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-7">
-          <p className="mb-2 text-xs font-extrabold uppercase tracking-[0.2em] text-[#ef4277]">
+          <p className="mb-2 text-xs font-extrabold uppercase tracking-[0.2em] text-[#FF7897]">
             {t("wishlist.eyebrow")}
           </p>
           <h1 className="text-2xl font-black tracking-tight text-[#062a54] sm:text-3xl">
@@ -41,7 +41,7 @@ export default function WishlistPage() {
           </div>
         ) : (
           <div className="flex min-h-[380px] flex-col items-center justify-center rounded-[24px] border border-dashed border-[#dce3ec] bg-[#fffafb] px-6 text-center">
-            <span className="mb-4 inline-flex size-16 items-center justify-center rounded-full bg-[#fff4f6] text-[#ef4277]">
+            <span className="mb-4 inline-flex size-16 items-center justify-center rounded-full bg-[#fff4f6] text-[#FF7897]">
               <Heart className="size-7" />
             </span>
             <h2 className="text-xl font-black text-[#062a54]">
@@ -52,7 +52,7 @@ export default function WishlistPage() {
             </p>
             <Link
               href="/shop"
-              className="mt-6 rounded-xl bg-[#ef4277] px-6 py-3 text-sm font-extrabold text-white transition-colors hover:bg-[#10a9e8]"
+              className="mt-6 rounded-xl bg-[#FF7897] px-6 py-3 text-sm font-extrabold text-white transition-colors hover:bg-[#10a9e8]"
             >
               {t("actions.continueShopping")}
             </Link>

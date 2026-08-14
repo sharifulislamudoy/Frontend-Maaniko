@@ -90,7 +90,7 @@ export default function CartDrawer() {
                 type="button"
                 aria-label={t("cart.close")}
                 onClick={closeCart}
-                className="inline-flex size-10 items-center justify-center rounded-full text-[#062a54] transition-colors hover:bg-[#fff4f6] hover:text-[#ef4277]"
+                className="inline-flex size-10 items-center justify-center rounded-full text-[#062a54] transition-colors hover:bg-[#fff4f6] hover:text-[#FF7897]"
               >
                 <X className="size-5" />
               </button>
@@ -98,7 +98,7 @@ export default function CartDrawer() {
 
             {cartItems.length === 0 ? (
               <div className="flex flex-1 flex-col items-center justify-center px-7 text-center">
-                <span className="mb-4 inline-flex size-16 items-center justify-center rounded-full bg-[#fff4f6] text-[#ef4277]">
+                <span className="mb-4 inline-flex size-16 items-center justify-center rounded-full bg-[#fff4f6] text-[#FF7897]">
                   <ShoppingBag className="size-7" />
                 </span>
                 <h3 className="text-lg font-black text-[#062a54]">
@@ -110,7 +110,7 @@ export default function CartDrawer() {
                 <Link
                   href="/shop"
                   onClick={closeCart}
-                  className="mt-6 rounded-xl bg-[#ef4277] px-6 py-3 text-sm font-extrabold text-white transition-colors hover:bg-[#10a9e8]"
+                  className="mt-6 rounded-xl bg-[#FF7897] px-6 py-3 text-sm font-extrabold text-white transition-colors hover:bg-[#10a9e8]"
                 >
                   {t("actions.continueShopping")}
                 </Link>
@@ -140,7 +140,7 @@ export default function CartDrawer() {
                           <Link
                             href={product.href ?? `/products/${product.slug}`}
                             onClick={closeCart}
-                            className="line-clamp-2 flex-1 text-sm font-bold leading-5 text-[#062a54] hover:text-[#ef4277]"
+                            className="line-clamp-2 flex-1 text-sm font-bold leading-5 text-[#062a54] hover:text-[#FF7897]"
                           >
                             {localize(product.name)}
                           </Link>
@@ -148,13 +148,13 @@ export default function CartDrawer() {
                             type="button"
                             aria-label={t("cart.remove")}
                             onClick={() => removeFromCart(product.id)}
-                            className="inline-flex size-8 shrink-0 items-center justify-center rounded-full text-slate-400 hover:bg-[#fff4f6] hover:text-[#ef4277]"
+                            className="inline-flex size-8 shrink-0 items-center justify-center rounded-full text-slate-400 hover:bg-[#fff4f6] hover:text-[#FF7897]"
                           >
                             <Trash2 className="size-4" />
                           </button>
                         </div>
 
-                        <p className="mt-1 text-sm font-black text-[#ef4277]">
+                        <p className="mt-1 text-sm font-black text-[#FF7897]">
                           {priceFormatter.format(product.price * quantity)}
                         </p>
 
@@ -165,7 +165,7 @@ export default function CartDrawer() {
                             onClick={() =>
                               updateCartQuantity(product.id, quantity - 1)
                             }
-                            className="inline-flex h-full w-9 items-center justify-center text-[#062a54] hover:text-[#ef4277]"
+                            className="inline-flex h-full w-9 items-center justify-center text-[#062a54] hover:text-[#FF7897]"
                           >
                             <Minus className="size-3.5" />
                           </button>
@@ -179,7 +179,7 @@ export default function CartDrawer() {
                             onClick={() =>
                               updateCartQuantity(product.id, quantity + 1)
                             }
-                            className="inline-flex h-full w-9 items-center justify-center text-[#062a54] hover:text-[#ef4277] disabled:cursor-not-allowed disabled:opacity-35"
+                            className="inline-flex h-full w-9 items-center justify-center text-[#062a54] hover:text-[#FF7897] disabled:cursor-not-allowed disabled:opacity-35"
                           >
                             <Plus className="size-3.5" />
                           </button>
@@ -201,7 +201,7 @@ export default function CartDrawer() {
                   <Link
                     href="/checkout"
                     onClick={closeCart}
-                    className="flex h-12 w-full items-center justify-center rounded-xl bg-[#ef4277] text-sm font-extrabold text-white transition-colors hover:bg-[#10a9e8]"
+                    className="flex h-12 w-full items-center justify-center rounded-xl bg-[#FF7897] text-sm font-extrabold text-white transition-colors hover:bg-[#10a9e8]"
                   >
                     {t("cart.checkout")}
                   </Link>

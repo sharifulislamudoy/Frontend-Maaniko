@@ -1,8 +1,5 @@
 "use client";
 
-import { useRef } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import type { Swiper as SwiperType } from "swiper";
 import { Autoplay } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
@@ -11,6 +8,10 @@ import ProductCardSkeleton from "@/components/product/ProductCardSkeleton";
 import { useLanguage } from "@/context/LanguageContext";
 import { fakeProducts } from "@/data/fakeProducts";
 import type { MaanikoProduct } from "@/types/product";
+
+import "swiper/css";
+import { ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 type PopularProductsSectionProps = {
   products?: MaanikoProduct[];
@@ -26,92 +27,55 @@ export default function PopularProductsSection({
   products = fakeProducts,
   isLoading = false,
 }: PopularProductsSectionProps) {
-  const { language, t } = useLanguage();
-  const swiperRef = useRef<SwiperType | null>(null);
+  const { t } = useLanguage();
 
-  const displayedItemsCount = isLoading
-    ? SKELETON_ITEMS.length
-    : products.length;
-
-  const canSlide = displayedItemsCount > 1;
   const canLoop = !isLoading && products.length >= 5;
-
-  function handlePreviousSlide() {
-    swiperRef.current?.slidePrev();
-  }
-
-  function handleNextSlide() {
-    swiperRef.current?.slideNext();
-  }
 
   if (!isLoading && products.length === 0) {
     return null;
   }
 
   return (
-    <section className="bg-white md:py-8 py-3">
-      {/* Hamburger button থেকে cart icon পর্যন্ত একই width */}
+    <section
+      aria-labelledby="popular-products-title"
+      className="bg-white py-3 md:py-8"
+    >
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="mb-5 flex items-end justify-between gap-4 sm:mb-6">
-          <div>
-            <p
-              className={`mb-2 text-xs font-extrabold uppercase text-[#ef4277] ${
-                language === "en"
-                  ? "tracking-[0.2em]"
-                  : "tracking-normal"
-              }`}
-            >
-              {t("home.collection")}
-            </p>
+        <div className="mb-5 flex items-center justify-between gap-4 sm:mb-6">
+          <h2
+            id="popular-products-title"
+            className="text-md lg:text-3xl font-black tracking-tight text-[#062a54] md:text-3xl"
+          >
+            {t("home.popularProducts")}
+          </h2>
 
-            <h2 className="text-2xl font-black tracking-tight text-[#062a54]">
-              {t("home.popularProducts")}
-            </h2>
-          </div>
-
-          <div className="flex shrink-0 items-center gap-2">
-            <button
-              type="button"
-              onClick={handlePreviousSlide}
-              disabled={!canSlide}
-              aria-label={
-                language === "bn"
-                  ? "আগের পণ্য দেখুন"
-                  : "View previous products"
-              }
-              className="grid size-10 place-items-center rounded-full border border-[#dce3ec] bg-white text-[#062a54] shadow-sm transition-all duration-300 hover:border-[#ef4277] hover:bg-[#ef4277] hover:text-white active:scale-95 disabled:cursor-not-allowed disabled:opacity-40 sm:size-11"
+          <div className="flex shrink-0 flex-col items-end gap-2">
+            <Link
+              href="/maaniko-collection"
+              aria-label={t("shopByJourney.viewAll")}
+              className="group flex items-center gap-1.5 rounded-full border border-[#dce3ec] bg-white px-3 py-1 text-xs font-extrabold text-[#062a54] shadow-sm transition-all duration-300 hover:border-[#FF7897] hover:bg-[#FF7897] hover:text-white focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#FF7897]/20 active:scale-95 sm:gap-2 sm:px-4 sm:text-sm"
             >
-              <ChevronLeft className="size-5" strokeWidth={2.2} />
-            </button>
+              <span>{t("shopByJourney.seeMore")}</span>
 
-            <button
-              type="button"
-              onClick={handleNextSlide}
-              disabled={!canSlide}
-              aria-label={
-                language === "bn"
-                  ? "পরের পণ্য দেখুন"
-                  : "View next products"
-              }
-              className="grid size-10 place-items-center rounded-full border border-[#dce3ec] bg-white text-[#062a54] shadow-sm transition-all duration-300 hover:border-[#10a9e8] hover:bg-[#10a9e8] hover:text-white active:scale-95 disabled:cursor-not-allowed disabled:opacity-40 sm:size-11"
-            >
-              <ChevronRight className="size-5" strokeWidth={2.2} />
-            </button>
+              <ArrowRight
+                aria-hidden="true"
+                strokeWidth={2.2}
+                className="size-4 transition-transform duration-300 group-hover:translate-x-1"
+              />
+            </Link>
+
           </div>
         </div>
 
         <Swiper
           modules={[Autoplay]}
-          onSwiper={(swiper) => {
-            swiperRef.current = swiper;
-          }}
           slidesPerView={1.5}
           slidesPerGroup={1}
           spaceBetween={14}
           speed={750}
           loop={canLoop}
           loopAdditionalSlides={2}
-          grabCursor={canSlide}
+          grabCursor={!isLoading && products.length > 1}
           watchOverflow
           observer
           observeParents
@@ -119,11 +83,11 @@ export default function PopularProductsSection({
           autoplay={
             canLoop
               ? {
-                  delay: 3200,
-                  disableOnInteraction: false,
-                  pauseOnMouseEnter: true,
-                  stopOnLastSlide: false,
-                }
+                delay: 3200,
+                disableOnInteraction: false,
+                pauseOnMouseEnter: true,
+                stopOnLastSlide: false,
+              }
               : false
           }
           breakpoints={{
@@ -144,19 +108,19 @@ export default function PopularProductsSection({
         >
           {isLoading
             ? SKELETON_ITEMS.map((item) => (
-                <SwiperSlide key={item} className="!h-auto">
-                  <div className="h-full py-1">
-                    <ProductCardSkeleton />
-                  </div>
-                </SwiperSlide>
-              ))
+              <SwiperSlide key={item} className="!h-auto">
+                <div className="h-full py-1">
+                  <ProductCardSkeleton />
+                </div>
+              </SwiperSlide>
+            ))
             : products.map((product) => (
-                <SwiperSlide key={product.id} className="!h-auto">
-                  <div className="h-full py-1">
-                    <ProductCard product={product} />
-                  </div>
-                </SwiperSlide>
-              ))}
+              <SwiperSlide key={product.id} className="!h-auto">
+                <div className="h-full py-1">
+                  <ProductCard product={product} />
+                </div>
+              </SwiperSlide>
+            ))}
         </Swiper>
       </div>
     </section>
