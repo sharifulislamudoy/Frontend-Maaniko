@@ -81,7 +81,6 @@ export const resources: Resource = {
       },
 
       home: {
-
         popularProducts: "মায়েদের সবচেয়ে পছন্দের পণ্যগুলো",
       },
 
@@ -105,6 +104,15 @@ export const resources: Resource = {
         viewAll: "সব সল্যুশন বক্স দেখুন",
         pageEyebrow: "মানিকো কিউরেটেড সল্যুশন",
         pageTitle: "সকল Maaniko Solution Box",
+      },
+
+      solutionGuide: {
+        title: "কী কী লাগবে বুঝে উঠতে পারছেন না?",
+        description:
+          "চিন্তা নেই—প্রয়োজনীয় পণ্যগুলো আমরা যত্ন নিয়ে একসঙ্গে সাজিয়ে দিয়েছি।",
+        button: "সমাধানগুলো দেখুন",
+        buttonLabel: "মানিকোর সাজানো সমাধানগুলো দেখুন",
+        imageAlt: "প্রয়োজনীয় পণ্য নিয়ে ভাবছেন একজন মা",
       },
 
       comboPack: {
@@ -149,6 +157,14 @@ export const resources: Resource = {
         increase: "পরিমাণ বাড়ান",
         total: "সর্বমোট",
         checkout: "চেকআউট করুন",
+      },
+
+      careGuide: {
+        title: "মা ও শিশুর যত্নে প্রয়োজনীয় গাইড",
+        seeMore: "আরও দেখুন",
+        explore: "গাইডটি পড়ুন",
+        viewAll: "মা ও শিশুর যত্নের সব গাইড দেখুন",
+        sliderLabel: "মা ও শিশুর যত্নে প্রয়োজনীয় গাইডসমূহ",
       },
     },
   },
@@ -228,6 +244,15 @@ export const resources: Resource = {
         pageTitle: "All Maaniko Solution Boxes",
       },
 
+      solutionGuide: {
+        title: "Not sure what you need?",
+        description:
+          "Don’t worry—we’ve thoughtfully brought all the essentials together for you.",
+        button: "Explore the solutions",
+        buttonLabel: "Explore Maaniko's curated solutions",
+        imageAlt: "A mother thinking about the essentials she needs",
+      },
+
       comboPack: {
         homeTitle: "Phase One Combo Pack",
         homeSubtitle:
@@ -272,6 +297,16 @@ export const resources: Resource = {
         total: "Total",
         checkout: "Proceed to checkout",
       },
+
+      careGuide: {
+        title: "Essential Guides for Mother & Baby Care",
+        seeMore: "See more",
+        explore: "Read guide",
+        viewAll: "View all mother and baby care guides",
+        sliderLabel: "Essential mother and baby care guides",
+      },
+
+
     },
   },
 };

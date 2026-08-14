@@ -5,8 +5,6 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import ShopByJourneyCard from "@/components/shop-by-journey/ShopByJourneyCard";
 import { shopByJourneyItems } from "@/data/shopByJourney";
 
-import "swiper/css";
-
 export default function ShopByJourneySlider() {
   return (
     <div
@@ -15,26 +13,30 @@ export default function ShopByJourneySlider() {
       className="w-full overflow-hidden"
     >
       <Swiper
-        slidesPerView={3}
+        slidesPerView="auto"
         slidesPerGroup={1}
-        spaceBetween={8}
+        spaceBetween={0}
         grabCursor
         watchOverflow
         threshold={5}
-        breakpoints={{
-          768: {
-            slidesPerView: 4,
-            spaceBetween: 16,
-          },
-          1024: {
-            slidesPerView: 5,
-            spaceBetween: 20,
-          },
-        }}
-        className="pb-1"
+        className="pb-1 [&_.swiper-wrapper]:items-stretch"
       >
         {shopByJourneyItems.map((item) => (
-          <SwiperSlide key={item.id} className="!h-auto">
+          <SwiperSlide
+            key={item.id}
+            className="
+              !mr-2
+              !h-auto
+              !w-[calc((100%_-_16px)/3)]
+              last:!mr-0
+
+              md:!mr-4
+              md:!w-[calc((100%_-_48px)/4)]
+
+              lg:!mr-5
+              lg:!w-[calc((100%_-_80px)/5)]
+            "
+          >
             <ShopByJourneyCard item={item} />
           </SwiperSlide>
         ))}

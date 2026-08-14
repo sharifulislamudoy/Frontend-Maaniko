@@ -5,8 +5,6 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import SolutionBoxCard from "@/components/solution-box/SolutionBoxCard";
 import { solutionBoxes } from "@/data/solutionBoxes";
 
-import "swiper/css";
-
 export default function SolutionBoxSlider() {
   return (
     <div
@@ -15,26 +13,32 @@ export default function SolutionBoxSlider() {
       className="w-full overflow-hidden"
     >
       <Swiper
-        slidesPerView={2}
+        slidesPerView="auto"
         slidesPerGroup={1}
-        spaceBetween={12}
+        spaceBetween={0}
         grabCursor
         watchOverflow
         threshold={5}
-        breakpoints={{
-          768: {
-            slidesPerView: 3,
-            spaceBetween: 16,
-          },
-          1024: {
-            slidesPerView: 4,
-            spaceBetween: 20,
-          },
-        }}
         className="pb-1 [&_.swiper-wrapper]:items-stretch"
       >
         {solutionBoxes.map((box) => (
-          <SwiperSlide key={box.id} className="!h-auto">
+          <SwiperSlide
+            key={box.id}
+            className="
+              !mr-3
+              !h-auto
+              !w-[calc((100%_-_12px)/2)]
+              last:!mr-0
+
+              md:!mr-4
+              md:!w-[calc((100%_-_32px)/3)]
+              md:last:!mr-0
+
+              lg:!mr-5
+              lg:!w-[calc((100%_-_60px)/4)]
+              lg:last:!mr-0
+            "
+          >
             <SolutionBoxCard box={box} />
           </SwiperSlide>
         ))}
