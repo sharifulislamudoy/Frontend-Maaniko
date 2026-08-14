@@ -82,7 +82,7 @@ export const resources: Resource = {
 
       home: {
         collection: "মানিকো কালেকশন",
-        popularProducts: "জনপ্রিয় পণ্যসমূহ",
+        popularProducts: "মায়েদের সবচেয়ে পছন্দের পণ্যগুলো",
       },
 
       shopByJourney: {
@@ -204,7 +204,7 @@ export const resources: Resource = {
 
       home: {
         collection: "Maaniko Collection",
-        popularProducts: "Popular Products",
+        popularProducts: "Mothers’ Most Loved Products",
       },
 
       shopByJourney: {

@@ -6,7 +6,13 @@ export type SolutionBox = {
   name: LocalizedValue;
   subtitle: LocalizedValue;
   images: [string, string];
+
+  // Discounted/selling price
   price: number;
+
+  // Regular price
+  compareAtPrice: number;
+
   href: string;
 };
 

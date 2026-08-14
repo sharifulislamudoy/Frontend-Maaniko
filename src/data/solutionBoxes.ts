@@ -1,4 +1,4 @@
-import type { SolutionBox } from "../types/solution-box";
+import type { SolutionBox } from "@/types/solution-box";
 
 export const solutionBoxes: SolutionBox[] = [
   {
@@ -17,6 +17,7 @@ export const solutionBoxes: SolutionBox[] = [
       "https://images.unsplash.com/photo-1596755389378-c31d21fd1273?auto=format&fit=crop&w=900&q=85",
     ],
     price: 3290,
+    compareAtPrice: 3990,
     href: "/solution-box#pregnancy-essential-box",
   },
   {
@@ -35,6 +36,7 @@ export const solutionBoxes: SolutionBox[] = [
       "https://images.unsplash.com/photo-1544126592-807ade215a0b?auto=format&fit=crop&w=900&q=85",
     ],
     price: 3890,
+    compareAtPrice: 4590,
     href: "/solution-box#newborn-welcome-box",
   },
   {
@@ -53,6 +55,7 @@ export const solutionBoxes: SolutionBox[] = [
       "https://images.unsplash.com/photo-1591343395082-e120087004b4?auto=format&fit=crop&w=900&q=85",
     ],
     price: 2490,
+    compareAtPrice: 2990,
     href: "/solution-box#first-feeding-journey-kit",
   },
   {
@@ -71,6 +74,7 @@ export const solutionBoxes: SolutionBox[] = [
       "https://images.unsplash.com/photo-1603006905003-be475563bc59?auto=format&fit=crop&w=900&q=85",
     ],
     price: 2290,
+    compareAtPrice: 2690,
     href: "/solution-box#baby-bathing-solution",
   },
   {
@@ -89,6 +93,7 @@ export const solutionBoxes: SolutionBox[] = [
       "https://images.unsplash.com/photo-1580281658628-5262fbf84c1c?auto=format&fit=crop&w=900&q=85",
     ],
     price: 2790,
+    compareAtPrice: 3390,
     href: "/solution-box#baby-health-safety-box",
   },
   {
@@ -107,6 +112,7 @@ export const solutionBoxes: SolutionBox[] = [
       "https://images.unsplash.com/photo-1591088398332-8a7791972843?auto=format&fit=crop&w=900&q=85",
     ],
     price: 3590,
+    compareAtPrice: 4290,
     href: "/solution-box#postpartum-comfort-box",
   },
 ];
