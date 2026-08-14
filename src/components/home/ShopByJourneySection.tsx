@@ -1,11 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, MoveHorizontal } from "lucide-react";
 
-import ShopByJourneyCard from "@/components/shop-by-journey/ShopByJourneyCard";
+import ShopByJourneySlider from "@/components/shop-by-journey/ShopByJourneySlider";
 import { useLanguage } from "@/context/LanguageContext";
-import { shopByJourneyItems } from "@/data/shopByJourney";
 
 export default function ShopByJourneySection() {
   const { language, t } = useLanguage();
@@ -13,11 +12,11 @@ export default function ShopByJourneySection() {
   return (
     <section
       aria-labelledby="shop-by-journey-title"
-      className="bg-white py-3 md:py-8"
+      className="overflow-hidden bg-white py-3 md:py-8"
     >
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="mb-5 flex items-center justify-between gap-4 sm:mb-6">
-          <div>
+        <div className="mb-5 flex items-start justify-between gap-3 sm:mb-6 sm:items-center sm:gap-5">
+          <div className="min-w-0">
             <p
               className={`mb-2 text-xs font-extrabold uppercase text-[#ef4277] ${
                 language === "en"
@@ -36,31 +35,34 @@ export default function ShopByJourneySection() {
             </h2>
           </div>
 
-          <Link
-            href="/shop-by-journey"
-            aria-label={t("shopByJourney.viewAll")}
-            className="grid size-10 shrink-0 place-items-center rounded-full border border-[#dce3ec] bg-white text-[#062a54] shadow-sm transition-all duration-300 hover:border-[#ef4277] hover:bg-[#ef4277] hover:text-white focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#ef4277]/20 active:scale-95 sm:size-11"
-          >
-            <ArrowRight className="size-5" strokeWidth={2.2} />
-          </Link>
+          <div className="flex shrink-0 flex-col items-end gap-2">
+            <Link
+              href="/shop-by-journey"
+              aria-label={t("shopByJourney.viewAll")}
+              className="group flex items-center gap-1.5 rounded-full border border-[#dce3ec] bg-white px-3 py-2 text-xs font-extrabold text-[#062a54] shadow-sm transition-all duration-300 hover:border-[#ef4277] hover:bg-[#ef4277] hover:text-white focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#ef4277]/20 active:scale-95 sm:gap-2 sm:px-4 sm:text-sm"
+            >
+              <span>{t("shopByJourney.seeMore")}</span>
+
+              <ArrowRight
+                aria-hidden="true"
+                strokeWidth={2.2}
+                className="size-4 transition-transform duration-300 group-hover:translate-x-1"
+              />
+            </Link>
+
+            <div className="flex items-center gap-1.5 text-[10px] font-semibold text-slate-400 sm:text-xs lg:hidden">
+              <MoveHorizontal
+                aria-hidden="true"
+                strokeWidth={2}
+                className="size-4 motion-safe:animate-pulse"
+              />
+
+              <span>{t("shopByJourney.swipeHint")}</span>
+            </div>
+          </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:gap-5 xl:grid-cols-4">
-          {shopByJourneyItems.slice(0, 4).map((item, index) => (
-            <div
-              key={item.id}
-              className={
-                index === 2
-                  ? "hidden md:block"
-                  : index === 3
-                    ? "hidden xl:block"
-                    : "block"
-              }
-            >
-              <ShopByJourneyCard item={item} />
-            </div>
-          ))}
-        </div>
+        <ShopByJourneySlider />
       </div>
     </section>
   );

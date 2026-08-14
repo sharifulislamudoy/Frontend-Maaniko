@@ -93,6 +93,7 @@ export const resources: Resource = {
         seeMore: "আরও দেখুন",
         explore: "দেখুন",
         viewAll: "যাত্রা অনুযায়ী সব ক্যাটাগরি দেখুন",
+        swipeHint: "পাশে সোয়াইপ করুন",
       },
 
       solutionBox: {
@@ -215,6 +216,7 @@ export const resources: Resource = {
         seeMore: "See more",
         explore: "Explore",
         viewAll: "View all shop-by-journey categories",
+        swipeHint: "Swipe sideways",
       },
 
       solutionBox: {
