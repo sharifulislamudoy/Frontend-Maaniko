@@ -179,7 +179,7 @@ export const resources: Resource = {
 
       nav: {
         home: "Home",
-        shop: "Maaniko Collection",
+        shop: "Collection",
         wishlist: "Wishlist",
         guide: "Guide",
         orders: "Orders",
