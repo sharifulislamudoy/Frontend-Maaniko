@@ -21,7 +21,7 @@ export default function CareGuideSection() {
               id="care-guide-title"
               className={`text-lg font-black text-[#062a54] sm:text-3xl md:text-3xl ${
                 language === "en"
-                  ? "tracking-[0.08em]"
+                  ? "tracking-normal"
                   : "tracking-normal"
               }`}
             >

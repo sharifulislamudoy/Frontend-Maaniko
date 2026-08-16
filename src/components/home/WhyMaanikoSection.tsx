@@ -107,14 +107,20 @@ export default function WhyMaanikoSection() {
   });
 
   return (
-    <section className="bg-white md:py-8 py-3">
+    <section
+      aria-labelledby="why-maaniko-title"
+      className="bg-white py-3 md:py-8"
+    >
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="overflow-hidden rounded-[26px] border border-[#f6dce4] bg-gradient-to-r from-[#fff9fa] via-[#fff4f6] to-[#f8fbff] px-4 py-7 shadow-[0_12px_35px_rgba(6,42,84,0.05)] sm:px-6 sm:py-8 lg:px-8">
-          <h2 className="text-center text-2xl font-black tracking-tight text-[#FF7897] sm:text-3xl">
+        <div className="overflow-hidden rounded-[26px] border border-[#f6dce4] bg-gradient-to-r from-[#fff9fa] via-[#fff4f6] to-[#f8fbff] px-3 py-7 shadow-[0_12px_35px_rgba(6,42,84,0.05)] sm:px-6 sm:py-8 lg:px-8">
+          <h2
+            id="why-maaniko-title"
+            className="text-center text-2xl font-black tracking-tight text-[#FF7897] sm:text-3xl"
+          >
             {sectionTitle}
           </h2>
 
-          {/* Mobile and tablet autoplay slider */}
+          {/* Small: 2 cards, medium: 3 cards */}
           <div
             role="region"
             aria-label={sectionTitle}
@@ -122,12 +128,14 @@ export default function WhyMaanikoSection() {
           >
             <Swiper
               modules={[Autoplay]}
-              slidesPerView="auto"
-              spaceBetween={14}
+              slidesPerView={2}
+              slidesPerGroup={1}
+              spaceBetween={10}
               speed={750}
-              loop={MAANIKO_FEATURES.length > 2}
+              loop={MAANIKO_FEATURES.length > 3}
               grabCursor
               watchOverflow
+              threshold={5}
               observer
               observeParents
               resizeObserver
@@ -136,32 +144,39 @@ export default function WhyMaanikoSection() {
                 disableOnInteraction: false,
                 pauseOnMouseEnter: true,
               }}
-              className="why-maaniko-swiper"
+              breakpoints={{
+                640: {
+                  slidesPerView: 2,
+                  spaceBetween: 14,
+                },
+                768: {
+                  slidesPerView: 3,
+                  spaceBetween: 16,
+                },
+              }}
+              className="why-maaniko-swiper [&_.swiper-wrapper]:items-stretch"
             >
               {MAANIKO_FEATURES.map((feature) => {
                 const Icon = feature.icon;
 
                 return (
-                  <SwiperSlide
-                    key={feature.id}
-                    className="!h-auto !w-[84%] sm:!w-[46%]"
-                  >
-                    <article className="flex h-full min-h-[190px] flex-col items-center justify-center rounded-2xl border border-white/80 bg-white/75 px-5 py-6 text-center shadow-[0_8px_24px_rgba(6,42,84,0.06)]">
+                  <SwiperSlide key={feature.id} className="!h-auto">
+                    <article className="flex h-full min-h-[190px] flex-col items-center justify-center rounded-2xl border border-white/80 bg-white/75 px-2 py-5 text-center shadow-[0_8px_24px_rgba(6,42,84,0.06)] sm:px-4 sm:py-6">
                       <span
-                        className={`flex size-12 items-center justify-center rounded-full ${feature.iconBackground}`}
+                        className={`flex size-11 shrink-0 items-center justify-center rounded-full sm:size-12 ${feature.iconBackground}`}
                       >
                         <Icon
                           aria-hidden="true"
-                          className={`size-6 ${feature.iconColor}`}
+                          className={`size-5 sm:size-6 ${feature.iconColor}`}
                           strokeWidth={2}
                         />
                       </span>
 
-                      <h3 className="mt-4 text-base font-black text-[#252a35]">
+                      <h3 className="mt-3 text-sm font-black leading-5 text-[#252a35] sm:mt-4 sm:text-base sm:leading-6">
                         {localize(feature.title)}
                       </h3>
 
-                      <p className="mt-1.5 max-w-[220px] text-sm font-medium leading-6 text-slate-500">
+                      <p className="mt-1.5 line-clamp-3 text-xs font-medium leading-5 text-slate-500 sm:text-sm sm:leading-6">
                         {localize(feature.description)}
                       </p>
                     </article>
@@ -171,7 +186,7 @@ export default function WhyMaanikoSection() {
             </Swiper>
           </div>
 
-          {/* Desktop fixed layout */}
+          {/* Large device: all 5 cards */}
           <div className="mt-8 hidden grid-cols-5 divide-x divide-[#edccd6] lg:grid">
             {MAANIKO_FEATURES.map((feature) => {
               const Icon = feature.icon;
@@ -182,7 +197,7 @@ export default function WhyMaanikoSection() {
                   className="flex min-w-0 flex-col items-center px-5 text-center"
                 >
                   <span
-                    className={`flex size-12 items-center justify-center rounded-full ${feature.iconBackground}`}
+                    className={`flex size-12 shrink-0 items-center justify-center rounded-full ${feature.iconBackground}`}
                   >
                     <Icon
                       aria-hidden="true"

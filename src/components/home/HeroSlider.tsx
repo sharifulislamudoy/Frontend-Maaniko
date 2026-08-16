@@ -32,6 +32,13 @@ const FALLBACK_BANNERS: Banner[] = [
     productLink: "/shop",
     isPublished: true,
   },
+  {
+    id: "maaniko-default-hero-3",
+    imageUrl:
+      "https://i.ibb.co.com/ks1KGkY4/Website.png",
+    productLink: "/shop",
+    isPublished: true,
+  },
 ];
 
 function getBannerHref(productLink?: string | null) {
