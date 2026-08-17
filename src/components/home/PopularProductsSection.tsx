@@ -53,7 +53,7 @@ export default function PopularProductsSection({
             <Link
               href="/maaniko-collection"
               aria-label={t("shopByJourney.viewAll")}
-              className="group flex items-center gap-1.5 rounded-full border border-[#dce3ec] bg-white px-3 py-1 text-xs font-extrabold text-[#062a54] shadow-sm transition-all duration-300 hover:border-[#FF7897] hover:bg-[#FF7897] hover:text-white focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#FF7897]/20 active:scale-95 sm:gap-2 sm:px-4 sm:text-sm"
+              className="group flex items-center gap-1.5 rounded-full border border-[#dce3ec] bg-white px-3 py-1 text-xs font-extrabold text-[#062a54] shadow-sm transition-all duration-300 hover:border-[#FC5689] hover:bg-[#FC5689] hover:text-white focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#FC5689]/20 active:scale-95 sm:gap-2 sm:px-4 sm:text-sm"
             >
               <span>{t("shopByJourney.seeMore")}</span>
 

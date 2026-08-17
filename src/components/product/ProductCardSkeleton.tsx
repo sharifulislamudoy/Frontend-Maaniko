@@ -5,8 +5,8 @@ export default function ProductCardSkeleton() {
 
       <div className="flex flex-1 flex-col space-y-2 p-2.5 sm:space-y-2.5 sm:p-4">
         <div className="flex items-center justify-between gap-2 sm:gap-4">
-          <div className="h-3 w-16 animate-pulse rounded-full bg-[#10a9e8]/15 sm:w-24" />
-          <div className="h-5 w-12 animate-pulse rounded-full bg-[#10a9e8]/10 sm:w-16" />
+          <div className="h-3 w-16 animate-pulse rounded-full bg-[#03A7FD]/15 sm:w-24" />
+          <div className="h-5 w-12 animate-pulse rounded-full bg-[#03A7FD]/10 sm:w-16" />
         </div>
 
         <div className="h-5 w-full animate-pulse rounded-md bg-[#062a54]/10" />
@@ -18,7 +18,7 @@ export default function ProductCardSkeleton() {
         </div>
 
         <div className="mt-auto flex items-center justify-between gap-2 border-t border-[#dce3ec]/80 pt-2.5">
-          <div className="h-5 w-16 animate-pulse rounded-md bg-[#FF7897]/15 sm:h-6 sm:w-24" />
+          <div className="h-5 w-16 animate-pulse rounded-md bg-[#FC5689]/15 sm:h-6 sm:w-24" />
           <div className="h-4 w-10 animate-pulse rounded-md bg-amber-100 sm:w-14" />
         </div>
       </div>

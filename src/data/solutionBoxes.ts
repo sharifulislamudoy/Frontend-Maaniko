@@ -1,4 +1,5 @@
 import type { SolutionBox } from "@/types/solution-box";
+import type { MaanikoProduct } from "@/types/product";
 
 export const solutionBoxes: SolutionBox[] = [
   {
@@ -18,6 +19,7 @@ export const solutionBoxes: SolutionBox[] = [
     ],
     price: 3290,
     compareAtPrice: 3990,
+    stock: 12,
     href: "/solution-box#pregnancy-essential-box",
   },
   {
@@ -37,6 +39,7 @@ export const solutionBoxes: SolutionBox[] = [
     ],
     price: 3890,
     compareAtPrice: 4590,
+    stock: 9,
     href: "/solution-box#newborn-welcome-box",
   },
   {
@@ -56,6 +59,7 @@ export const solutionBoxes: SolutionBox[] = [
     ],
     price: 2490,
     compareAtPrice: 2990,
+    stock: 15,
     href: "/solution-box#first-feeding-journey-kit",
   },
   {
@@ -75,6 +79,7 @@ export const solutionBoxes: SolutionBox[] = [
     ],
     price: 2290,
     compareAtPrice: 2690,
+    stock: 11,
     href: "/solution-box#baby-bathing-solution",
   },
   {
@@ -94,6 +99,7 @@ export const solutionBoxes: SolutionBox[] = [
     ],
     price: 2790,
     compareAtPrice: 3390,
+    stock: 8,
     href: "/solution-box#baby-health-safety-box",
   },
   {
@@ -113,6 +119,29 @@ export const solutionBoxes: SolutionBox[] = [
     ],
     price: 3590,
     compareAtPrice: 4290,
+    stock: 7,
     href: "/solution-box#postpartum-comfort-box",
   },
 ];
+
+export function solutionBoxToProduct(box: SolutionBox): MaanikoProduct {
+  return {
+    id: box.id,
+    slug: box.slug,
+    href: box.href,
+    name: box.name,
+    description: box.subtitle,
+    category: {
+      bn: "মানিকো সল্যুশন বক্স",
+      en: "Maaniko Solution Box",
+    },
+    badge: {
+      bn: "কিউরেটেড বক্স",
+      en: "Curated box",
+    },
+    images: [...box.images],
+    price: box.price,
+    compareAtPrice: box.compareAtPrice,
+    stock: box.stock,
+  };
+}

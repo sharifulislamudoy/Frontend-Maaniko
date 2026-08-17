@@ -13,6 +13,8 @@ export type SolutionBox = {
   // Regular price
   compareAtPrice: number;
 
+  stock: number;
+
   href: string;
 };
 

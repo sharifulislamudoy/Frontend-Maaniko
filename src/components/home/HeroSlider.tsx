@@ -23,14 +23,14 @@ const FALLBACK_BANNERS: Banner[] = [
     imageUrl:
       "https://i.ibb.co.com/RGtHRw4b/maaniko-responsive-hero-banner-borderless-2048x768.png",
     productLink: "/shop",
-    isPublished: true,
+    isPublished: false,
   },
   {
     id: "maaniko-default-hero-2",
     imageUrl:
       "https://i.ibb.co.com/q3ZGpBxx/Banner-2.png",
     productLink: "/shop",
-    isPublished: true,
+    isPublished: false,
   },
   {
     id: "maaniko-default-hero-3",
@@ -250,7 +250,7 @@ export default function HeroSlider() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={`${t("hero.openBanner")} ${index + 1}`}
-                  className="block w-full focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-inset focus-visible:ring-[#FF7897]/40"
+                  className="block w-full focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-inset focus-visible:ring-[#FC5689]/40"
                 >
                   {bannerImage}
                 </a>
@@ -258,7 +258,7 @@ export default function HeroSlider() {
                 <Link
                   href={href}
                   aria-label={`${t("hero.openBanner")} ${index + 1}`}
-                  className="block w-full focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-inset focus-visible:ring-[#FF7897]/40"
+                  className="block w-full focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-inset focus-visible:ring-[#FC5689]/40"
                 >
                   {bannerImage}
                 </Link>

@@ -33,7 +33,7 @@
 
 .slider :global(.swiper-pagination-bullet-active) {
   width: 22px;
-  background-color: #FF7897;
+  background-color: #FC5689;
   opacity: 1;
 }
 

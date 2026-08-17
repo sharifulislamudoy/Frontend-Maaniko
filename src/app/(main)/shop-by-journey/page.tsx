@@ -12,7 +12,7 @@ export default function ShopByJourneyPage() {
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-7 max-w-2xl sm:mb-9">
           <p
-            className={`mb-2 text-xs font-extrabold uppercase text-[#FF7897] ${
+            className={`mb-2 text-xs font-extrabold uppercase text-[#FC5689] ${
               language === "en"
                 ? "tracking-[0.2em]"
                 : "tracking-normal"

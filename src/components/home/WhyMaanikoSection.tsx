@@ -37,7 +37,7 @@ const MAANIKO_FEATURES: MaanikoFeature[] = [
       en: "Trusted products for mother and baby",
     },
     icon: BadgeCheck,
-    iconColor: "text-[#FF7897]",
+    iconColor: "text-[#FC5689]",
     iconBackground: "bg-[#ffe5ed]",
   },
   {
@@ -51,7 +51,7 @@ const MAANIKO_FEATURES: MaanikoFeature[] = [
       en: "Safe, durable and high-quality products",
     },
     icon: ShieldCheck,
-    iconColor: "text-[#FF7897]",
+    iconColor: "text-[#FC5689]",
     iconBackground: "bg-[#ffe5ed]",
   },
   {
@@ -65,7 +65,7 @@ const MAANIKO_FEATURES: MaanikoFeature[] = [
       en: "Quick delivery across Bangladesh",
     },
     icon: Truck,
-    iconColor: "text-[#FF7897]",
+    iconColor: "text-[#FC5689]",
     iconBackground: "bg-[#ffe5ed]",
   },
   {
@@ -79,7 +79,7 @@ const MAANIKO_FEATURES: MaanikoFeature[] = [
       en: "A special touch with every order",
     },
     icon: Heart,
-    iconColor: "text-[#FF7897]",
+    iconColor: "text-[#FC5689]",
     iconBackground: "bg-[#ffe5ed]",
   },
   {
@@ -93,7 +93,7 @@ const MAANIKO_FEATURES: MaanikoFeature[] = [
       en: "We are here to solve any problem",
     },
     icon: Headphones,
-    iconColor: "text-[#10a9e8]",
+    iconColor: "text-[#03A7FD]",
     iconBackground: "bg-[#dff5ff]",
   },
 ];
@@ -115,7 +115,7 @@ export default function WhyMaanikoSection() {
         <div className="overflow-hidden rounded-[26px] border border-[#f6dce4] bg-gradient-to-r from-[#fff9fa] via-[#fff4f6] to-[#f8fbff] px-3 py-7 shadow-[0_12px_35px_rgba(6,42,84,0.05)] sm:px-6 sm:py-8 lg:px-8">
           <h2
             id="why-maaniko-title"
-            className="text-center text-2xl font-black tracking-tight text-[#FF7897] sm:text-3xl"
+            className="text-center text-2xl font-black tracking-tight text-[#FC5689] sm:text-3xl"
           >
             {sectionTitle}
           </h2>

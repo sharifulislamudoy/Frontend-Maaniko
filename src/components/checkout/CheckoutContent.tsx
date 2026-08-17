@@ -210,7 +210,7 @@ export default function CheckoutContent() {
         aria-label={copy.loading}
         className="grid min-h-[60vh] place-items-center bg-[#fff9fb] px-4"
       >
-        <div className="size-9 animate-spin rounded-full border-2 border-[#dce3ec] border-t-[#FF7897]" />
+        <div className="size-9 animate-spin rounded-full border-2 border-[#dce3ec] border-t-[#FC5689]" />
       </section>
     );
   }
@@ -218,8 +218,8 @@ export default function CheckoutContent() {
   if (orderPrepared) {
     return (
       <section className="grid min-h-[70vh] place-items-center bg-[#fff9fb] px-4 py-16">
-        <div className="w-full max-w-lg rounded-[28px] border border-[#FF7897]/20 bg-white p-7 text-center shadow-[0_24px_70px_rgba(6,42,84,0.12)] sm:p-10">
-          <span className="mx-auto grid size-16 place-items-center rounded-full bg-[#FF7897] text-white">
+        <div className="w-full max-w-lg rounded-[28px] border border-[#FC5689]/20 bg-white p-7 text-center shadow-[0_24px_70px_rgba(6,42,84,0.12)] sm:p-10">
+          <span className="mx-auto grid size-16 place-items-center rounded-full bg-[#FC5689] text-white">
             <CheckCircle2 size={32} aria-hidden="true" />
           </span>
           <h1 className="mt-6 text-2xl font-black text-[#062a54] sm:text-3xl">
@@ -230,7 +230,7 @@ export default function CheckoutContent() {
           </p>
           <Link
             href="/"
-            className="mt-7 inline-flex h-12 items-center justify-center rounded-xl bg-[#FF7897] px-7 text-sm font-extrabold text-white transition-colors hover:bg-[#10a9e8]"
+            className="mt-7 inline-flex h-12 items-center justify-center rounded-xl bg-[#FC5689] px-7 text-sm font-extrabold text-white transition-colors hover:bg-[#03A7FD]"
           >
             {copy.continueShopping}
           </Link>
@@ -243,7 +243,7 @@ export default function CheckoutContent() {
     return (
       <section className="grid min-h-[70vh] place-items-center bg-[#fff9fb] px-4 py-16">
         <div className="w-full max-w-lg rounded-[28px] border border-[#dce3ec] bg-white p-7 text-center shadow-[0_18px_55px_rgba(6,42,84,0.08)] sm:p-10">
-          <span className="mx-auto grid size-16 place-items-center rounded-full bg-[#fff4f6] text-[#FF7897]">
+          <span className="mx-auto grid size-16 place-items-center rounded-full bg-[#fff4f6] text-[#FC5689]">
             <ShoppingBag size={29} aria-hidden="true" />
           </span>
           <h1 className="mt-6 text-2xl font-black text-[#062a54]">
@@ -254,7 +254,7 @@ export default function CheckoutContent() {
           </p>
           <Link
             href="/"
-            className="mt-7 inline-flex h-12 items-center justify-center rounded-xl bg-[#FF7897] px-7 text-sm font-extrabold text-white transition-colors hover:bg-[#10a9e8]"
+            className="mt-7 inline-flex h-12 items-center justify-center rounded-xl bg-[#FC5689] px-7 text-sm font-extrabold text-white transition-colors hover:bg-[#03A7FD]"
           >
             {copy.browseProducts}
           </Link>
@@ -268,7 +268,7 @@ export default function CheckoutContent() {
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 text-sm font-bold text-slate-500 transition-colors hover:text-[#FF7897]"
+          className="inline-flex items-center gap-2 text-sm font-bold text-slate-500 transition-colors hover:text-[#FC5689]"
         >
           <ArrowLeft size={17} aria-hidden="true" />
           {copy.back}
@@ -276,7 +276,7 @@ export default function CheckoutContent() {
 
         <div className="mt-5">
           <p
-            className={`text-[10px] font-extrabold uppercase text-[#10a9e8] ${
+            className={`text-[10px] font-extrabold uppercase text-[#03A7FD] ${
               language === "en" ? "tracking-[0.2em]" : "tracking-normal"
             }`}
           >
@@ -303,7 +303,7 @@ export default function CheckoutContent() {
               </h2>
               <LockKeyhole
                 size={19}
-                className="text-[#FF7897]"
+                className="text-[#FC5689]"
                 aria-hidden="true"
               />
             </div>
@@ -315,7 +315,7 @@ export default function CheckoutContent() {
                   name="name"
                   required
                   autoComplete="name"
-                  className="h-12 rounded-xl border border-[#dce3ec] bg-white px-4 text-sm text-[#062a54] outline-none transition placeholder:text-slate-400 focus:border-[#FF7897] focus:ring-4 focus:ring-[#FF7897]/10"
+                  className="h-12 rounded-xl border border-[#dce3ec] bg-white px-4 text-sm text-[#062a54] outline-none transition placeholder:text-slate-400 focus:border-[#FC5689] focus:ring-4 focus:ring-[#FC5689]/10"
                   placeholder={copy.fullNamePlaceholder}
                 />
               </label>
@@ -328,7 +328,7 @@ export default function CheckoutContent() {
                   inputMode="tel"
                   autoComplete="tel"
                   pattern="01[3-9][0-9]{8}"
-                  className="h-12 rounded-xl border border-[#dce3ec] bg-white px-4 text-sm text-[#062a54] outline-none transition placeholder:text-slate-400 focus:border-[#FF7897] focus:ring-4 focus:ring-[#FF7897]/10"
+                  className="h-12 rounded-xl border border-[#dce3ec] bg-white px-4 text-sm text-[#062a54] outline-none transition placeholder:text-slate-400 focus:border-[#FC5689] focus:ring-4 focus:ring-[#FC5689]/10"
                   placeholder="01XXXXXXXXX"
                 />
               </label>
@@ -344,7 +344,7 @@ export default function CheckoutContent() {
                   name="email"
                   type="email"
                   autoComplete="email"
-                  className="h-12 rounded-xl border border-[#dce3ec] bg-white px-4 text-sm text-[#062a54] outline-none transition placeholder:text-slate-400 focus:border-[#FF7897] focus:ring-4 focus:ring-[#FF7897]/10"
+                  className="h-12 rounded-xl border border-[#dce3ec] bg-white px-4 text-sm text-[#062a54] outline-none transition placeholder:text-slate-400 focus:border-[#FC5689] focus:ring-4 focus:ring-[#FC5689]/10"
                   placeholder="you@example.com"
                 />
               </label>
@@ -356,7 +356,7 @@ export default function CheckoutContent() {
                   required
                   autoComplete="street-address"
                   rows={3}
-                  className="resize-none rounded-xl border border-[#dce3ec] bg-white px-4 py-3 text-sm text-[#062a54] outline-none transition placeholder:text-slate-400 focus:border-[#FF7897] focus:ring-4 focus:ring-[#FF7897]/10"
+                  className="resize-none rounded-xl border border-[#dce3ec] bg-white px-4 py-3 text-sm text-[#062a54] outline-none transition placeholder:text-slate-400 focus:border-[#FC5689] focus:ring-4 focus:ring-[#FC5689]/10"
                   placeholder={copy.addressPlaceholder}
                 />
               </label>
@@ -366,7 +366,7 @@ export default function CheckoutContent() {
                 <input
                   name="area"
                   required
-                  className="h-12 rounded-xl border border-[#dce3ec] bg-white px-4 text-sm text-[#062a54] outline-none transition placeholder:text-slate-400 focus:border-[#FF7897] focus:ring-4 focus:ring-[#FF7897]/10"
+                  className="h-12 rounded-xl border border-[#dce3ec] bg-white px-4 text-sm text-[#062a54] outline-none transition placeholder:text-slate-400 focus:border-[#FC5689] focus:ring-4 focus:ring-[#FC5689]/10"
                   placeholder={copy.areaPlaceholder}
                 />
               </label>
@@ -377,7 +377,7 @@ export default function CheckoutContent() {
                   name="city"
                   required
                   autoComplete="address-level2"
-                  className="h-12 rounded-xl border border-[#dce3ec] bg-white px-4 text-sm text-[#062a54] outline-none transition placeholder:text-slate-400 focus:border-[#FF7897] focus:ring-4 focus:ring-[#FF7897]/10"
+                  className="h-12 rounded-xl border border-[#dce3ec] bg-white px-4 text-sm text-[#062a54] outline-none transition placeholder:text-slate-400 focus:border-[#FC5689] focus:ring-4 focus:ring-[#FC5689]/10"
                   placeholder="Dhaka"
                 />
               </label>
@@ -392,16 +392,16 @@ export default function CheckoutContent() {
                 <textarea
                   name="note"
                   rows={3}
-                  className="resize-none rounded-xl border border-[#dce3ec] bg-white px-4 py-3 text-sm text-[#062a54] outline-none transition placeholder:text-slate-400 focus:border-[#FF7897] focus:ring-4 focus:ring-[#FF7897]/10"
+                  className="resize-none rounded-xl border border-[#dce3ec] bg-white px-4 py-3 text-sm text-[#062a54] outline-none transition placeholder:text-slate-400 focus:border-[#FC5689] focus:ring-4 focus:ring-[#FC5689]/10"
                   placeholder={copy.notePlaceholder}
                 />
               </label>
             </div>
 
-            <div className="mt-6 flex items-start gap-3 rounded-2xl border border-[#10a9e8]/20 bg-[#10a9e8]/[0.055] p-4">
+            <div className="mt-6 flex items-start gap-3 rounded-2xl border border-[#03A7FD]/20 bg-[#03A7FD]/[0.055] p-4">
               <Truck
                 size={19}
-                className="mt-0.5 shrink-0 text-[#10a9e8]"
+                className="mt-0.5 shrink-0 text-[#03A7FD]"
                 aria-hidden="true"
               />
               <div>
@@ -420,7 +420,7 @@ export default function CheckoutContent() {
               <h2 className="text-lg font-black text-[#062a54]">
                 {copy.orderSummary}
               </h2>
-              <span className="rounded-full bg-[#fff4f6] px-2.5 py-1 text-[10px] font-extrabold text-[#FF7897]">
+              <span className="rounded-full bg-[#fff4f6] px-2.5 py-1 text-[10px] font-extrabold text-[#FC5689]">
                 {numberFormatter.format(itemCount)} {copy.item}
               </span>
             </div>
@@ -446,7 +446,7 @@ export default function CheckoutContent() {
                       <span className="font-bold text-slate-500">
                         {copy.quantity}: {numberFormatter.format(quantity)}
                       </span>
-                      <span className="font-black text-[#FF7897]">
+                      <span className="font-black text-[#FC5689]">
                         {priceFormatter.format(product.price * quantity)}
                       </span>
                     </div>
@@ -472,7 +472,7 @@ export default function CheckoutContent() {
               </div>
               <div className="flex items-center justify-between gap-3 border-t border-[#dce3ec] pt-4">
                 <dt className="font-black text-[#062a54]">{copy.total}</dt>
-                <dd className="text-xl font-black text-[#FF7897]">
+                <dd className="text-xl font-black text-[#FC5689]">
                   {priceFormatter.format(total)}
                 </dd>
               </div>
@@ -480,7 +480,7 @@ export default function CheckoutContent() {
 
             <button
               type="submit"
-              className="mt-6 flex h-13 w-full items-center justify-center gap-2 rounded-xl bg-[#FF7897] px-6 text-sm font-extrabold text-white shadow-[0_12px_28px_rgba(239,66,119,0.22)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#10a9e8]"
+              className="mt-6 flex h-13 w-full items-center justify-center gap-2 rounded-xl bg-[#FC5689] px-6 text-sm font-extrabold text-white shadow-[0_12px_28px_rgba(239,66,119,0.22)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#03A7FD]"
             >
               {copy.confirmOrder}
               <CheckCircle2 size={18} aria-hidden="true" />
