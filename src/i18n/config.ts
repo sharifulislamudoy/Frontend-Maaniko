@@ -41,7 +41,7 @@ export const resources: Resource = {
 
       nav: {
         home: "হোম",
-        shop: "মানিকো কালেকশন",
+        shop: "কালেকশন",
         wishlist: "উইশলিস্ট",
         guide: "গাইড",
         orders: "অর্ডার",
