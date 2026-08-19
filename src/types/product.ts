@@ -1,5 +1,17 @@
 import type { LocalizedValue } from "@/types/localization";
 
+export type ProductIncludedItem = {
+  id: string;
+  name: LocalizedValue;
+  image?: string;
+};
+
+export type ProductDetails = {
+  includedItems: ProductIncludedItem[];
+  whyEssential: LocalizedValue[];
+  preferredFor: LocalizedValue[];
+};
+
 export type MaanikoProduct = {
   id: string;
   slug: string;
@@ -14,6 +26,7 @@ export type MaanikoProduct = {
   stock: number;
   rating?: number;
   reviewCount?: number;
+  details?: ProductDetails;
 };
 
 export type ProductCardProps = {
