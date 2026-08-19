@@ -195,8 +195,8 @@ function DrawerLanguageToggle() {
               aria-pressed={selected}
               onClick={() => setLanguage(option.code)}
               className={`relative z-10 flex h-10 items-center justify-center gap-1.5 rounded-md px-3 text-sm font-semibold transition-colors ${selected
-                  ? "text-maaniko-pink"
-                  : "text-maaniko-navy hover:text-maaniko-pink"
+                ? "text-maaniko-pink"
+                : "text-maaniko-navy hover:text-maaniko-pink"
                 }`}
             >
               {selected && (
@@ -244,49 +244,110 @@ function ServiceBar() {
   ];
 
   return (
-    <div className="border-b border-[#f7dce5] bg-maaniko-blush">
-      <div className="mx-auto grid min-h-[52px] w-full max-w-7xl grid-cols-3 items-center gap-1 px-2.5 sm:min-h-12 sm:gap-5 sm:px-6 xl:min-h-11 xl:px-8">
-        {serviceItems.map((item, index) => {
-          const Icon = item.icon;
+    <div
+      role="region"
+      aria-label="Maaniko service information"
+      className="service-marquee overflow-hidden border-b border-[#f7dce5] bg-maaniko-blush"
+    >
+      <div className="service-marquee-track flex w-max items-center">
+        {[0, 1].map((copyIndex) => (
+          <div
+            key={copyIndex}
+            aria-hidden={copyIndex === 1 ? true : undefined}
+            className={`service-marquee-group flex min-h-10 min-w-[100vw] shrink-0 items-center justify-around gap-8 px-4 sm:min-h-11 sm:gap-12 sm:px-8${copyIndex === 1 ? " service-marquee-copy" : ""
+              }`}
+          >
+            {serviceItems.map((item, itemIndex) => {
+              const Icon = item.icon;
 
-          const alignment =
-            index === 0
-              ? "justify-self-start text-start"
-              : index === 1
-                ? "justify-self-center text-center"
-                : "justify-self-end text-end";
+              const content = (
+                <>
+                  <Icon
+                    aria-hidden="true"
+                    className="size-4 shrink-0 text-maaniko-pink sm:size-[18px]"
+                    strokeWidth={1.9}
+                  />
 
-          const className = `flex min-w-0 max-w-[112px] items-center gap-1 text-[9px] font-medium leading-[1.15] text-maaniko-navy sm:max-w-none sm:gap-2 sm:text-[11px] xl:gap-2.5 xl:text-[13px] ${alignment}`;
+                  <span>{item.label}</span>
+                </>
+              );
 
-          const content = (
-            <>
-              <Icon
-                aria-hidden="true"
-                className="size-3.5 shrink-0 text-maaniko-pink sm:size-4 xl:size-[18px]"
-                strokeWidth={1.9}
-              />
+              return (
+                <div
+                  key={`${copyIndex}-${itemIndex}-${item.label}`}
+                  className="flex shrink-0 items-center gap-8 sm:gap-12"
+                >
+                  {item.href ? (
+                    <a
+                      href={item.href}
+                      tabIndex={copyIndex === 1 ? -1 : undefined}
+                      className="service-marquee-item flex shrink-0 items-center gap-2 whitespace-nowrap text-[11px] font-medium text-maaniko-navy transition-colors hover:text-maaniko-pink sm:text-xs lg:text-[13px]"
+                    >
+                      {content}
+                    </a>
+                  ) : (
+                    <div className="service-marquee-item flex shrink-0 items-center gap-2 whitespace-nowrap text-[11px] font-medium text-maaniko-navy sm:text-xs lg:text-[13px]">
+                      {content}
+                    </div>
+                  )}
 
-              <span className="min-w-0 text-balance">
-                {item.label}
-              </span>
-            </>
-          );
-
-          return item.href ? (
-            <a
-              key={item.label}
-              href={item.href}
-              className={`${className} transition-colors hover:text-maaniko-pink`}
-            >
-              {content}
-            </a>
-          ) : (
-            <div key={item.label} className={className}>
-              {content}
-            </div>
-          );
-        })}
+                  <span
+                    aria-hidden="true"
+                    className="service-marquee-separator size-1 shrink-0 rounded-full bg-maaniko-pink/50"
+                  />
+                </div>
+              );
+            })}
+          </div>
+        ))}
       </div>
+
+      <style jsx>{`
+        .service-marquee-track {
+          animation: maaniko-service-marquee 22s linear infinite;
+          will-change: transform;
+        }
+
+        .service-marquee:hover .service-marquee-track {
+          animation-play-state: paused;
+        }
+
+        @keyframes maaniko-service-marquee {
+          from {
+            transform: translate3d(0, 0, 0);
+          }
+
+          to {
+            transform: translate3d(-50%, 0, 0);
+          }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .service-marquee-track {
+            width: 100%;
+            animation: none;
+            transform: none;
+          }
+
+          .service-marquee-group:first-child {
+            width: 100%;
+            min-width: 100%;
+            gap: 0.25rem;
+            padding: 0.5rem;
+          }
+
+          .service-marquee-copy,
+          .service-marquee-separator {
+            display: none;
+          }
+
+          .service-marquee-item {
+            max-width: 32%;
+            white-space: normal;
+            text-align: center;
+          }
+        }
+      `}</style>
     </div>
   );
 }
@@ -400,8 +461,8 @@ export default function Navbar() {
                   href={item.href}
                   aria-current={active ? "page" : undefined}
                   className={`relative flex h-full items-center px-1 text-[15px] font-semibold transition-colors ${active
-                      ? "text-maaniko-pink"
-                      : "text-maaniko-navy hover:text-maaniko-pink"
+                    ? "text-maaniko-pink"
+                    : "text-maaniko-navy hover:text-maaniko-pink"
                     }`}
                 >
                   {item.label}
@@ -428,8 +489,8 @@ export default function Navbar() {
               aria-label={t("nav.wishlist")}
               title={t("nav.wishlist")}
               className={`relative inline-flex size-10 items-center justify-center rounded-full transition-colors hover:bg-maaniko-blush ${isRouteActive(pathname, "/wishlist")
-                  ? "text-maaniko-pink"
-                  : "text-maaniko-navy"
+                ? "text-maaniko-pink"
+                : "text-maaniko-navy"
                 }`}
             >
               <Heart
@@ -445,8 +506,8 @@ export default function Navbar() {
               aria-label={t("nav.orders")}
               title={t("nav.orders")}
               className={`inline-flex size-10 items-center justify-center rounded-full transition-colors hover:bg-maaniko-blush ${isRouteActive(pathname, "/orders")
-                  ? "text-maaniko-pink"
-                  : "text-maaniko-navy"
+                ? "text-maaniko-pink"
+                : "text-maaniko-navy"
                 }`}
             >
               <Package
@@ -527,8 +588,8 @@ export default function Navbar() {
                 href={item.href}
                 aria-current={active ? "page" : undefined}
                 className={`relative flex min-w-0 flex-col items-center justify-center gap-1 px-0.5 font-medium transition-colors ${active
-                    ? "text-maaniko-pink"
-                    : "text-maaniko-navy hover:text-maaniko-pink"
+                  ? "text-maaniko-pink"
+                  : "text-maaniko-navy hover:text-maaniko-pink"
                   }`}
               >
                 {active && (
@@ -632,8 +693,8 @@ export default function Navbar() {
                         href={item.href}
                         onClick={() => setIsMenuOpen(false)}
                         className={`block rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${isRouteActive(pathname, item.href)
-                            ? "bg-maaniko-blush text-maaniko-pink"
-                            : "text-maaniko-navy hover:bg-maaniko-blush hover:text-maaniko-pink"
+                          ? "bg-maaniko-blush text-maaniko-pink"
+                          : "text-maaniko-navy hover:bg-maaniko-blush hover:text-maaniko-pink"
                           }`}
                       >
                         {t(`drawer.${item.key}`)}
@@ -664,8 +725,8 @@ export default function Navbar() {
                         href={item.href}
                         onClick={() => setIsMenuOpen(false)}
                         className={`block rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${isRouteActive(pathname, item.href)
-                            ? "bg-maaniko-blush text-maaniko-pink"
-                            : "text-maaniko-navy hover:bg-maaniko-blush hover:text-maaniko-pink"
+                          ? "bg-maaniko-blush text-maaniko-pink"
+                          : "text-maaniko-navy hover:bg-maaniko-blush hover:text-maaniko-pink"
                           }`}
                       >
                         {t(`drawer.${item.key}`)}
