@@ -160,6 +160,16 @@ export const resources: Resource = {
         packagingTitle: "প্রিমিয়াম প্যাকেজিং",
         packagingDescription: "নিরাপদ, পরিষ্কার ও উপহার দেওয়ার উপযোগী প্যাকেজিং।",
         youMayAlsoLike: "আপনার আরও ভালো লাগতে পারে",
+        category: "ক্যাটাগরি",
+        availability: "অবস্থা",
+        stockCount: "বর্তমান স্টক",
+        discount: "ডিসকাউন্ট",
+        detailsTabs: "পণ্যের বিস্তারিত তথ্য",
+        tabDescription: "বিবরণ",
+        tabIncluded: "বক্সে যা থাকছে",
+        tabEssential: "কেন প্রয়োজনীয়",
+        tabPreferred: "যাদের জন্য উপযুক্ত",
+        tabDelivery: "ডেলিভারি ও সাপোর্ট",
       },
 
       wishlist: {
@@ -327,6 +337,16 @@ export const resources: Resource = {
         packagingTitle: "Premium packaging",
         packagingDescription: "Safe, clean and gift-ready packaging.",
         youMayAlsoLike: "You may also like",
+        category: "Category",
+        availability: "Availability",
+        stockCount: "Current stock",
+        discount: "Discount",
+        detailsTabs: "Detailed product information",
+        tabDescription: "Description",
+        tabIncluded: "Box included",
+        tabEssential: "Why essential",
+        tabPreferred: "Preferred for",
+        tabDelivery: "Delivery & support",
       },
 
       wishlist: {
