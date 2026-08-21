@@ -4,6 +4,7 @@ import PopularProductsSection from "@/components/home/PopularProductsSection";
 import ShopByJourneySection from "@/components/home/ShopByJourneySection";
 import SolutionBoxSection from "@/components/home/SolutionBoxSection";
 import SolutionGuideBanner from "@/components/home/SolutionGuideBanner";
+import WhyMaaniko from "@/components/home/WhyMaaniko";
 import WhyMaanikoSection from "@/components/home/WhyMaanikoSection";
 
 export default function HomePage() {
@@ -14,6 +15,7 @@ export default function HomePage() {
       <SolutionBoxSection />
       <SolutionGuideBanner />
       <PopularProductsSection />
+      <WhyMaaniko />
       <CareGuideSection />
       <WhyMaanikoSection />
     </div>
