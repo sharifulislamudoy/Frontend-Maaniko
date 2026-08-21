@@ -19,14 +19,14 @@ export default function CareGuideSection() {
           <div className="min-w-0">
             <h2
               id="care-guide-title"
-              className={`text-lg font-black text-[#062a54] sm:text-3xl md:text-3xl ${
-                language === "en"
+              className={`text-lg font-black text-[#062a54] sm:text-3xl md:text-3xl ${language === "en"
                   ? "tracking-normal"
                   : "tracking-normal"
-              }`}
+                }`}
             >
               {t("careGuide.title")}
             </h2>
+            <div className="mt-2 h-1 w-14 rounded-full bg-[#FC5689] md:w-16 lg:w-20" />
           </div>
 
           <Link

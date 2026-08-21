@@ -24,6 +24,8 @@ export default function ShopByJourneySection() {
             >
               {t("shopByJourney.title")}
             </h2>
+
+            <div className="mt-2 h-1 w-14 rounded-full bg-[#FC5689] md:w-16 lg:w-20" />
           </div>
 
           <div className="flex shrink-0 flex-col items-end gap-2">

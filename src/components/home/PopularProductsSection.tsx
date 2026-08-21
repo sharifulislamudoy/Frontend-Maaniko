@@ -42,12 +42,17 @@ export default function PopularProductsSection({
     >
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-5 flex items-center justify-between gap-4 sm:mb-6">
-          <h2
-            id="popular-products-title"
-            className="text-md lg:text-3xl font-black tracking-tight text-[#062a54] md:text-3xl"
-          >
-            {t("home.popularProducts")}
-          </h2>
+          <div>
+            <h2
+              id="popular-products-title"
+              className="text-md lg:text-3xl font-black tracking-tight text-[#062a54] md:text-3xl"
+            >
+              {t("home.popularProducts")}
+            </h2>
+            <div className="mt-2 h-1 w-14 rounded-full bg-[#FC5689] md:w-16 lg:w-20" />
+          </div>
+
+
 
           <div className="flex shrink-0 flex-col items-end gap-2">
             <Link

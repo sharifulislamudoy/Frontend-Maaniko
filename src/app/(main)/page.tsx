@@ -1,4 +1,5 @@
 import CareGuideSection from "@/components/home/CareGuideSection";
+import CustomerReviewsSection from "@/components/home/CustomerReviewsSection";
 import HeroSlider from "@/components/home/HeroSlider";
 import PopularProductsSection from "@/components/home/PopularProductsSection";
 import ShopByJourneySection from "@/components/home/ShopByJourneySection";
@@ -16,6 +17,7 @@ export default function HomePage() {
       <SolutionGuideBanner />
       <PopularProductsSection />
       <WhyMaaniko />
+      <CustomerReviewsSection />
       <CareGuideSection />
       <WhyMaanikoSection />
     </div>
