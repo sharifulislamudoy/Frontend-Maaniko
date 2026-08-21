@@ -366,7 +366,7 @@ export default function Navbar() {
     },
     {
       label: t("nav.shop"),
-      href: "/maaniko-collection",
+      href: "shop",
     },
     {
       label: t("nav.guide"),
@@ -382,7 +382,7 @@ export default function Navbar() {
     },
     {
       label: t("nav.shop"),
-      href: "/maaniko-collection",
+      href: "shop",
       icon: LayoutGrid,
     },
     {

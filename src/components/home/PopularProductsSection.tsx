@@ -51,7 +51,7 @@ export default function PopularProductsSection({
 
           <div className="flex shrink-0 flex-col items-end gap-2">
             <Link
-              href="/maaniko-collection"
+              href="shop"
               aria-label={t("shopByJourney.viewAll")}
               className="group flex items-center gap-1.5 rounded-full border border-[#dce3ec] bg-white px-3 py-1 text-xs font-extrabold text-[#062a54] shadow-sm transition-all duration-300 hover:border-[#FC5689] hover:bg-[#FC5689] hover:text-white focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#FC5689]/20 active:scale-95 sm:gap-2 sm:px-4 sm:text-sm"
             >

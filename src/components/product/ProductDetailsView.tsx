@@ -177,7 +177,7 @@ export default function ProductDetailsView({
             <ChevronRight className="size-3 shrink-0 text-slate-300 md:size-3.5" />
 
             <Link
-              href="/maaniko-collection"
+              href="shop"
               className="shrink-0 transition hover:text-[#FC5689]"
             >
               {t("nav.shop")}
