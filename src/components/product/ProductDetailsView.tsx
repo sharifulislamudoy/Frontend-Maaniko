@@ -50,16 +50,20 @@ export default function ProductDetailsView({
   const router = useRouter();
   const { language, localize, t } = useLanguage();
   const { addToCart } = useShop();
+
   const [activeTab, setActiveTab] = useState<ProductDetailsTab>(() =>
     getInitialTab(product.details),
   );
+
   const [cartStatus, setCartStatus] = useState<CartStatus>("idle");
+
   const resetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const productName = localize(product.name);
   const productDescription = localize(product.description);
   const productCategory = localize(product.category);
   const productBadge = product.badge ? localize(product.badge) : "";
+
   const isAvailable = product.stock > 0;
   const details = product.details;
 
@@ -85,26 +89,30 @@ export default function ProductDetailsView({
   );
 
   const tabs = useMemo(
-    () =>
-      [
-        ...(details?.whyEssential.length
-          ? [
-              {
-                id: "essential" as const,
-                label: t("productDetails.tabEssential"),
-              },
-            ]
-          : []),
-        ...(details?.preferredFor.length
-          ? [
-              {
-                id: "preferred" as const,
-                label: t("productDetails.tabPreferred"),
-              },
-            ]
-          : []),
-        { id: "delivery" as const, label: t("productDetails.tabDelivery") },
-      ],
+    () => [
+      ...(details?.whyEssential.length
+        ? [
+            {
+              id: "essential" as const,
+              label: t("productDetails.tabEssential"),
+            },
+          ]
+        : []),
+
+      ...(details?.preferredFor.length
+        ? [
+            {
+              id: "preferred" as const,
+              label: t("productDetails.tabPreferred"),
+            },
+          ]
+        : []),
+
+      {
+        id: "delivery" as const,
+        label: t("productDetails.tabDelivery"),
+      },
+    ],
     [details, t],
   );
 
@@ -114,7 +122,9 @@ export default function ProductDetailsView({
 
   useEffect(() => {
     return () => {
-      if (resetTimerRef.current) clearTimeout(resetTimerRef.current);
+      if (resetTimerRef.current) {
+        clearTimeout(resetTimerRef.current);
+      }
     };
   }, []);
 
@@ -124,15 +134,22 @@ export default function ProductDetailsView({
     addToCart(product);
     setCartStatus("added");
 
-    if (resetTimerRef.current) clearTimeout(resetTimerRef.current);
-    resetTimerRef.current = setTimeout(() => setCartStatus("idle"), 1600);
+    if (resetTimerRef.current) {
+      clearTimeout(resetTimerRef.current);
+    }
+
+    resetTimerRef.current = setTimeout(() => {
+      setCartStatus("idle");
+    }, 1600);
   }
 
   function handleBuyNow() {
     if (!isAvailable) return;
 
     router.push(
-      `/checkout?mode=buy-now&productId=${encodeURIComponent(product.id)}&quantity=1`,
+      `/checkout?mode=buy-now&productId=${encodeURIComponent(
+        product.id,
+      )}&quantity=1`,
     );
   }
 
@@ -143,24 +160,31 @@ export default function ProductDetailsView({
     : t("product.outOfStock");
 
   return (
-    <main className="min-h-screen bg-[#fff9fb] pb-24 pt-2 text-[#062a54] md:pt-5 lg:pb-0">
+    <main className="min-h-screen bg-[#fff9fb] pb-36 pt-2 text-[#062a54] md:pb-40 md:pt-5 xl:pb-0">
       <div className="mx-auto w-full max-w-7xl space-y-3 overflow-x-hidden px-2 md:space-y-5 md:px-4 lg:px-6">
         <nav
           aria-label={t("productDetails.breadcrumb")}
           className="rounded-xl border border-[#dce3ec] bg-white px-3 py-2 text-[11px] text-slate-500 shadow-sm md:rounded-2xl md:px-4 md:py-3 md:text-sm"
         >
           <div className="flex min-w-0 items-center gap-1.5 overflow-hidden md:gap-2">
-            <Link href="/" className="shrink-0 transition hover:text-[#FC5689]">
+            <Link
+              href="/"
+              className="shrink-0 transition hover:text-[#FC5689]"
+            >
               {t("nav.home")}
             </Link>
+
             <ChevronRight className="size-3 shrink-0 text-slate-300 md:size-3.5" />
+
             <Link
               href="/maaniko-collection"
               className="shrink-0 transition hover:text-[#FC5689]"
             >
               {t("nav.shop")}
             </Link>
+
             <ChevronRight className="size-3 shrink-0 text-slate-300 md:size-3.5" />
+
             <span className="truncate font-semibold text-[#FC5689]">
               {productName}
             </span>
@@ -190,11 +214,12 @@ export default function ProductDetailsView({
                 {priceFormatter.format(product.price)}
               </span>
 
-              {product.compareAtPrice && product.compareAtPrice > product.price && (
-                <span className="text-sm font-semibold text-slate-400 line-through md:text-lg">
-                  {priceFormatter.format(product.compareAtPrice)}
-                </span>
-              )}
+              {product.compareAtPrice &&
+                product.compareAtPrice > product.price && (
+                  <span className="text-sm font-semibold text-slate-400 line-through md:text-lg">
+                    {priceFormatter.format(product.compareAtPrice)}
+                  </span>
+                )}
 
               {discountAmount > 0 && (
                 <span className="mb-0.5 rounded-full bg-[#fff4f6] px-2.5 py-1 text-[10px] font-bold text-[#FC5689] md:px-3 md:text-xs">
@@ -218,10 +243,10 @@ export default function ProductDetailsView({
                     />
                   ))}
                 </div>
+
                 <span className="font-semibold">
-                  {product.rating.toFixed(1)} ({
-                    numberFormatter.format(product.reviewCount ?? 0)
-                  }{" "}
+                  {product.rating.toFixed(1)} (
+                  {numberFormatter.format(product.reviewCount ?? 0)}{" "}
                   {t("productDetails.reviews")})
                 </span>
               </div>
@@ -232,6 +257,7 @@ export default function ProductDetailsView({
                 label={t("productDetails.category")}
                 value={productCategory}
               />
+
               <InfoField
                 label={t("productDetails.availability")}
                 value={
@@ -250,6 +276,7 @@ export default function ProductDetailsView({
               >
                 <div className="flex items-center gap-1.5">
                   <PackageCheck className="size-4 shrink-0 text-[#FC5689]" />
+
                   <h2
                     id="included-items-title"
                     className="text-[11px] font-bold text-[#062a54] md:text-xs"
@@ -258,13 +285,14 @@ export default function ProductDetailsView({
                   </h2>
                 </div>
 
-                <ul className="mt-2 grid gap-x-4 gap-y-1.5 ">
+                <ul className="mt-2 grid gap-x-4 gap-y-1.5">
                   {details.includedItems.map((item) => (
                     <li
                       key={item.id}
                       className="flex min-w-0 items-start gap-1.5 text-[11px] leading-4 text-slate-600 md:text-xs md:leading-5"
                     >
                       <Check className="mt-0.5 size-3.5 shrink-0 text-[#FC5689]" />
+
                       <span className="min-w-0 break-words">
                         {localize(item.name)}
                       </span>
@@ -275,19 +303,35 @@ export default function ProductDetailsView({
             ) : null}
 
             <div className="mt-3 grid grid-cols-3 divide-x divide-[#dce3ec] rounded-xl border border-[#dce3ec] bg-[#fff9fb] py-2 md:mt-5 md:rounded-2xl md:py-3 lg:mt-auto">
-              <TrustItem icon={ShieldCheck} label={t("productDetails.safe")} />
+              <TrustItem
+                icon={ShieldCheck}
+                label={t("productDetails.safe")}
+              />
+
               <TrustItem
                 icon={Truck}
                 label={t("productDetails.fastDelivery")}
               />
+
               <TrustItem
                 icon={RefreshCcw}
                 label={t("productDetails.easyReturn")}
               />
             </div>
 
-            <div className="mt-5 hidden grid-cols-2 gap-3 lg:grid">
-              <ActionButtons
+            {/* Mobile and tablet Add to Cart */}
+            <div className="mt-3 md:mt-4 xl:hidden">
+              <MobileAddToCartButton
+                isAvailable={isAvailable}
+                cartStatus={cartStatus}
+                label={cartButtonLabel}
+                onClick={handleAddToCart}
+              />
+            </div>
+
+            {/* Desktop action buttons */}
+            <div className="mt-5 hidden grid-cols-2 gap-3 xl:grid">
+              <DesktopActionButtons
                 isAvailable={isAvailable}
                 cartStatus={cartStatus}
                 cartLabel={cartButtonLabel}
@@ -361,14 +405,26 @@ export default function ProductDetailsView({
                   : false
               }
               breakpoints={{
-                768: { slidesPerView: 2.5, spaceBetween: 16 },
-                1024: { slidesPerView: 3.5, spaceBetween: 20 },
-                1280: { slidesPerView: 4, spaceBetween: 20 },
+                768: {
+                  slidesPerView: 2.5,
+                  spaceBetween: 16,
+                },
+                1024: {
+                  slidesPerView: 3.5,
+                  spaceBetween: 20,
+                },
+                1280: {
+                  slidesPerView: 4,
+                  spaceBetween: 20,
+                },
               }}
               className="popular-products-swiper mt-3 md:mt-5 [&_.swiper-slide]:!h-auto [&_.swiper-wrapper]:items-stretch"
             >
               {relatedProducts.map((relatedProduct) => (
-                <SwiperSlide key={relatedProduct.id} className="!h-auto">
+                <SwiperSlide
+                  key={relatedProduct.id}
+                  className="!h-auto"
+                >
                   <div className="h-full py-1">
                     <ProductCard product={relatedProduct} />
                   </div>
@@ -379,16 +435,14 @@ export default function ProductDetailsView({
         )}
       </div>
 
-      <div className="fixed inset-x-0 bottom-[calc(72px+env(safe-area-inset-bottom))] z-40 border-t border-[#f0d9e1] bg-white/95 px-2 py-2 shadow-[0_-10px_30px_rgba(6,42,84,0.1)] backdrop-blur-xl md:bottom-[calc(76px+env(safe-area-inset-bottom))] md:px-3 lg:hidden">
-        <div className="mx-auto grid max-w-5xl grid-cols-2 gap-2 md:gap-3">
-          <ActionButtons
+      {/* Mobile and tablet fixed Order Now button */}
+      <div className="fixed inset-x-0 bottom-[calc(72px+env(safe-area-inset-bottom))] z-40 border-t border-[#f0d9e1] bg-white/95 px-2 py-1.5 shadow-[0_-8px_24px_rgba(6,42,84,0.09)] backdrop-blur-xl md:bottom-[calc(76px+env(safe-area-inset-bottom))] md:px-3 xl:hidden">
+        <div className="mx-auto w-full max-w-5xl">
+          <MobileOrderButton
             isAvailable={isAvailable}
-            cartStatus={cartStatus}
-            cartLabel={cartButtonLabel}
-            buyLabel={t("productDetails.buyNow")}
+            label={t("productDetails.buyNow")}
             outOfStockLabel={t("product.outOfStock")}
-            onAdd={handleAddToCart}
-            onBuy={handleBuyNow}
+            onClick={handleBuyNow}
           />
         </div>
       </div>
@@ -408,6 +462,7 @@ function InfoField({ label, value, positive }: InfoFieldProps) {
       <p className="text-[9px] font-bold uppercase tracking-[0.06em] text-slate-400 md:text-[10px] md:tracking-[0.08em]">
         {label}
       </p>
+
       <p
         className={`mt-0.5 break-words text-xs font-bold md:mt-1 md:text-sm ${
           positive ? "text-emerald-600" : "text-[#062a54]"
@@ -433,7 +488,78 @@ function TrustItem({ icon: Icon, label }: TrustItemProps) {
   );
 }
 
-type ActionButtonsProps = {
+type MobileAddToCartButtonProps = {
+  isAvailable: boolean;
+  cartStatus: CartStatus;
+  label: string;
+  onClick: () => void;
+};
+
+function MobileAddToCartButton({
+  isAvailable,
+  cartStatus,
+  label,
+  onClick,
+}: MobileAddToCartButtonProps) {
+  return (
+    <button
+      type="button"
+      disabled={!isAvailable}
+      onClick={onClick}
+      aria-live="polite"
+      className={`inline-flex h-10 w-full items-center justify-center gap-2 rounded-xl border px-3 text-xs font-black transition md:h-11 md:text-sm ${
+        isAvailable
+          ? cartStatus === "added"
+            ? "border-emerald-500 bg-emerald-50 text-emerald-600"
+            : "border-[#FC5689] bg-[#fff4f6] text-[#FC5689] hover:bg-[#FC5689] hover:text-white"
+          : "cursor-not-allowed border-slate-300 bg-slate-100 text-slate-400"
+      }`}
+    >
+      {cartStatus === "added" ? (
+        <Check className="size-4 shrink-0" />
+      ) : (
+        <ShoppingCart className="size-4 shrink-0" />
+      )}
+
+      <span className="truncate">{label}</span>
+    </button>
+  );
+}
+
+type MobileOrderButtonProps = {
+  isAvailable: boolean;
+  label: string;
+  outOfStockLabel: string;
+  onClick: () => void;
+};
+
+function MobileOrderButton({
+  isAvailable,
+  label,
+  outOfStockLabel,
+  onClick,
+}: MobileOrderButtonProps) {
+  return (
+    <button
+      type="button"
+      disabled={!isAvailable}
+      onClick={onClick}
+      className={`inline-flex h-10 w-full items-center justify-center gap-1.5 rounded-lg px-3 text-xs font-black transition active:scale-[0.99] ${
+        isAvailable
+          ? "bg-[#FC5689] text-white shadow-[0_6px_16px_rgba(252,86,137,0.22)] hover:bg-[#e93f75]"
+          : "cursor-not-allowed bg-slate-300 text-slate-500"
+      }`}
+    >
+      <Zap className="size-3.5 shrink-0 fill-current" />
+
+      <span className="truncate">
+        {isAvailable ? label : outOfStockLabel}
+      </span>
+    </button>
+  );
+}
+
+type DesktopActionButtonsProps = {
   isAvailable: boolean;
   cartStatus: CartStatus;
   cartLabel: string;
@@ -443,7 +569,7 @@ type ActionButtonsProps = {
   onBuy: () => void;
 };
 
-function ActionButtons({
+function DesktopActionButtons({
   isAvailable,
   cartStatus,
   cartLabel,
@@ -451,14 +577,14 @@ function ActionButtons({
   outOfStockLabel,
   onAdd,
   onBuy,
-}: ActionButtonsProps) {
+}: DesktopActionButtonsProps) {
   return (
     <>
       <button
         type="button"
         disabled={!isAvailable}
         onClick={onAdd}
-        className={`inline-flex h-11 w-full items-center justify-center gap-1.5 rounded-xl px-2 text-[11px] font-black transition md:h-[52px] md:gap-2 md:px-5 md:text-sm ${
+        className={`inline-flex h-[52px] w-full items-center justify-center gap-2 rounded-xl px-5 text-sm font-black transition ${
           isAvailable
             ? "bg-[#FC5689] text-white hover:bg-[#e93f75]"
             : "cursor-not-allowed bg-slate-300 text-slate-500"
@@ -469,6 +595,7 @@ function ActionButtons({
         ) : (
           <ShoppingCart className="size-4" />
         )}
+
         <span className="truncate">{cartLabel}</span>
       </button>
 
@@ -476,13 +603,14 @@ function ActionButtons({
         type="button"
         disabled={!isAvailable}
         onClick={onBuy}
-        className={`inline-flex h-11 w-full items-center justify-center gap-1.5 rounded-xl border px-2 text-[11px] font-black transition md:h-[52px] md:gap-2 md:px-5 md:text-sm ${
+        className={`inline-flex h-[52px] w-full items-center justify-center gap-2 rounded-xl border px-5 text-sm font-black transition ${
           isAvailable
             ? "border-[#FC5689] bg-[#FC5689]/10 text-[#FC5689] hover:bg-[#FC5689] hover:text-white"
             : "cursor-not-allowed border-slate-300 bg-slate-100 text-slate-400"
         }`}
       >
         <Zap className="size-4 fill-current" />
+
         <span className="truncate">
           {isAvailable ? buyLabel : outOfStockLabel}
         </span>
@@ -498,7 +626,12 @@ type TabContentProps = {
   t: ReturnType<typeof useLanguage>["t"];
 };
 
-function TabContent({ activeTab, product, localize, t }: TabContentProps) {
+function TabContent({
+  activeTab,
+  product,
+  localize,
+  t,
+}: TabContentProps) {
   const details = product.details;
 
   if (activeTab === "essential" && details) {
@@ -508,6 +641,7 @@ function TabContent({ activeTab, product, localize, t }: TabContentProps) {
           icon={Sparkles}
           title={t("productDetails.whyEssential")}
         />
+
         <ul className="mt-3 grid gap-2 md:mt-5 md:grid-cols-2 md:gap-3">
           {details.whyEssential.map((reason, index) => (
             <li
@@ -530,6 +664,7 @@ function TabContent({ activeTab, product, localize, t }: TabContentProps) {
           icon={UsersRound}
           title={t("productDetails.preferredFor")}
         />
+
         <div className="mt-3 grid grid-cols-2 gap-2 md:mt-5 md:grid-cols-4 md:gap-3">
           {details.preferredFor.map((audience, index) => (
             <article
@@ -537,6 +672,7 @@ function TabContent({ activeTab, product, localize, t }: TabContentProps) {
               className="flex min-h-24 flex-col items-center justify-center rounded-xl border border-[#dcebf2] bg-[#f4fbff] p-3 text-center text-[11px] font-bold leading-4 text-[#062a54] md:min-h-28 md:rounded-2xl md:p-4 md:text-sm md:leading-5"
             >
               <Baby className="mb-2 size-5 text-[#03A7FD] md:mb-3 md:size-6" />
+
               {localize(audience)}
             </article>
           ))}
@@ -551,17 +687,20 @@ function TabContent({ activeTab, product, localize, t }: TabContentProps) {
         icon={Truck}
         title={t("productDetails.deliverySupport")}
       />
+
       <div className="mt-3 grid gap-2 md:mt-5 md:grid-cols-3 md:gap-4">
         <SupportCard
           icon={Truck}
           title={t("productDetails.deliveryTitle")}
           description={t("productDetails.deliveryDescription")}
         />
+
         <SupportCard
           icon={Headphones}
           title={t("productDetails.supportTitle")}
           description={t("productDetails.supportDescription")}
         />
+
         <SupportCard
           icon={PackageCheck}
           title={t("productDetails.packagingTitle")}
@@ -583,6 +722,7 @@ function TabHeading({ icon: Icon, title }: TabHeadingProps) {
       <span className="grid size-9 place-items-center rounded-lg bg-[#FC5689]/10 text-[#FC5689] md:size-11 md:rounded-xl">
         <Icon className="size-4 md:size-5" />
       </span>
+
       <h2 className="text-base font-black text-[#062a54] md:text-2xl">
         {title}
       </h2>
@@ -596,16 +736,22 @@ type SupportCardProps = {
   description: string;
 };
 
-function SupportCard({ icon: Icon, title, description }: SupportCardProps) {
+function SupportCard({
+  icon: Icon,
+  title,
+  description,
+}: SupportCardProps) {
   return (
     <article className="flex items-start gap-3 rounded-xl border border-[#dce3ec] bg-[#fff9fb] p-3 md:gap-4 md:rounded-2xl md:p-4">
       <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-white text-[#FC5689] shadow-sm md:size-11 md:rounded-xl">
         <Icon className="size-4 md:size-5" />
       </span>
+
       <div>
         <h3 className="text-xs font-black text-[#062a54] md:text-base">
           {title}
         </h3>
+
         <p className="mt-1 text-[11px] leading-4 text-slate-500 md:text-sm md:leading-5">
           {description}
         </p>
