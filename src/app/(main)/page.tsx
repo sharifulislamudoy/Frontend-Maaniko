@@ -5,6 +5,7 @@ import PopularProductsSection from "@/components/home/PopularProductsSection";
 import ShopByJourneySection from "@/components/home/ShopByJourneySection";
 import SolutionBoxSection from "@/components/home/SolutionBoxSection";
 import SolutionGuideBanner from "@/components/home/SolutionGuideBanner";
+import WhatsAppGuideBanner from "@/components/home/WhatsAppGuideBanner";
 import WhyMaaniko from "@/components/home/WhyMaaniko";
 import WhyMaanikoSection from "@/components/home/WhyMaanikoSection";
 
@@ -20,6 +21,7 @@ export default function HomePage() {
       <CustomerReviewsSection />
       <CareGuideSection />
       <WhyMaanikoSection />
+      <WhatsAppGuideBanner />
     </div>
   );
 }
