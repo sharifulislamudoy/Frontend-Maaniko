@@ -33,16 +33,15 @@ type ProductDetailsViewProps = {
   relatedProducts: MaanikoProduct[];
 };
 
-type ProductDetailsTab =
-  | "description"
-  | "included"
-  | "essential"
-  | "preferred"
-  | "delivery";
+type ProductDetailsTab = "essential" | "preferred" | "delivery";
 
 type CartStatus = "idle" | "added";
 
-const includedIcons = [PackageCheck, Sparkles, ShieldCheck, Baby];
+function getInitialTab(details: MaanikoProduct["details"]): ProductDetailsTab {
+  if (details?.whyEssential.length) return "essential";
+  if (details?.preferredFor.length) return "preferred";
+  return "delivery";
+}
 
 export default function ProductDetailsView({
   product,
@@ -51,7 +50,9 @@ export default function ProductDetailsView({
   const router = useRouter();
   const { language, localize, t } = useLanguage();
   const { addToCart } = useShop();
-  const [activeTab, setActiveTab] = useState<ProductDetailsTab>("description");
+  const [activeTab, setActiveTab] = useState<ProductDetailsTab>(() =>
+    getInitialTab(product.details),
+  );
   const [cartStatus, setCartStatus] = useState<CartStatus>("idle");
   const resetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -83,33 +84,33 @@ export default function ProductDetailsView({
     (product.compareAtPrice ?? product.price) - product.price,
   );
 
-  const discountPercentage = product.compareAtPrice
-    ? Math.max(
-        0,
-        Math.round(
-          ((product.compareAtPrice - product.price) / product.compareAtPrice) *
-            100,
-        ),
-      )
-    : 0;
-
   const tabs = useMemo(
     () =>
       [
-        { id: "description" as const, label: t("productDetails.tabDescription") },
-        ...(details?.includedItems.length
-          ? [{ id: "included" as const, label: t("productDetails.tabIncluded") }]
-          : []),
         ...(details?.whyEssential.length
-          ? [{ id: "essential" as const, label: t("productDetails.tabEssential") }]
+          ? [
+              {
+                id: "essential" as const,
+                label: t("productDetails.tabEssential"),
+              },
+            ]
           : []),
         ...(details?.preferredFor.length
-          ? [{ id: "preferred" as const, label: t("productDetails.tabPreferred") }]
+          ? [
+              {
+                id: "preferred" as const,
+                label: t("productDetails.tabPreferred"),
+              },
+            ]
           : []),
         { id: "delivery" as const, label: t("productDetails.tabDelivery") },
       ],
     [details, t],
   );
+
+  const resolvedActiveTab = tabs.some((tab) => tab.id === activeTab)
+    ? activeTab
+    : tabs[0].id;
 
   useEffect(() => {
     return () => {
@@ -142,82 +143,74 @@ export default function ProductDetailsView({
     : t("product.outOfStock");
 
   return (
-    <main className="min-h-screen bg-[#fff9fb] pb-24 pt-4 text-[#062a54] sm:pt-6 xl:pb-0">
-      <div className="mx-auto w-full max-w-7xl space-y-5 overflow-x-hidden px-3 sm:px-4 lg:px-6">
+    <main className="min-h-screen bg-[#fff9fb] pb-24 pt-2 text-[#062a54] md:pt-5 lg:pb-0">
+      <div className="mx-auto w-full max-w-7xl space-y-3 overflow-x-hidden px-2 md:space-y-5 md:px-4 lg:px-6">
         <nav
           aria-label={t("productDetails.breadcrumb")}
-          className="rounded-2xl border border-[#dce3ec] bg-white px-4 py-3 text-xs text-slate-500 shadow-sm sm:text-sm"
+          className="rounded-xl border border-[#dce3ec] bg-white px-3 py-2 text-[11px] text-slate-500 shadow-sm md:rounded-2xl md:px-4 md:py-3 md:text-sm"
         >
-          <div className="flex min-w-0 items-center gap-2 overflow-hidden">
+          <div className="flex min-w-0 items-center gap-1.5 overflow-hidden md:gap-2">
             <Link href="/" className="shrink-0 transition hover:text-[#FC5689]">
               {t("nav.home")}
             </Link>
-            <ChevronRight className="size-3.5 shrink-0 text-slate-300" />
+            <ChevronRight className="size-3 shrink-0 text-slate-300 md:size-3.5" />
             <Link
               href="/maaniko-collection"
               className="shrink-0 transition hover:text-[#FC5689]"
             >
               {t("nav.shop")}
             </Link>
-            <ChevronRight className="size-3.5 shrink-0 text-slate-300" />
+            <ChevronRight className="size-3 shrink-0 text-slate-300 md:size-3.5" />
             <span className="truncate font-semibold text-[#FC5689]">
               {productName}
             </span>
           </div>
         </nav>
 
-        <section className="grid min-w-0 items-start gap-5 lg:grid-cols-[0.9fr_1.1fr]">
+        <section className="grid min-w-0 items-start gap-3 md:gap-5 lg:grid-cols-[0.9fr_1.1fr] lg:items-stretch">
           <ProductGallery product={product} />
 
-          <div className="h-fit min-w-0 rounded-2xl border border-[#dce3ec] bg-white p-4 shadow-[0_12px_36px_rgba(6,42,84,0.06)] sm:p-5 lg:mt-6">
-            {(productBadge || discountPercentage > 0) && (
-              <div className="flex flex-wrap gap-2">
-                {productBadge && (
-                  <span className="rounded-full bg-[#FC5689]/10 px-3 py-1 text-xs font-bold text-[#FC5689]">
-                    {productBadge}
-                  </span>
-                )}
-                {discountPercentage > 0 && (
-                  <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">
-                    {numberFormatter.format(discountPercentage)}% {t("productDetails.off")}
-                  </span>
-                )}
-              </div>
+          <div className="h-fit min-w-0 rounded-2xl border border-[#dce3ec] bg-white p-3 shadow-[0_12px_36px_rgba(6,42,84,0.06)] md:p-5 lg:flex lg:h-full lg:flex-col">
+            {productBadge && (
+              <span className="inline-flex rounded-full bg-[#FC5689]/10 px-2.5 py-1 text-[10px] font-bold text-[#FC5689] md:px-3 md:text-xs">
+                {productBadge}
+              </span>
             )}
 
-            <h1 className="mt-4 break-words text-2xl font-black leading-tight tracking-tight text-[#062a54] sm:text-3xl">
+            <h1 className="mt-3 break-words text-xl font-black leading-tight tracking-tight text-[#062a54] md:mt-4 md:text-3xl">
               {productName}
             </h1>
 
-            <p className="mt-3 text-sm leading-6 text-slate-500 sm:text-[15px] sm:leading-7">
+            <p className="mt-2 text-xs leading-5 text-slate-500 md:mt-3 md:text-[15px] md:leading-7">
               {productDescription}
             </p>
 
-            <div className="mt-5 flex min-w-0 flex-wrap items-end gap-3">
-              <span className="break-words text-2xl font-black text-[#FC5689] sm:text-3xl">
+            <div className="mt-3 flex min-w-0 flex-wrap items-end gap-2 md:mt-5 md:gap-3">
+              <span className="break-words text-xl font-black text-[#FC5689] md:text-3xl">
                 {priceFormatter.format(product.price)}
               </span>
 
               {product.compareAtPrice && product.compareAtPrice > product.price && (
-                <span className="text-base font-semibold text-slate-400 line-through sm:text-lg">
+                <span className="text-sm font-semibold text-slate-400 line-through md:text-lg">
                   {priceFormatter.format(product.compareAtPrice)}
                 </span>
               )}
 
               {discountAmount > 0 && (
-                <span className="mb-0.5 rounded-full bg-[#fff4f6] px-3 py-1 text-xs font-bold text-[#FC5689]">
-                  {priceFormatter.format(discountAmount)} {t("productDetails.save")}
+                <span className="mb-0.5 rounded-full bg-[#fff4f6] px-2.5 py-1 text-[10px] font-bold text-[#FC5689] md:px-3 md:text-xs">
+                  {priceFormatter.format(discountAmount)}{" "}
+                  {t("productDetails.save")}
                 </span>
               )}
             </div>
 
             {product.rating !== undefined && (
-              <div className="mt-3 flex flex-wrap items-center gap-2 text-sm text-slate-500">
+              <div className="mt-2 flex flex-wrap items-center gap-1.5 text-xs text-slate-500 md:mt-3 md:gap-2 md:text-sm">
                 <div className="flex items-center gap-0.5">
                   {Array.from({ length: 5 }, (_, index) => (
                     <Star
                       key={index}
-                      className={`size-4 ${
+                      className={`size-3.5 md:size-4 ${
                         index < Math.round(product.rating ?? 0)
                           ? "fill-amber-400 text-amber-400"
                           : "fill-slate-100 text-slate-300"
@@ -226,35 +219,74 @@ export default function ProductDetailsView({
                   ))}
                 </div>
                 <span className="font-semibold">
-                  {product.rating.toFixed(1)} ({numberFormatter.format(product.reviewCount ?? 0)} {t("productDetails.reviews")})
+                  {product.rating.toFixed(1)} ({
+                    numberFormatter.format(product.reviewCount ?? 0)
+                  }{" "}
+                  {t("productDetails.reviews")})
                 </span>
               </div>
             )}
 
-            <div className="mt-5 grid grid-cols-2 gap-3">
-              <InfoField label={t("productDetails.category")} value={productCategory} />
+            <div className="mt-3 grid grid-cols-2 gap-2 md:mt-5 md:gap-3">
+              <InfoField
+                label={t("productDetails.category")}
+                value={productCategory}
+              />
               <InfoField
                 label={t("productDetails.availability")}
-                value={isAvailable ? t("product.inStock") : t("product.outOfStock")}
+                value={
+                  isAvailable
+                    ? t("product.inStock")
+                    : t("product.outOfStock")
+                }
                 positive={isAvailable}
               />
-              <InfoField
-                label={t("productDetails.stockCount")}
-                value={numberFormatter.format(product.stock)}
-              />
-              <InfoField
-                label={t("productDetails.discount")}
-                value={`${numberFormatter.format(discountPercentage)}%`}
-              />
             </div>
 
-            <div className="mt-5 grid grid-cols-3 divide-x divide-[#dce3ec] rounded-2xl border border-[#dce3ec] bg-[#fff9fb] py-3">
+            {details?.includedItems.length ? (
+              <section
+                aria-labelledby="included-items-title"
+                className="mt-3 border-t border-[#dce3ec] pt-3 md:mt-4 md:pt-4"
+              >
+                <div className="flex items-center gap-1.5">
+                  <PackageCheck className="size-4 shrink-0 text-[#FC5689]" />
+                  <h2
+                    id="included-items-title"
+                    className="text-[11px] font-bold text-[#062a54] md:text-xs"
+                  >
+                    {t("productDetails.boxIncluded")}
+                  </h2>
+                </div>
+
+                <ul className="mt-2 grid gap-x-4 gap-y-1.5 ">
+                  {details.includedItems.map((item) => (
+                    <li
+                      key={item.id}
+                      className="flex min-w-0 items-start gap-1.5 text-[11px] leading-4 text-slate-600 md:text-xs md:leading-5"
+                    >
+                      <Check className="mt-0.5 size-3.5 shrink-0 text-[#FC5689]" />
+                      <span className="min-w-0 break-words">
+                        {localize(item.name)}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ) : null}
+
+            <div className="mt-3 grid grid-cols-3 divide-x divide-[#dce3ec] rounded-xl border border-[#dce3ec] bg-[#fff9fb] py-2 md:mt-5 md:rounded-2xl md:py-3 lg:mt-auto">
               <TrustItem icon={ShieldCheck} label={t("productDetails.safe")} />
-              <TrustItem icon={Truck} label={t("productDetails.fastDelivery")} />
-              <TrustItem icon={RefreshCcw} label={t("productDetails.easyReturn")} />
+              <TrustItem
+                icon={Truck}
+                label={t("productDetails.fastDelivery")}
+              />
+              <TrustItem
+                icon={RefreshCcw}
+                label={t("productDetails.easyReturn")}
+              />
             </div>
 
-            <div className="mt-5 hidden grid-cols-2 gap-3 xl:grid">
+            <div className="mt-5 hidden grid-cols-2 gap-3 lg:grid">
               <ActionButtons
                 isAvailable={isAvailable}
                 cartStatus={cartStatus}
@@ -269,15 +301,15 @@ export default function ProductDetailsView({
         </section>
 
         <section aria-label={t("productDetails.detailsTabs")}>
-          <div className="max-w-full overflow-hidden rounded-2xl border border-[#dce3ec] bg-white p-2 shadow-sm">
-            <div className="flex min-w-0 gap-2 overflow-x-auto">
+          <div className="max-w-full overflow-hidden rounded-xl border border-[#dce3ec] bg-white p-1.5 shadow-sm md:rounded-2xl md:p-2">
+            <div className="flex min-w-0 gap-1.5 overflow-x-auto md:gap-2">
               {tabs.map((tab) => (
                 <button
                   key={tab.id}
                   type="button"
                   onClick={() => setActiveTab(tab.id)}
-                  className={`whitespace-nowrap rounded-xl px-3 py-2.5 text-xs font-bold transition sm:px-4 sm:py-3 sm:text-sm ${
-                    activeTab === tab.id
+                  className={`whitespace-nowrap rounded-lg px-2.5 py-2 text-xs font-bold transition md:rounded-xl md:px-4 md:py-3 md:text-sm lg:flex-1 lg:text-center ${
+                    resolvedActiveTab === tab.id
                       ? "bg-[#FC5689] text-white shadow-[0_8px_22px_rgba(239,66,119,0.2)]"
                       : "text-slate-500 hover:bg-[#fff4f6] hover:text-[#FC5689]"
                   }`}
@@ -288,9 +320,9 @@ export default function ProductDetailsView({
             </div>
           </div>
 
-          <div className="mt-5 rounded-2xl border border-[#dce3ec] bg-white p-5 shadow-[0_12px_36px_rgba(6,42,84,0.06)] sm:p-7">
+          <div className="mt-3 rounded-2xl border border-[#dce3ec] bg-white p-4 shadow-[0_12px_36px_rgba(6,42,84,0.06)] md:mt-5 md:p-7">
             <TabContent
-              activeTab={activeTab}
+              activeTab={resolvedActiveTab}
               product={product}
               localize={localize}
               t={t}
@@ -299,8 +331,14 @@ export default function ProductDetailsView({
         </section>
 
         {relatedProducts.length > 0 && (
-          <section className="py-3 sm:py-6" aria-labelledby="recommendations-title">
-            <h2 id="recommendations-title" className="text-xl font-black text-[#062a54] sm:text-3xl">
+          <section
+            className="py-2 md:py-6"
+            aria-labelledby="recommendations-title"
+          >
+            <h2
+              id="recommendations-title"
+              className="text-lg font-black text-[#062a54] md:text-3xl"
+            >
               {t("productDetails.youMayAlsoLike")}
             </h2>
 
@@ -308,7 +346,7 @@ export default function ProductDetailsView({
               modules={[Autoplay]}
               slidesPerView={1.5}
               slidesPerGroup={1}
-              spaceBetween={14}
+              spaceBetween={10}
               speed={700}
               loop={relatedProducts.length >= 5}
               grabCursor
@@ -323,11 +361,11 @@ export default function ProductDetailsView({
                   : false
               }
               breakpoints={{
-                640: { slidesPerView: 2.5, spaceBetween: 16 },
+                768: { slidesPerView: 2.5, spaceBetween: 16 },
                 1024: { slidesPerView: 3.5, spaceBetween: 20 },
                 1280: { slidesPerView: 4, spaceBetween: 20 },
               }}
-              className="popular-products-swiper mt-5 [&_.swiper-slide]:!h-auto [&_.swiper-wrapper]:items-stretch"
+              className="popular-products-swiper mt-3 md:mt-5 [&_.swiper-slide]:!h-auto [&_.swiper-wrapper]:items-stretch"
             >
               {relatedProducts.map((relatedProduct) => (
                 <SwiperSlide key={relatedProduct.id} className="!h-auto">
@@ -341,8 +379,8 @@ export default function ProductDetailsView({
         )}
       </div>
 
-      <div className="fixed inset-x-0 bottom-[calc(72px+env(safe-area-inset-bottom))] z-40 border-t border-[#f0d9e1] bg-white/95 px-3 py-2 shadow-[0_-10px_30px_rgba(6,42,84,0.1)] backdrop-blur-xl sm:bottom-[calc(76px+env(safe-area-inset-bottom))] xl:hidden">
-        <div className="mx-auto grid max-w-5xl grid-cols-2 gap-2 sm:gap-3">
+      <div className="fixed inset-x-0 bottom-[calc(72px+env(safe-area-inset-bottom))] z-40 border-t border-[#f0d9e1] bg-white/95 px-2 py-2 shadow-[0_-10px_30px_rgba(6,42,84,0.1)] backdrop-blur-xl md:bottom-[calc(76px+env(safe-area-inset-bottom))] md:px-3 lg:hidden">
+        <div className="mx-auto grid max-w-5xl grid-cols-2 gap-2 md:gap-3">
           <ActionButtons
             isAvailable={isAvailable}
             cartStatus={cartStatus}
@@ -366,11 +404,15 @@ type InfoFieldProps = {
 
 function InfoField({ label, value, positive }: InfoFieldProps) {
   return (
-    <div className="min-w-0 rounded-xl border border-[#dce3ec] bg-[#fff9fb] p-3">
-      <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-slate-400">
+    <div className="min-w-0 rounded-lg border border-[#dce3ec] bg-[#fff9fb] p-2 md:rounded-xl md:p-3">
+      <p className="text-[9px] font-bold uppercase tracking-[0.06em] text-slate-400 md:text-[10px] md:tracking-[0.08em]">
         {label}
       </p>
-      <p className={`mt-1 break-words text-sm font-bold ${positive ? "text-emerald-600" : "text-[#062a54]"}`}>
+      <p
+        className={`mt-0.5 break-words text-xs font-bold md:mt-1 md:text-sm ${
+          positive ? "text-emerald-600" : "text-[#062a54]"
+        }`}
+      >
         {value}
       </p>
     </div>
@@ -384,8 +426,8 @@ type TrustItemProps = {
 
 function TrustItem({ icon: Icon, label }: TrustItemProps) {
   return (
-    <div className="flex flex-col items-center justify-center gap-1 px-2 text-center text-[10px] font-bold text-[#062a54] sm:flex-row sm:text-xs">
-      <Icon className="size-5 shrink-0 text-[#FC5689]" />
+    <div className="flex flex-col items-center justify-center gap-1 px-1 text-center text-[9px] font-bold leading-3 text-[#062a54] md:flex-row md:px-2 md:text-xs md:leading-4">
+      <Icon className="size-4 shrink-0 text-[#FC5689] md:size-5" />
       <span>{label}</span>
     </div>
   );
@@ -416,13 +458,17 @@ function ActionButtons({
         type="button"
         disabled={!isAvailable}
         onClick={onAdd}
-        className={`inline-flex h-12 w-full items-center justify-center gap-1.5 rounded-xl px-3 text-xs font-black transition sm:h-[52px] sm:gap-2 sm:px-5 sm:text-sm ${
+        className={`inline-flex h-11 w-full items-center justify-center gap-1.5 rounded-xl px-2 text-[11px] font-black transition md:h-[52px] md:gap-2 md:px-5 md:text-sm ${
           isAvailable
             ? "bg-[#FC5689] text-white hover:bg-[#e93f75]"
             : "cursor-not-allowed bg-slate-300 text-slate-500"
         }`}
       >
-        {cartStatus === "added" ? <Check className="size-4" /> : <ShoppingCart className="size-4" />}
+        {cartStatus === "added" ? (
+          <Check className="size-4" />
+        ) : (
+          <ShoppingCart className="size-4" />
+        )}
         <span className="truncate">{cartLabel}</span>
       </button>
 
@@ -430,14 +476,16 @@ function ActionButtons({
         type="button"
         disabled={!isAvailable}
         onClick={onBuy}
-        className={`inline-flex h-12 w-full items-center justify-center gap-1.5 rounded-xl border px-3 text-xs font-black transition sm:h-[52px] sm:gap-2 sm:px-5 sm:text-sm ${
+        className={`inline-flex h-11 w-full items-center justify-center gap-1.5 rounded-xl border px-2 text-[11px] font-black transition md:h-[52px] md:gap-2 md:px-5 md:text-sm ${
           isAvailable
             ? "border-[#FC5689] bg-[#FC5689]/10 text-[#FC5689] hover:bg-[#FC5689] hover:text-white"
             : "cursor-not-allowed border-slate-300 bg-slate-100 text-slate-400"
         }`}
       >
         <Zap className="size-4 fill-current" />
-        <span className="truncate">{isAvailable ? buyLabel : outOfStockLabel}</span>
+        <span className="truncate">
+          {isAvailable ? buyLabel : outOfStockLabel}
+        </span>
       </button>
     </>
   );
@@ -453,41 +501,20 @@ type TabContentProps = {
 function TabContent({ activeTab, product, localize, t }: TabContentProps) {
   const details = product.details;
 
-  if (activeTab === "included" && details) {
-    return (
-      <div>
-        <TabHeading icon={PackageCheck} title={t("productDetails.boxIncluded")} />
-        <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-          {details.includedItems.map((item, index) => {
-            const Icon = includedIcons[index % includedIcons.length];
-
-            return (
-              <article
-                key={item.id}
-                className="flex min-h-32 flex-col items-center justify-center rounded-2xl border border-[#f1dfe5] bg-[#fff9fb] p-3 text-center"
-              >
-                <span className="mb-3 grid size-11 place-items-center rounded-xl bg-white text-[#FC5689] shadow-sm">
-                  <Icon className="size-5" />
-                </span>
-                <h3 className="text-xs font-bold leading-5 text-[#062a54] sm:text-sm">
-                  {localize(item.name)}
-                </h3>
-              </article>
-            );
-          })}
-        </div>
-      </div>
-    );
-  }
-
   if (activeTab === "essential" && details) {
     return (
       <div>
-        <TabHeading icon={Sparkles} title={t("productDetails.whyEssential")} />
-        <ul className="mt-5 grid gap-3 md:grid-cols-2">
+        <TabHeading
+          icon={Sparkles}
+          title={t("productDetails.whyEssential")}
+        />
+        <ul className="mt-3 grid gap-2 md:mt-5 md:grid-cols-2 md:gap-3">
           {details.whyEssential.map((reason, index) => (
-            <li key={index} className="flex gap-3 rounded-2xl border border-[#f1dfe5] bg-[#fff9fb] p-4 text-sm leading-6 text-slate-600">
-              <CheckCircle2 className="mt-1 size-4 shrink-0 text-[#FC5689]" />
+            <li
+              key={index}
+              className="flex gap-2 rounded-xl border border-[#f1dfe5] bg-[#fff9fb] p-3 text-xs leading-5 text-slate-600 md:gap-3 md:rounded-2xl md:p-4 md:text-sm md:leading-6"
+            >
+              <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-[#FC5689] md:mt-1" />
               <span>{localize(reason)}</span>
             </li>
           ))}
@@ -499,11 +526,17 @@ function TabContent({ activeTab, product, localize, t }: TabContentProps) {
   if (activeTab === "preferred" && details) {
     return (
       <div>
-        <TabHeading icon={UsersRound} title={t("productDetails.preferredFor")} />
-        <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <TabHeading
+          icon={UsersRound}
+          title={t("productDetails.preferredFor")}
+        />
+        <div className="mt-3 grid grid-cols-2 gap-2 md:mt-5 md:grid-cols-4 md:gap-3">
           {details.preferredFor.map((audience, index) => (
-            <article key={index} className="flex min-h-28 flex-col items-center justify-center rounded-2xl border border-[#dcebf2] bg-[#f4fbff] p-4 text-center text-xs font-bold leading-5 text-[#062a54] sm:text-sm">
-              <Baby className="mb-3 size-6 text-[#03A7FD]" />
+            <article
+              key={index}
+              className="flex min-h-24 flex-col items-center justify-center rounded-xl border border-[#dcebf2] bg-[#f4fbff] p-3 text-center text-[11px] font-bold leading-4 text-[#062a54] md:min-h-28 md:rounded-2xl md:p-4 md:text-sm md:leading-5"
+            >
+              <Baby className="mb-2 size-5 text-[#03A7FD] md:mb-3 md:size-6" />
               {localize(audience)}
             </article>
           ))}
@@ -512,37 +545,29 @@ function TabContent({ activeTab, product, localize, t }: TabContentProps) {
     );
   }
 
-  if (activeTab === "delivery") {
-    return (
-      <div>
-        <TabHeading icon={Truck} title={t("productDetails.deliverySupport")} />
-        <div className="mt-5 grid gap-4 sm:grid-cols-3">
-          <SupportCard
-            icon={Truck}
-            title={t("productDetails.deliveryTitle")}
-            description={t("productDetails.deliveryDescription")}
-          />
-          <SupportCard
-            icon={Headphones}
-            title={t("productDetails.supportTitle")}
-            description={t("productDetails.supportDescription")}
-          />
-          <SupportCard
-            icon={PackageCheck}
-            title={t("productDetails.packagingTitle")}
-            description={t("productDetails.packagingDescription")}
-          />
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div>
-      <TabHeading icon={Sparkles} title={t("productDetails.tabDescription")} />
-      <p className="mt-5 whitespace-pre-line text-sm leading-7 text-slate-600 sm:text-[15px]">
-        {localize(product.description)}
-      </p>
+      <TabHeading
+        icon={Truck}
+        title={t("productDetails.deliverySupport")}
+      />
+      <div className="mt-3 grid gap-2 md:mt-5 md:grid-cols-3 md:gap-4">
+        <SupportCard
+          icon={Truck}
+          title={t("productDetails.deliveryTitle")}
+          description={t("productDetails.deliveryDescription")}
+        />
+        <SupportCard
+          icon={Headphones}
+          title={t("productDetails.supportTitle")}
+          description={t("productDetails.supportDescription")}
+        />
+        <SupportCard
+          icon={PackageCheck}
+          title={t("productDetails.packagingTitle")}
+          description={t("productDetails.packagingDescription")}
+        />
+      </div>
     </div>
   );
 }
@@ -554,11 +579,13 @@ type TabHeadingProps = {
 
 function TabHeading({ icon: Icon, title }: TabHeadingProps) {
   return (
-    <div className="flex items-center gap-3">
-      <span className="grid size-11 place-items-center rounded-xl bg-[#FC5689]/10 text-[#FC5689]">
-        <Icon className="size-5" />
+    <div className="flex items-center gap-2 md:gap-3">
+      <span className="grid size-9 place-items-center rounded-lg bg-[#FC5689]/10 text-[#FC5689] md:size-11 md:rounded-xl">
+        <Icon className="size-4 md:size-5" />
       </span>
-      <h2 className="text-xl font-black text-[#062a54] sm:text-2xl">{title}</h2>
+      <h2 className="text-base font-black text-[#062a54] md:text-2xl">
+        {title}
+      </h2>
     </div>
   );
 }
@@ -571,13 +598,17 @@ type SupportCardProps = {
 
 function SupportCard({ icon: Icon, title, description }: SupportCardProps) {
   return (
-    <article className="flex items-start gap-4 rounded-2xl border border-[#dce3ec] bg-[#fff9fb] p-4">
-      <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-white text-[#FC5689] shadow-sm">
-        <Icon className="size-5" />
+    <article className="flex items-start gap-3 rounded-xl border border-[#dce3ec] bg-[#fff9fb] p-3 md:gap-4 md:rounded-2xl md:p-4">
+      <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-white text-[#FC5689] shadow-sm md:size-11 md:rounded-xl">
+        <Icon className="size-4 md:size-5" />
       </span>
       <div>
-        <h3 className="text-sm font-black text-[#062a54] sm:text-base">{title}</h3>
-        <p className="mt-1 text-xs leading-5 text-slate-500 sm:text-sm">{description}</p>
+        <h3 className="text-xs font-black text-[#062a54] md:text-base">
+          {title}
+        </h3>
+        <p className="mt-1 text-[11px] leading-4 text-slate-500 md:text-sm md:leading-5">
+          {description}
+        </p>
       </div>
     </article>
   );

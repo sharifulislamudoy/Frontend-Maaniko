@@ -50,8 +50,12 @@ export default function ProductGallery({ product }: ProductGalleryProps) {
   }
 
   return (
-    <div className="h-fit min-w-0 rounded-2xl border border-[#dce3ec] bg-white p-3 shadow-[0_12px_36px_rgba(6,42,84,0.06)] sm:p-4">
-      <div className="relative grid aspect-square place-items-center overflow-hidden rounded-2xl bg-[#fff4f6]">
+    <div className="flex h-fit min-w-0 flex-col rounded-2xl border border-[#dce3ec] bg-white p-2 shadow-[0_12px_36px_rgba(6,42,84,0.06)] md:p-4 lg:h-full">
+      <div
+        className={`relative grid aspect-square place-items-center overflow-hidden rounded-xl bg-[#fff4f6] md:rounded-2xl ${
+          hasMultipleImages ? "" : "lg:my-auto"
+        }`}
+      >
         <Swiper
           modules={[Autoplay]}
           onSwiper={setSwiper}
@@ -79,7 +83,7 @@ export default function ProductGallery({ product }: ProductGalleryProps) {
                   src={image}
                   alt={`${productName} ${numberFormatter.format(index + 1)}`}
                   loading={index === 0 ? "eager" : "lazy"}
-                  className="size-full object-contain p-3 sm:p-5"
+                  className="size-full object-contain"
                 />
               </div>
             </SwiperSlide>
@@ -87,8 +91,9 @@ export default function ProductGallery({ product }: ProductGalleryProps) {
         </Swiper>
 
         {discountPercentage > 0 && (
-          <span className="absolute left-3 top-3 z-20 rounded-full bg-[#FC5689] px-3 py-1.5 text-[11px] font-black text-white shadow-[0_10px_25px_rgba(239,66,119,0.28)] sm:left-4 sm:top-4 sm:text-xs">
-            {numberFormatter.format(discountPercentage)}% {t("productDetails.off")}
+          <span className="absolute left-2 top-2 z-20 rounded-full bg-[#FC5689] px-2.5 py-1 text-[10px] font-black text-white shadow-[0_10px_25px_rgba(239,66,119,0.28)] md:left-4 md:top-4 md:px-3 md:py-1.5 md:text-xs">
+            {numberFormatter.format(discountPercentage)}%{" "}
+            {t("productDetails.off")}
           </span>
         )}
 
@@ -101,7 +106,7 @@ export default function ProductGallery({ product }: ProductGalleryProps) {
               : t("wishlist.addToWishlist")
           }
           aria-pressed={wished}
-          className={`absolute right-3 top-3 z-20 grid size-11 place-items-center rounded-full border shadow-lg backdrop-blur-md transition duration-300 sm:right-4 sm:top-4 ${
+          className={`absolute right-2 top-2 z-20 grid size-9 place-items-center rounded-full border shadow-lg backdrop-blur-md transition duration-300 md:right-4 md:top-4 md:size-11 ${
             wished
               ? "border-[#FC5689] bg-[#FC5689] text-white"
               : "border-white/80 bg-white/90 text-[#062a54] hover:border-[#FC5689] hover:bg-[#FC5689] hover:text-white"
@@ -109,23 +114,25 @@ export default function ProductGallery({ product }: ProductGalleryProps) {
         >
           <Heart
             aria-hidden="true"
-            className={`size-5 ${wished ? "fill-current" : ""}`}
+            className={`size-4 md:size-5 ${wished ? "fill-current" : ""}`}
             strokeWidth={1.9}
           />
         </button>
       </div>
 
       {hasMultipleImages && (
-        <div className="mt-4 min-w-0">
-          <div className="flex max-w-full cursor-grab snap-x snap-mandatory gap-2 overflow-x-auto pb-2 active:cursor-grabbing">
+        <div className="mt-2 min-w-0 md:mt-4 lg:mt-auto lg:pt-4">
+          <div className="flex max-w-full cursor-grab snap-x snap-mandatory justify-start gap-2 overflow-x-auto pb-1 active:cursor-grabbing md:pb-2 lg:justify-center">
             {product.images.map((image, index) => (
               <button
                 key={`${product.id}-thumbnail-${index}`}
                 type="button"
                 onClick={() => selectImage(index)}
-                aria-label={t("productDetails.selectImage", { count: index + 1 })}
+                aria-label={t("productDetails.selectImage", {
+                  count: index + 1,
+                })}
                 aria-current={activeIndex === index ? "true" : undefined}
-                className={`aspect-square shrink-0 basis-[4.25rem] snap-start overflow-hidden rounded-xl border-2 bg-[#fff4f6] transition hover:border-[#FC5689] sm:basis-[calc((100%_-_2rem)/5)] ${
+                className={`aspect-square w-16 shrink-0 snap-start overflow-hidden rounded-lg border-2 bg-[#fff4f6] transition hover:border-[#FC5689] md:w-20 md:rounded-xl lg:w-24 ${
                   activeIndex === index
                     ? "border-[#FC5689]"
                     : "border-[#dce3ec]"
@@ -135,7 +142,7 @@ export default function ProductGallery({ product }: ProductGalleryProps) {
                   src={image}
                   alt=""
                   aria-hidden="true"
-                  className="size-full object-contain p-1.5"
+                  className="size-full object-contain p-1"
                 />
               </button>
             ))}
