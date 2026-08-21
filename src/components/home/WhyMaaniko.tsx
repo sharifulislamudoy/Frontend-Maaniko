@@ -7,9 +7,13 @@ import {
   Search,
   ShieldCheck,
 } from "lucide-react";
+import { Autoplay } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
 
 import { useLanguage } from "@/context/LanguageContext";
 import type { LocalizedValue } from "@/types/localization";
+
+import "swiper/css";
 
 type MaanikoFeature = {
   id: string;
@@ -52,13 +56,6 @@ const MAANIKO_FEATURES: MaanikoFeature[] = [
   },
 ];
 
-const FEATURE_DIVIDER_CLASSES = [
-  "border-b border-[#dce3ec] md:border-b-0",
-  "border-b border-l border-[#dce3ec] md:border-b-0",
-  "md:border-l md:border-[#dce3ec]",
-  "border-l border-[#dce3ec]",
-];
-
 export default function WhyMaanikoSection() {
   const { localize } = useLanguage();
 
@@ -80,32 +77,64 @@ export default function WhyMaanikoSection() {
           {sectionTitle}
         </h2>
 
-        <div
-          role="list"
-          aria-label={sectionTitle}
-          className="mt-5 grid grid-cols-2 md:mt-6 md:grid-cols-4 lg:mt-7"
-        >
-          {MAANIKO_FEATURES.map((feature, index) => {
-            const Icon = feature.icon;
+        <div className="mt-5 overflow-hidden md:mt-6 lg:mt-7">
+          <Swiper
+            modules={[Autoplay]}
+            aria-label={sectionTitle}
+            slidesPerView={2}
+            slidesPerGroup={1}
+            spaceBetween={0}
+            speed={700}
+            rewind
+            grabCursor
+            watchOverflow
+            threshold={5}
+            observer
+            observeParents
+            resizeObserver
+            autoplay={{
+              delay: 3000,
+              disableOnInteraction: false,
+              pauseOnMouseEnter: true,
+            }}
+            breakpoints={{
+              768: {
+                slidesPerView: 3,
+                spaceBetween: 0,
+              },
+              1024: {
+                slidesPerView: 4,
+                spaceBetween: 0,
+              },
+            }}
+            className="why-maaniko-swiper w-full [&_.swiper-slide]:!h-auto [&_.swiper-wrapper]:items-stretch"
+          >
+            {MAANIKO_FEATURES.map((feature, index) => {
+              const Icon = feature.icon;
 
-            return (
-              <article
-                key={feature.id}
-                role="listitem"
-                className={`flex min-h-[112px] min-w-0 flex-col items-center justify-center px-2 py-5 text-center md:min-h-[120px] md:px-4 md:py-4 lg:min-h-[128px] lg:px-8 ${FEATURE_DIVIDER_CLASSES[index]}`}
-              >
-                <Icon
-                  aria-hidden="true"
-                  strokeWidth={1.8}
-                  className="size-9 shrink-0 text-[#062a54] md:size-10 lg:size-11"
-                />
+              return (
+                <SwiperSlide key={feature.id}>
+                  <article
+                    className={`flex h-full min-h-[118px] min-w-0 flex-col items-center justify-center px-3 py-5 text-center md:min-h-[125px] md:px-5 md:py-5 lg:min-h-[132px] lg:px-8 ${
+                      index > 0
+                        ? "border-l border-[#dce3ec]"
+                        : ""
+                    }`}
+                  >
+                    <Icon
+                      aria-hidden="true"
+                      strokeWidth={1.8}
+                      className="size-9 shrink-0 text-[#062a54] md:size-10 lg:size-11"
+                    />
 
-                <p className="mt-3 max-w-[170px] text-sm font-semibold leading-5 text-[#303030] md:max-w-[190px] md:text-[15px] md:leading-6 lg:max-w-[210px] lg:text-base">
-                  {localize(feature.label)}
-                </p>
-              </article>
-            );
-          })}
+                    <p className="mt-3 max-w-[160px] text-sm font-semibold leading-5 text-[#303030] md:max-w-[185px] md:text-[15px] md:leading-6 lg:max-w-[210px] lg:text-base">
+                      {localize(feature.label)}
+                    </p>
+                  </article>
+                </SwiperSlide>
+              );
+            })}
+          </Swiper>
         </div>
       </div>
     </section>
