@@ -24,6 +24,7 @@ export default function SolutionBoxCard({ box }: SolutionBoxCardProps) {
   const boxSubtitle = localize(box.subtitle);
   const primaryImage = box.images[0] ?? "";
   const secondaryImage = box.images[1] ?? primaryImage;
+  const detailsHref = `/solution-box/${encodeURIComponent(box.slug)}`;
   const accessibilityLabel = `${t("solutionBox.explore")} ${boxName}`;
   const wished = isInWishlist(box.id);
   const isAvailable = box.stock > 0;
@@ -81,7 +82,7 @@ export default function SolutionBoxCard({ box }: SolutionBoxCardProps) {
     <article className="group/card relative isolate flex h-full flex-col overflow-hidden rounded-[20px] border border-[#dce3ec] bg-white shadow-[0_12px_34px_rgba(6,42,84,0.08)] transition duration-500 hover:-translate-y-1 hover:border-[#FC5689]/25 hover:shadow-[0_20px_48px_rgba(6,42,84,0.14)]">
       <div className="relative aspect-[20/21] shrink-0 overflow-hidden bg-[#fff4f6]">
         <Link
-          href={box.href}
+          href={detailsHref}
           aria-label={accessibilityLabel}
           className="absolute inset-0 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-inset focus-visible:ring-[#FC5689]/30"
         >
@@ -140,7 +141,7 @@ export default function SolutionBoxCard({ box }: SolutionBoxCardProps) {
         {/* Desktop only */}
         <div className="absolute inset-x-0 bottom-0 z-20 hidden translate-y-[calc(100%+20px)] opacity-0 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] lg:block lg:group-hover/card:translate-y-0 lg:group-hover/card:opacity-100 lg:group-focus-within/card:translate-y-0 lg:group-focus-within/card:opacity-100">
           <Link
-            href={box.href}
+            href={detailsHref}
             aria-label={accessibilityLabel}
             className="group/button relative flex h-11 w-full items-center justify-center overflow-hidden rounded-t-2xl bg-[#FC5689] px-4 text-sm font-extrabold text-white shadow-[0_12px_30px_rgba(6,42,84,0.22)] transition-all duration-300 hover:bg-[#03A7FD] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-inset focus-visible:ring-white/60 active:scale-[0.98]"
           >
@@ -159,7 +160,7 @@ export default function SolutionBoxCard({ box }: SolutionBoxCardProps) {
 
       <div className="flex flex-1 flex-col p-3 sm:p-4">
         <Link
-          href={box.href}
+          href={detailsHref}
           aria-label={accessibilityLabel}
           className="group/title focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FC5689]/40"
         >
@@ -225,7 +226,7 @@ export default function SolutionBoxCard({ box }: SolutionBoxCardProps) {
         {/* Mobile and tablet only */}
         <div className="mt-3 grid grid-cols-[minmax(0,1fr)_40px] gap-2 sm:grid-cols-[minmax(0,1fr)_44px] lg:hidden">
           <Link
-            href={box.href}
+            href={detailsHref}
             aria-label={accessibilityLabel}
             className="flex h-10 min-w-0 items-center justify-center gap-2 rounded-xl bg-[#FC5689] px-3 text-[11px] font-extrabold text-white shadow-[0_10px_24px_rgba(239,66,119,0.18)] transition-all duration-300 hover:bg-[#03A7FD] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#FC5689]/20 active:scale-[0.98] sm:h-11 sm:text-sm"
           >

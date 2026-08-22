@@ -6,6 +6,16 @@ export type ProductIncludedItem = {
   image?: string;
 };
 
+export type ComboCartItemSummary = {
+  productId: string;
+  slug: string;
+  href: string;
+  name: LocalizedValue;
+  image: string;
+  quantity: number;
+  variant?: LocalizedValue;
+};
+
 export type ProductDetails = {
   includedItems: ProductIncludedItem[];
   whyEssential: LocalizedValue[];
@@ -27,6 +37,8 @@ export type MaanikoProduct = {
   rating?: number;
   reviewCount?: number;
   details?: ProductDetails;
+  productType?: "single" | "combo";
+  comboItems?: ComboCartItemSummary[];
 };
 
 export type ProductCardProps = {

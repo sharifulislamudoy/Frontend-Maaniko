@@ -154,6 +154,14 @@ export default function CartDrawer() {
                           </button>
                         </div>
 
+                        {product.productType === "combo" && product.comboItems?.length ? (
+                          <p className="mt-1 text-[10px] font-bold text-[#03A7FD]">
+                            {language === "bn"
+                              ? `ভেতরে ${new Intl.NumberFormat("bn-BD").format(product.comboItems.length)}টি product`
+                              : `${product.comboItems.length} products included`}
+                          </p>
+                        ) : null}
+
                         <p className="mt-1 text-sm font-black text-[#FC5689]">
                           {priceFormatter.format(product.price * quantity)}
                         </p>

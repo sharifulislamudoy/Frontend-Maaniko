@@ -16,10 +16,12 @@ import { useSearchParams } from "next/navigation";
 import { useLanguage } from "@/context/LanguageContext";
 import { useShop } from "@/context/ShopContext";
 import { fakeProducts } from "@/data/fakeProducts";
+import { solutionBoxProducts } from "@/data/solutionBoxes";
 import type { CartItem } from "@/types/shop";
 
 const FREE_DELIVERY_MINIMUM = 2000;
 const DELIVERY_CHARGE = 120;
+const purchasableProducts = [...fakeProducts, ...solutionBoxProducts];
 
 const checkoutCopy = {
   bn: {
@@ -64,6 +66,8 @@ const checkoutCopy = {
     readyDescription:
       "Direct checkout flow সম্পূর্ণ হয়েছে। অর্ডার save ও process করতে marked handler-টি NestJS order API-এর সঙ্গে connect করুন।",
     continueShopping: "কেনাকাটা চালিয়ে যান",
+    comboContains: "Combo-তে থাকছে",
+    includedProducts: "টি product",
   },
   en: {
     checkout: "Checkout",
@@ -109,6 +113,8 @@ const checkoutCopy = {
     readyDescription:
       "The direct checkout flow is complete. Connect the marked handler to your NestJS order API to save and process the order.",
     continueShopping: "Continue shopping",
+    comboContains: "Combo contains",
+    includedProducts: "products",
   },
 } as const;
 
@@ -127,7 +133,7 @@ export default function CheckoutContent() {
   );
 
   const directProduct = isDirectCheckout
-    ? fakeProducts.find((product) => product.id === productId)
+    ? purchasableProducts.find((product) => product.id === productId)
     : undefined;
 
   const checkoutItems = useMemo<CartItem[]>(() => {
@@ -442,6 +448,11 @@ export default function CheckoutContent() {
                     <h3 className="line-clamp-2 text-sm font-extrabold leading-5 text-[#062a54]">
                       {localize(product.name)}
                     </h3>
+                    {product.productType === "combo" && product.comboItems?.length ? (
+                      <p className="mt-1 text-[10px] font-bold text-[#03A7FD]">
+                        {copy.comboContains}: {numberFormatter.format(product.comboItems.length)} {copy.includedProducts}
+                      </p>
+                    ) : null}
                     <div className="mt-2 flex items-center justify-between gap-2 text-xs">
                       <span className="font-bold text-slate-500">
                         {copy.quantity}: {numberFormatter.format(quantity)}
