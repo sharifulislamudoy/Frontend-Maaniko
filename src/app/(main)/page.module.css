@@ -1,0 +1,193 @@
+/*
+ * Maaniko homepage
+ * Compact vertical spacing with selected pink sections
+ */
+
+.home {
+    width: 100%;
+    overflow: hidden;
+    background-color: #ffffff;
+}
+
+/* =========================================================
+   DEFAULT SECTION BACKGROUND
+   ========================================================= */
+
+/*
+ * Homepage-এর অন্য সব section সাদা থাকবে।
+ * Component-এর নিজস্ব background থাকলেও এটি white করে দেবে।
+ */
+.home>section {
+    background: #ffffff !important;
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid transparent;
+
+    padding-top: 16px !important;
+    padding-bottom: 16px !important;
+}
+
+/* =========================================================
+   SELECTED LIGHT PINK GRADIENT SECTIONS
+   ========================================================= */
+
+/*
+ * শুধু নিচের তিনটি section:
+ *
+ * 1. Maaniko Solution Box
+ * 2. কেন Maaniko আলাদা?
+ * 3. মা ও শিশুর যত্নে প্রয়োজনীয় গাইড
+ */
+.home>section:has([id="solution-box-title"]),
+.home>section:has([id="why-maaniko-different-title"]),
+.home>section:has([id="care-guide-title"]) {
+    background:
+        radial-gradient(circle at 5% 0%,
+            rgba(252, 86, 137, 0.025) 0%,
+            rgba(252, 86, 137, 0) 42%),
+        radial-gradient(circle at 95% 100%,
+            rgba(255, 164, 193, 0.02) 0%,
+            rgba(255, 164, 193, 0) 40%),
+        linear-gradient(135deg,
+            #ffffff 0%,
+            #fffdfe 50%,
+            #ffffff 100%) !important;
+
+    border-top-color: rgba(252, 86, 137, 0.02);
+    border-bottom-color: rgba(252, 86, 137, 0.02);
+}
+
+/* =========================================================
+   MOBILE SPACING
+   ========================================================= */
+
+/*
+ * Hero banner-এর উপরে কোনো অতিরিক্ত gap থাকবে না।
+ */
+.home>section:first-child {
+    padding-top: 0 !important;
+    padding-bottom: 10px !important;
+}
+
+/*
+ * Section heading এবং slider/content-এর মাঝের gap।
+ */
+.home section div[class*="mb-"]:has(> h2[id]) {
+    margin-bottom: 16px !important;
+}
+
+/*
+ * Heading এবং subheading-এর gap।
+ */
+.home section h2[id]+p {
+    margin-top: 6px !important;
+}
+
+/*
+ * Slider-এর নিচের action button spacing।
+ */
+.home section>div>div[class*="mt-"]:last-child:has(> a) {
+    margin-top: 14px !important;
+}
+
+/*
+ * Why Maaniko heading এবং cards-এর gap।
+ */
+.home section[id="why-maaniko-different"]>div>div[class*="mt-"] {
+    margin-top: 16px !important;
+}
+
+/*
+ * বড় Shop By Journey panel-এর internal spacing।
+ */
+.home>section[aria-labelledby="shop-by-journey-title"]>div>div[class*="rounded-"] {
+    padding-top: 20px !important;
+    padding-bottom: 20px !important;
+}
+
+/*
+ * Newsletter panel-এর internal spacing।
+ */
+.home section:has([id="newsletter-email"])>div>div {
+    padding-top: 18px !important;
+    padding-bottom: 18px !important;
+}
+
+/* =========================================================
+   TABLET — md
+   ========================================================= */
+
+@media (min-width: 768px) {
+    .home>section {
+        padding-top: 22px !important;
+        padding-bottom: 22px !important;
+    }
+
+    .home>section:first-child {
+        padding-top: 0 !important;
+        padding-bottom: 14px !important;
+    }
+
+    .home section div[class*="mb-"]:has(> h2[id]) {
+        margin-bottom: 20px !important;
+    }
+
+    .home section h2[id]+p {
+        margin-top: 8px !important;
+    }
+
+    .home section>div>div[class*="mt-"]:last-child:has(> a) {
+        margin-top: 18px !important;
+    }
+
+    .home section[id="why-maaniko-different"]>div>div[class*="mt-"] {
+        margin-top: 20px !important;
+    }
+
+    .home>section[aria-labelledby="shop-by-journey-title"]>div>div[class*="rounded-"] {
+        padding-top: 28px !important;
+        padding-bottom: 28px !important;
+    }
+
+    .home section:has([id="newsletter-email"])>div>div {
+        padding-top: 22px !important;
+        padding-bottom: 22px !important;
+    }
+}
+
+/* =========================================================
+   DESKTOP — lg
+   ========================================================= */
+
+@media (min-width: 1024px) {
+    .home>section {
+        padding-top: 28px !important;
+        padding-bottom: 28px !important;
+    }
+
+    .home>section:first-child {
+        padding-top: 0 !important;
+        padding-bottom: 16px !important;
+    }
+
+    .home section div[class*="mb-"]:has(> h2[id]) {
+        margin-bottom: 24px !important;
+    }
+
+    .home section>div>div[class*="mt-"]:last-child:has(> a) {
+        margin-top: 20px !important;
+    }
+
+    .home section[id="why-maaniko-different"]>div>div[class*="mt-"] {
+        margin-top: 22px !important;
+    }
+
+    .home>section[aria-labelledby="shop-by-journey-title"]>div>div[class*="rounded-"] {
+        padding-top: 32px !important;
+        padding-bottom: 32px !important;
+    }
+
+    .home section:has([id="newsletter-email"])>div>div {
+        padding-top: 24px !important;
+        padding-bottom: 24px !important;
+    }
+}
