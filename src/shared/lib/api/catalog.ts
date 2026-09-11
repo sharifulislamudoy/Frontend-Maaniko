@@ -5,7 +5,7 @@ import type { MaanikoProduct } from "@/modules/products/types/product";
 import type { SolutionBox } from "@/modules/solution-boxes/types/solutionBox";
 
 const API_URL = (
-  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000"
+  process.env.PUBLIC_API_URL ?? "http://localhost:5000"
 ).replace(/\/$/, "");
 
 async function apiGet<T>(path: string): Promise<T> {

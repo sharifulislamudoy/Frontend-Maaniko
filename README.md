@@ -13,7 +13,7 @@ npm run dev
 Set:
 
 ```env
-NEXT_PUBLIC_API_URL=http://localhost:5000
+PUBLIC_API_URL=http://localhost:5000
 ```
 
 The storefront uses cached server-side API reads with a 60-second revalidation window. Product and combo detail pages, shop filtering, checkout lookup, featured products, and both banner sliders use database data.

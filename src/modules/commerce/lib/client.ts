@@ -7,7 +7,7 @@ export const CUSTOMER_PHONE_KEY = "maaniko-customer-phone";
 const SESSION_ID_KEY = "maaniko-session-id";
 
 const API_URL = (
-  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000"
+  process.env.PUBLIC_API_URL ?? "http://localhost:5000"
 ).replace(/\/$/, "");
 
 function randomId(prefix: string) {

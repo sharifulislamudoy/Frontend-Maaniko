@@ -12,7 +12,7 @@ export class GuideApiError extends Error {
 async function get<T>(path: string): Promise<T> {
   const origin = (
     process.env.API_URL ??
-    process.env.NEXT_PUBLIC_API_URL ??
+    process.env.PUBLIC_API_URL ??
     "http://localhost:5000"
   ).replace(/\/+$/, "");
   const response = await fetch(`${origin}${path}`, {
