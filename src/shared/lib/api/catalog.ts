@@ -64,7 +64,13 @@ export const getCombo = cache((slug: string) =>
 );
 
 export const getBanners = cache(
-  (placement: "HOME_HERO" | "SHOP_HERO" | "GUIDE_HERO") =>
+  (
+    placement:
+      | "HOME_HERO"
+      | "SHOP_HERO"
+      | "GUIDE_HERO"
+      | "SOLUTION_GUIDE",
+  ) =>
     apiGet<Banner[]>(`/banners?placement=${placement}`),
 );
 

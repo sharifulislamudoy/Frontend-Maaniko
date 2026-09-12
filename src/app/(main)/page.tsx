@@ -21,8 +21,9 @@ import {
 } from "@/shared/lib/api/catalog";
 
 export default async function HomePage() {
-  const [banners, products, boxes] = await Promise.all([
+  const [banners, solutionGuideBanners, products, boxes] = await Promise.all([
     safeCatalog(getBanners("HOME_HERO"), []),
+    safeCatalog(getBanners("SOLUTION_GUIDE"), []),
     safeCatalog(getProducts(), []),
     safeCatalog(getCombos(), []),
   ]);
@@ -37,7 +38,7 @@ export default async function HomePage() {
 
         <SolutionBoxSection boxes={boxes} />
 
-        <SolutionGuideBanner />
+        <SolutionGuideBanner banners={solutionGuideBanners} />
 
         <PopularProductsSection
           products={products.filter((product) => product.featured).slice(0, 12)}
