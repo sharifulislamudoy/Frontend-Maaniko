@@ -18,6 +18,7 @@ export default function GuideCard({ guide }: { guide: GuideCardData }) {
         <div className={styles.cardBody}>
           <span className={styles.category}>{guide.category.name}</span>
           <h3>{guide.title}</h3>
+          <p>{guide.excerpt}</p>
           <div className={styles.cardMeta}>
             <span>
               <Clock3 size={16} aria-hidden="true" />{" "}
