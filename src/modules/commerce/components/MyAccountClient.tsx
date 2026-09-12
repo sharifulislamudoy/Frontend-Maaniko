@@ -291,6 +291,13 @@ export default function MyAccountClient() {
                       <p className="mt-2 text-lg font-black text-[#FC5689]">
                         {money.format(order.total)}
                       </p>
+                      {order.steadfastTrackingCode ? (
+                        <p className="mt-1 text-[10px] font-bold text-slate-500">
+                          Steadfast: {order.steadfastStatus ?? "processing"}
+                          <br />
+                          Tracking: {order.steadfastTrackingCode}
+                        </p>
+                      ) : null}
                     </div>
                   </div>
 

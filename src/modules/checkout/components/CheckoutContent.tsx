@@ -23,22 +23,26 @@ import {
 type FormState = {
   name: string;
   phone: string;
+  alternativePhone: string;
   email: string;
   address: string;
   area: string;
   city: string;
   note: string;
+  deliveryType: 0 | 1;
   marketingConsent: boolean;
 };
 
 const emptyForm: FormState = {
   name: "",
   phone: "",
+  alternativePhone: "",
   email: "",
   address: "",
   area: "",
   city: "",
   note: "",
+  deliveryType: 0,
   marketingConsent: false,
 };
 
@@ -367,6 +371,14 @@ export default function CheckoutContent({
                 hint="এই নাম+নম্বর দিয়ে পরে অন্য ডিভাইস থেকেও order/cart history ফিরিয়ে আনতে পারবেন।"
               />
               <Field
+                label="বিকল্প ফোন নম্বর (ঐচ্ছিক)"
+                value={form.alternativePhone}
+                onChange={(value) => change("alternativePhone", value)}
+                onBlur={() => undefined}
+                inputMode="tel"
+                hint="মূল নম্বরে যোগাযোগ না হলে কুরিয়ার এই নম্বরে কল করবে।"
+              />
+              <Field
                 label="ইমেইল (ঐচ্ছিক)"
                 value={form.email}
                 onChange={(value) => change("email", value)}
@@ -385,6 +397,22 @@ export default function CheckoutContent({
                 onChange={(value) => change("city", value)}
                 onBlur={() => void fieldBlur("city")}
               />
+              <label className="block text-sm font-bold text-[#062a54]">
+                ডেলিভারি ধরন
+                <select
+                  value={form.deliveryType}
+                  onChange={(event) =>
+                    change(
+                      "deliveryType",
+                      Number(event.target.value) === 1 ? 1 : 0,
+                    )
+                  }
+                  className="mt-1.5 h-11 w-full rounded-xl border border-slate-200 bg-white px-3 outline-none focus:border-[#FC5689]"
+                >
+                  <option value={0}>বাসায় ডেলিভারি</option>
+                  <option value={1}>Steadfast Hub থেকে সংগ্রহ</option>
+                </select>
+              </label>
             </div>
 
             <label className="mt-4 block text-sm font-bold text-[#062a54]">
@@ -395,8 +423,12 @@ export default function CheckoutContent({
                 onChange={(event) => change("address", event.target.value)}
                 onBlur={() => void fieldBlur("address")}
                 rows={3}
+                maxLength={250}
                 className="mt-1.5 w-full rounded-xl border border-slate-200 p-3 outline-none focus:border-[#FC5689]"
               />
+              <span className="mt-1 block text-[11px] font-medium text-slate-400">
+                বাড়ি/ফ্ল্যাট, রোড, থানা ও জেলার তথ্য দিন—সর্বোচ্চ ২৫০ অক্ষর।
+              </span>
             </label>
 
             <label className="mt-4 block text-sm font-bold text-[#062a54]">
