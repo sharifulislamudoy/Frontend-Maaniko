@@ -1,0 +1,419 @@
+@import "tailwindcss";
+@import "swiper/css";
+
+:root {
+  color-scheme: light;
+
+  --background: #ffffff;
+  --foreground: #062a54;
+
+  --maaniko-pink: #FC5689;
+  --maaniko-blue: #03A7FD;
+  --maaniko-navy: #062a54;
+  --maaniko-blush: #fff4f6;
+  --maaniko-line: #dce3ec;
+
+  /*
+   * English:
+   * Body and heading — Poppins
+   */
+  --font-app-body: var(--font-poppins), Arial, Helvetica, sans-serif;
+  --font-app-heading: var(--font-poppins), Arial, Helvetica, sans-serif;
+}
+
+/*
+ * Bangla:
+ * Poppins handles Latin characters in mixed-language copy.
+ * Bengali glyphs fall back to Hind Siliguri in body copy and
+ * Baloo Da 2 in headings, so the requested Bangla typography is
+ * applied without changing the existing English typography.
+ */
+html[lang="bn"] {
+  --font-app-body: var(--font-poppins), var(--font-hind-siliguri), Arial,
+    Helvetica, sans-serif;
+
+  --font-app-heading: var(--font-poppins), var(--font-baloo-da-2), Arial,
+    Helvetica, sans-serif;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-maaniko-pink: var(--maaniko-pink);
+  --color-maaniko-blue: var(--maaniko-blue);
+  --color-maaniko-navy: var(--maaniko-navy);
+  --color-maaniko-blush: var(--maaniko-blush);
+  --color-maaniko-line: var(--maaniko-line);
+
+  --font-sans: var(--font-app-body);
+  --font-heading: var(--font-app-heading);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100%;
+  margin: 0;
+  overflow-x: hidden;
+
+  background: var(--background);
+  color: var(--foreground);
+
+  font-family: var(--font-app-body);
+  font-weight: 400;
+}
+
+@layer base {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-app-heading);
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-weight: 700;
+  }
+
+  h4,
+  h5,
+  h6 {
+    font-weight: 600;
+  }
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  cursor: pointer;
+}
+
+::selection {
+  background: rgba(239, 66, 119, 0.2);
+  color: var(--maaniko-navy);
+}
+
+@keyframes maaniko-cart-added {
+  0% {
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Popular products initial Swiper layout */
+
+.popular-products-swiper {
+  width: 100%;
+  overflow: hidden;
+}
+
+.popular-products-swiper:not(.swiper-initialized) .swiper-wrapper {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+}
+
+.popular-products-swiper:not(.swiper-initialized) .swiper-slide {
+  width: calc((100% - 7px) / 1.5);
+  min-width: calc((100% - 7px) / 1.5);
+  max-width: calc((100% - 7px) / 1.5);
+  margin-right: 14px;
+  flex: 0 0 calc((100% - 7px) / 1.5);
+}
+
+/* Combo pack initial Swiper layout */
+
+.combo-pack-swiper {
+  width: 100%;
+  overflow: hidden;
+}
+
+.combo-pack-swiper:not(.swiper-initialized) .swiper-wrapper {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+}
+
+.combo-pack-swiper:not(.swiper-initialized) .swiper-slide {
+  width: 100%;
+  min-width: 100%;
+  max-width: 100%;
+  margin-right: 14px;
+  flex: 0 0 100%;
+}
+
+/*
+ * Compact card slider styles
+ * Card width and slider behaviour remain unchanged.
+ */
+
+/* Product cards */
+.popular-products-swiper article > div:first-child,
+.combo-pack-swiper article > div:first-child {
+  aspect-ratio: 1 / 1 !important;
+}
+
+.popular-products-swiper article > div:last-child,
+.combo-pack-swiper article > div:last-child {
+  padding: 0.625rem !important;
+}
+
+.popular-products-swiper article > div:last-child > div:last-child,
+.combo-pack-swiper article > div:last-child > div:last-child {
+  padding-top: 0.5rem !important;
+}
+
+.popular-products-swiper .touch-actions,
+.combo-pack-swiper .touch-actions {
+  margin-top: 0.5rem !important;
+}
+
+/* Solution-box cards */
+.solution-box-swiper article > div:first-child {
+  aspect-ratio: 1 / 1 !important;
+}
+
+.solution-box-swiper article > div:last-child {
+  padding: 0.625rem !important;
+}
+
+.solution-box-swiper article > div:last-child > p {
+  margin-top: 0.125rem !important;
+  line-height: 1.125rem !important;
+}
+
+.solution-box-swiper article > div:last-child > div:first-of-type {
+  padding-top: 0.5rem !important;
+}
+
+.solution-box-swiper article > div:last-child > div:last-of-type {
+  margin-top: 0.5rem !important;
+}
+
+.solution-box-swiper article
+  > div:last-child
+  > div:last-of-type
+  > :is(a, button) {
+  height: 2.25rem !important;
+}
+
+/* Shop-by-journey cards */
+.shop-by-journey-card-swiper article {
+  height: 7.625rem !important;
+}
+
+.shop-by-journey-card-swiper article > a {
+  padding-block: 0.5rem !important;
+}
+
+.shop-by-journey-card-swiper article > a > span:nth-of-type(3) {
+  width: 3.125rem !important;
+  height: 3.125rem !important;
+}
+
+.shop-by-journey-card-swiper article > a > h3 {
+  min-height: 2rem !important;
+  margin-top: 0.375rem !important;
+}
+
+/* Care-guide cards */
+.care-guide-swiper article {
+  aspect-ratio: 6 / 5 !important;
+}
+
+.care-guide-swiper article > div:last-child {
+  height: 2.5rem !important;
+}
+
+/* Mother-guide cards */
+.mother-guide-swiper article {
+  min-height: 25.625rem !important;
+}
+
+.mother-guide-swiper article > a:first-child {
+  aspect-ratio: 6 / 5 !important;
+}
+
+.mother-guide-swiper article > div:last-child {
+  padding: 1rem !important;
+}
+
+.mother-guide-swiper article > div:last-child > p {
+  margin-top: 0.5rem !important;
+  line-height: 1.5rem !important;
+}
+
+.mother-guide-swiper article > div:last-child > a:last-child {
+  padding-top: 0.75rem !important;
+}
+
+/* Customer-review cards */
+.customer-reviews-swiper article {
+  min-height: 18.25rem !important;
+  padding: 1rem !important;
+}
+
+.customer-reviews-swiper article > h3 {
+  margin-top: 0.5rem !important;
+}
+
+.customer-reviews-swiper article > div:nth-of-type(2) {
+  margin-top: 0.25rem !important;
+}
+
+.customer-reviews-swiper article > div:nth-of-type(3) {
+  margin-block: 0.625rem !important;
+}
+
+.customer-reviews-swiper article > div:nth-of-type(4) {
+  margin-top: 0.625rem !important;
+}
+
+.customer-reviews-swiper article > p {
+  line-height: 1.65 !important;
+}
+
+.customer-reviews-swiper .swiper-pagination {
+  margin-top: 1rem !important;
+}
+
+@media (min-width: 640px) {
+  .popular-products-swiper:not(.swiper-initialized) .swiper-slide {
+    width: calc((100% - 24px) / 2.5);
+    min-width: calc((100% - 24px) / 2.5);
+    max-width: calc((100% - 24px) / 2.5);
+    margin-right: 16px;
+    flex-basis: calc((100% - 24px) / 2.5);
+  }
+
+  .combo-pack-swiper:not(.swiper-initialized) .swiper-slide {
+    width: calc((100% - 16px) / 2);
+    min-width: calc((100% - 16px) / 2);
+    max-width: calc((100% - 16px) / 2);
+    margin-right: 16px;
+    flex-basis: calc((100% - 16px) / 2);
+  }
+
+  .popular-products-swiper article > div:last-child,
+  .combo-pack-swiper article > div:last-child,
+  .solution-box-swiper article > div:last-child {
+    padding: 0.75rem !important;
+  }
+
+  .solution-box-swiper article
+    > div:last-child
+    > div:last-of-type
+    > :is(a, button) {
+    height: 2.5rem !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .shop-by-journey-card-swiper article {
+    height: 9.25rem !important;
+  }
+
+  .shop-by-journey-card-swiper article > a {
+    padding-block: 0.625rem !important;
+  }
+
+  .shop-by-journey-card-swiper article > a > span:nth-of-type(3) {
+    width: 3.875rem !important;
+    height: 3.875rem !important;
+  }
+
+  .shop-by-journey-card-swiper article > a > h3 {
+    min-height: 2.25rem !important;
+    margin-top: 0.5rem !important;
+  }
+
+  .care-guide-swiper article > div:last-child {
+    height: 3rem !important;
+  }
+
+  .mother-guide-swiper article {
+    min-height: 24.5rem !important;
+  }
+
+  .customer-reviews-swiper article {
+    min-height: 19.25rem !important;
+    padding: 1.125rem !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .popular-products-swiper:not(.swiper-initialized) .swiper-slide {
+    width: calc((100% - 50px) / 3.5);
+    min-width: calc((100% - 50px) / 3.5);
+    max-width: calc((100% - 50px) / 3.5);
+    margin-right: 20px;
+    flex-basis: calc((100% - 50px) / 3.5);
+  }
+
+  .combo-pack-swiper:not(.swiper-initialized) .swiper-slide {
+    width: calc((100% - 40px) / 3);
+    min-width: calc((100% - 40px) / 3);
+    max-width: calc((100% - 40px) / 3);
+    margin-right: 20px;
+    flex-basis: calc((100% - 40px) / 3);
+  }
+
+  .shop-by-journey-card-swiper article {
+    height: 10.25rem !important;
+  }
+
+  .shop-by-journey-card-swiper article > a > span:nth-of-type(3) {
+    width: 4.375rem !important;
+    height: 4.375rem !important;
+  }
+
+  .mother-guide-swiper article {
+    min-height: 24.375rem !important;
+  }
+
+  .customer-reviews-swiper article {
+    min-height: 20rem !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
