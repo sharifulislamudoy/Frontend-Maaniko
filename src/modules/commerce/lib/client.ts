@@ -156,11 +156,40 @@ export type AiChatMessage = {
   content: string;
 };
 
+export type PublicOrderTracking = {
+  orderNumber: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  expiresAt: string;
+  steadfastStatus?: string | null;
+  steadfastTrackingCode?: string | null;
+  subtotal: number;
+  deliveryCharge: number;
+  total: number;
+  items: Array<{
+    id: string;
+    name: string;
+    image?: string | null;
+    quantity: number;
+    unitPrice: number;
+    lineTotal: number;
+  }>;
+  history: Array<{
+    id: string;
+    status: string;
+    note?: string | null;
+    createdAt: string;
+  }>;
+};
+
 export const commerceApi = {
   askMaanikoAi: (body: {
     message: string;
     history: AiChatMessage[];
     pagePath?: string;
+    customerName?: string;
+    customerPhone?: string;
   }) =>
     apiRequest<{ answer: string }>("/ai-assistant/chat", {
       method: "POST",
@@ -252,6 +281,17 @@ export const commerceApi = {
       method: "POST",
       body,
     }),
+
+  createOrderShareLink: (orderId: string) =>
+    apiRequest<{ token: string; expiresAt: string }>(
+      `/commerce/orders/${encodeURIComponent(orderId)}/share-link`,
+      { method: "POST" },
+    ),
+
+  getPublicOrderTracking: (token: string) =>
+    apiRequest<PublicOrderTracking>(
+      `/commerce/orders/track/${encodeURIComponent(token)}`,
+    ),
 
   createLead: (body: unknown) =>
     apiRequest<any>("/commerce/leads", {

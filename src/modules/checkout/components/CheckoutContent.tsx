@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import {
   CheckCircle2,
+  Copy,
+  ExternalLink,
   LoaderCircle,
   LockKeyhole,
   ShoppingBag,
@@ -62,6 +64,7 @@ export default function CheckoutContent({
   const [submitting, setSubmitting] = useState(false);
   const [orderResult, setOrderResult] = useState<any>(null);
   const [submitError, setSubmitError] = useState("");
+  const [trackingCopied, setTrackingCopied] = useState(false);
 
   const isDirectCheckout = searchParams.get("mode") === "buy-now";
   const requestedId = searchParams.get("productId") ?? "";
@@ -248,6 +251,15 @@ export default function CheckoutContent({
     }
   }
 
+  async function copyTrackingLink() {
+    const token = orderResult?.publicTrackingToken;
+    if (!token) return;
+    const url = `${window.location.origin}/track-order/${encodeURIComponent(token)}`;
+    await navigator.clipboard.writeText(url);
+    setTrackingCopied(true);
+    window.setTimeout(() => setTrackingCopied(false), 1800);
+  }
+
   if (!isDirectCheckout && !isHydrated) {
     return (
       <div className="grid min-h-[65vh] place-items-center bg-[#fff9fb]">
@@ -273,6 +285,34 @@ export default function CheckoutContent({
           <p className="mt-3 text-sm text-slate-500">
             বর্তমান status: <strong>{orderResult.status}</strong>
           </p>
+          {orderResult.publicTrackingToken ? (
+            <div className="mt-5 rounded-2xl border border-[#e2e8ef] bg-[#f8fafc] p-3 text-left">
+              <p className="text-xs font-black text-[#062a54]">
+                অস্থায়ী tracking link
+              </p>
+              <p className="mt-1 text-[11px] leading-5 text-slate-500">
+                Linkটি ৩০ দিন valid। যার কাছে link থাকবে তিনি personal তথ্য ছাড়া
+                এই অর্ডারের status দেখতে পারবেন।
+              </p>
+              <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                <button
+                  type="button"
+                  onClick={() => void copyTrackingLink()}
+                  className="flex h-10 items-center justify-center gap-2 rounded-xl border border-[#dce3ea] bg-white text-xs font-black text-[#062a54]"
+                >
+                  <Copy className="size-4" />
+                  {trackingCopied ? "Link কপি হয়েছে" : "Tracking link কপি"}
+                </button>
+                <Link
+                  href={`/track-order/${encodeURIComponent(orderResult.publicTrackingToken)}`}
+                  className="flex h-10 items-center justify-center gap-2 rounded-xl border border-[#dce3ea] bg-white text-xs font-black text-[#062a54]"
+                >
+                  <ExternalLink className="size-4" />
+                  Link খুলুন
+                </Link>
+              </div>
+            </div>
+          ) : null}
           <div className="mt-6 grid gap-2 sm:grid-cols-2">
             <Link
               href="/orders"
@@ -298,7 +338,7 @@ export default function CheckoutContent({
         <div className="text-center">
           <LoaderCircle className="mx-auto size-8 animate-spin text-[#FC5689]" />
           <p className="mt-3 text-sm font-bold text-slate-500">
-            Backend থেকে current price ও stock যাচাই হচ্ছে...
+            Current price ও stock যাচাই হচ্ছে...
           </p>
         </div>
       </div>

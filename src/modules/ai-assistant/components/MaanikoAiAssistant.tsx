@@ -13,6 +13,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import {
   commerceApi,
+  getSavedContact,
   type AiChatMessage,
 } from "@/modules/commerce/lib/client";
 
@@ -201,8 +202,9 @@ export default function MaanikoAiAssistant({
       { id, role: "assistant", content: "" },
     ]);
 
+    const charactersPerTick = Math.max(4, Math.ceil(answer.length / 220));
     typingTimer.current = setInterval(() => {
-      cursor = Math.min(answer.length, cursor + 3);
+      cursor = Math.min(answer.length, cursor + charactersPerTick);
       setMessages((current) =>
         current.map((message) =>
           message.id === id
@@ -235,10 +237,13 @@ export default function MaanikoAiAssistant({
     setWorking(true);
 
     try {
+      const savedContact = getSavedContact();
       const result = await commerceApi.askMaanikoAi({
         message: clean,
         history: previous.map(({ role, content }) => ({ role, content })),
         pagePath: pathname,
+        customerName: savedContact.name || undefined,
+        customerPhone: savedContact.phone || undefined,
       });
       typeAnswer(result.answer);
     } catch (error) {
@@ -280,7 +285,7 @@ export default function MaanikoAiAssistant({
     <AnimatePresence>
       {open && (
         <motion.div
-          className="fixed inset-0 z-[120] flex items-end justify-center bg-[#062a54]/35 p-0 backdrop-blur-[3px] sm:p-4 xl:items-center xl:justify-end xl:p-6"
+          className="fixed inset-0 z-[120] flex items-end justify-center bg-[#062a54]/25 p-0 backdrop-blur-[2px] sm:p-4 xl:items-center xl:justify-end xl:p-6"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -296,23 +301,22 @@ export default function MaanikoAiAssistant({
             animate={{ y: 0, opacity: 1, scale: 1 }}
             exit={{ y: 70, opacity: 0, scale: 0.98 }}
             transition={{ type: "spring", stiffness: 320, damping: 30 }}
-            className="flex h-[min(88dvh,720px)] w-full flex-col overflow-hidden rounded-t-[28px] border border-white/70 bg-[#fffafd] shadow-[0_28px_90px_rgba(6,42,84,.28)] sm:max-w-[520px] sm:rounded-[30px] xl:h-[min(78dvh,720px)]"
+            className="flex h-[min(88dvh,720px)] w-full flex-col overflow-hidden rounded-t-[24px] border border-[#dfe6ee] bg-[#f8fafc] shadow-[0_28px_80px_rgba(6,42,84,.22)] sm:max-w-[520px] sm:rounded-[24px] xl:h-[min(78dvh,720px)]"
           >
-            <header className="relative overflow-hidden bg-gradient-to-br from-[#062a54] via-[#093d70] to-[#0b78a9] px-4 pb-4 pt-4 text-white sm:px-5">
-              <div className="absolute -right-8 -top-10 size-32 rounded-full bg-[#ef4277]/30 blur-2xl" />
+            <header className="relative border-b border-[#e5eaf0] bg-white px-4 pb-4 pt-4 text-[#062a54] sm:px-5">
               <div className="relative flex items-center gap-3">
-                <div className="relative grid size-11 shrink-0 place-items-center rounded-2xl bg-white/15 ring-1 ring-white/25">
+                <div className="relative grid size-11 shrink-0 place-items-center rounded-2xl bg-[#f2f5f8] ring-1 ring-[#dfe6ee]">
                   <Bot className="size-6" />
-                  <span className="absolute -right-0.5 -top-0.5 size-3 rounded-full border-2 border-[#0a497b] bg-emerald-400" />
+                  <span className="absolute -right-0.5 -top-0.5 size-3 rounded-full border-2 border-white bg-emerald-500" />
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
                     <h2 className="text-base font-black sm:text-lg">Maaniko AI</h2>
-                    <span className="rounded-full bg-white/12 px-2 py-0.5 text-[9px] font-bold tracking-wide text-white/90 ring-1 ring-white/15">
+                    <span className="rounded-full bg-[#fff1f5] px-2 py-0.5 text-[9px] font-bold tracking-wide text-[#d83b6c] ring-1 ring-[#f7d2de]">
                       BETA
                     </span>
                   </div>
-                  <p className="mt-0.5 truncate text-[11px] text-white/75 sm:text-xs">
+                  <p className="mt-0.5 truncate text-[11px] text-slate-500 sm:text-xs">
                     পণ্য, সল্যুশন বক্স ও অর্ডার সহায়তা
                   </p>
                 </div>
@@ -321,7 +325,7 @@ export default function MaanikoAiAssistant({
                     type="button"
                     onClick={reset}
                     aria-label="নতুন কথোপকথন"
-                    className="grid size-9 place-items-center rounded-full bg-white/10 transition hover:bg-white/20"
+                    className="grid size-9 place-items-center rounded-full bg-[#f4f6f8] transition hover:bg-[#edf1f5]"
                   >
                     <RotateCcw className="size-4" />
                   </button>
@@ -330,7 +334,7 @@ export default function MaanikoAiAssistant({
                   type="button"
                   onClick={onClose}
                   aria-label="বন্ধ করুন"
-                  className="grid size-9 place-items-center rounded-full bg-white/10 transition hover:bg-white/20"
+                  className="grid size-9 place-items-center rounded-full bg-[#f4f6f8] transition hover:bg-[#edf1f5]"
                 >
                   <X className="size-5" />
                 </button>
@@ -343,7 +347,7 @@ export default function MaanikoAiAssistant({
             >
               {messages.length === 0 ? (
                 <div className="flex min-h-full flex-col justify-center">
-                  <div className="mx-auto grid size-16 place-items-center rounded-3xl bg-gradient-to-br from-[#ffe5ee] to-[#e8f7ff] text-[#ef4277] shadow-sm">
+                  <div className="mx-auto grid size-16 place-items-center rounded-3xl border border-[#e2e8ef] bg-white text-[#062a54] shadow-sm">
                     <Sparkles className="size-8" />
                   </div>
                   <h3 className="mt-4 text-center text-xl font-black text-[#062a54]">
@@ -361,7 +365,7 @@ export default function MaanikoAiAssistant({
                         initial={{ opacity: 0, y: 8 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.08 * index }}
-                        className="rounded-2xl border border-[#eadfe5] bg-white px-4 py-3 text-left text-sm font-semibold text-[#183b60] shadow-[0_5px_18px_rgba(6,42,84,.04)] transition hover:-translate-y-0.5 hover:border-[#ef4277]/35 hover:bg-[#fff7fa]"
+                        className="rounded-2xl border border-[#e1e7ed] bg-white px-4 py-3 text-left text-sm font-semibold text-[#183b60] shadow-[0_4px_14px_rgba(6,42,84,.035)] transition hover:-translate-y-0.5 hover:border-[#cbd5df] hover:bg-[#fafbfd]"
                       >
                         {starter}
                       </motion.button>
@@ -440,9 +444,9 @@ export default function MaanikoAiAssistant({
 
             <form
               onSubmit={submit}
-              className="border-t border-[#eee3e8] bg-white p-3 sm:p-4"
+              className="border-t border-[#e5eaf0] bg-white p-3 sm:p-4"
             >
-              <div className="flex items-end gap-2 rounded-[22px] border border-[#e4d9df] bg-[#fffafd] p-1.5 pl-3 transition focus-within:border-[#ef4277]/60 focus-within:ring-4 focus-within:ring-[#ef4277]/8">
+              <div className="flex items-end gap-2 rounded-[20px] border border-[#dce3ea] bg-[#f8fafc] p-1.5 pl-3 transition focus-within:border-[#9daebe] focus-within:ring-4 focus-within:ring-[#062a54]/5">
                 <textarea
                   ref={inputRef}
                   value={input}
@@ -465,7 +469,7 @@ export default function MaanikoAiAssistant({
                   whileTap={{ scale: 0.9 }}
                   disabled={!input.trim() || working}
                   aria-label="পাঠান"
-                  className="grid size-10 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-[#ef4277] to-[#ff6e99] text-white shadow-[0_7px_18px_rgba(239,66,119,.26)] transition disabled:cursor-not-allowed disabled:opacity-40"
+                  className="grid size-10 shrink-0 place-items-center rounded-2xl bg-[#062a54] text-white shadow-[0_6px_16px_rgba(6,42,84,.18)] transition hover:bg-[#0a3a6c] disabled:cursor-not-allowed disabled:opacity-40"
                 >
                   <ArrowUp className="size-5" strokeWidth={2.4} />
                 </motion.button>

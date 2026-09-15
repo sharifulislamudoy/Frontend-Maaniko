@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { Fragment, useEffect, useState } from "react";
 import {
   Bot,
+  Boxes,
   Heart,
   House,
   LayoutGrid,
@@ -12,7 +13,6 @@ import {
   Package,
   Phone,
   ShoppingBag,
-  Sparkles,
   Truck,
 } from "lucide-react";
 import { AnimatePresence, MotionConfig, motion } from "motion/react";
@@ -349,6 +349,11 @@ export default function Navbar() {
       icon: LayoutGrid,
     },
     {
+      label: "কম্বো",
+      href: "/solution-box",
+      icon: Boxes,
+    },
+    {
       label: t("nav.orders"),
       href: "/orders",
       icon: Package,
@@ -435,17 +440,6 @@ export default function Navbar() {
           </nav>
 
           <div className="flex items-center gap-1.5">
-            <a
-              href="https://wa.me/8801995322033"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="WhatsApp-এ কথা বলুন"
-              title="WhatsApp-এ কথা বলুন"
-              className="mr-1 inline-flex h-10 items-center gap-2 rounded-full bg-[#25D366] px-3.5 text-sm font-bold text-white shadow-[0_7px_18px_rgba(37,211,102,.22)] transition hover:-translate-y-0.5 hover:bg-[#20bd5a]"
-            >
-              <MessageCircle className="size-5" fill="currentColor" />
-              <span>WhatsApp</span>
-            </a>
             <Link
               href="/wishlist"
               aria-label={t("nav.wishlist")}
@@ -540,7 +534,7 @@ export default function Navbar() {
           paddingBottom: "env(safe-area-inset-bottom)",
         }}
       >
-        <div className="mx-auto grid h-[72px] max-w-5xl grid-cols-4 sm:h-[76px]">
+        <div className="mx-auto grid h-[72px] max-w-5xl grid-cols-5 sm:h-[76px]">
           {bottomNavigation.map((item) => {
             const Icon = item.icon;
             const active = isRouteActive(pathname, item.href);
@@ -585,9 +579,9 @@ export default function Navbar() {
               </Link>
             );
 
-            if (item.href === "/orders") {
+            if (item.href === "/solution-box") {
               return (
-                <Fragment key="ai-and-orders">
+                <Fragment key="ai-and-combo">
                   <button
                     type="button"
                     onClick={() => setIsAiOpen(true)}
@@ -598,12 +592,9 @@ export default function Navbar() {
                       whileTap={{ scale: 0.82 }}
                       className="relative flex flex-col items-center gap-1"
                     >
-                      <span className="relative grid size-7 place-items-center rounded-xl bg-gradient-to-br from-[#ef4277] to-[#0aa7e8] text-white shadow-[0_5px_14px_rgba(239,66,119,.22)]">
-                        <Bot className="size-[18px]" strokeWidth={2} />
-                        <Sparkles
-                          className="absolute -right-1 -top-1 size-3 text-[#ef4277]"
-                          fill="white"
-                        />
+                      <span className="relative grid size-7 place-items-center rounded-xl border border-[#dfe6ee] bg-[#f7f9fb] text-maaniko-navy">
+                        <Bot className="size-[18px]" strokeWidth={1.8} />
+                        <span className="absolute -right-0.5 -top-0.5 size-2 rounded-full border border-white bg-maaniko-pink" />
                       </span>
                       <span className="text-[11px] leading-none sm:text-xs">
                         Maaniko AI
@@ -764,24 +755,34 @@ export default function Navbar() {
         )}
       </AnimatePresence>
 
+      <motion.a
+        href="https://wa.me/8801995322033"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="WhatsApp-এ Maaniko-এর সঙ্গে কথা বলুন"
+        title="WhatsApp-এ কথা বলুন"
+        whileHover={{ y: -2 }}
+        whileTap={{ scale: 0.94 }}
+        className="fixed bottom-[88px] right-3 z-40 grid size-11 place-items-center rounded-full border border-[#dce9e1] bg-white text-[#1c9c4b] shadow-[0_10px_28px_rgba(6,42,84,.14)] xl:bottom-[102px] xl:right-6 xl:size-12"
+      >
+        <MessageCircle className="size-5 xl:size-[22px]" fill="currentColor" />
+      </motion.a>
+
       <motion.button
         type="button"
         onClick={() => setIsAiOpen(true)}
         whileHover={{ y: -3, scale: 1.02 }}
         whileTap={{ scale: 0.94 }}
         aria-label="Maaniko AI Assistant খুলুন"
-        className="fixed bottom-6 right-6 z-50 hidden items-center gap-2.5 rounded-full bg-gradient-to-r from-[#062a54] via-[#0b6a9c] to-[#ef4277] p-1.5 pr-4 text-white shadow-[0_16px_40px_rgba(6,42,84,.28)] ring-1 ring-white/50 xl:flex"
+        className="fixed bottom-6 right-6 z-50 hidden items-center gap-2.5 rounded-full border border-[#dfe6ee] bg-white p-1.5 pr-4 text-maaniko-navy shadow-[0_14px_34px_rgba(6,42,84,.16)] xl:flex"
       >
-        <span className="relative grid size-11 place-items-center rounded-full bg-white/16 backdrop-blur">
+        <span className="relative grid size-11 place-items-center rounded-full bg-[#f4f7fa]">
           <Bot className="size-6" />
-          <Sparkles
-            className="absolute -right-0.5 -top-0.5 size-4 text-[#ffdbe7]"
-            fill="currentColor"
-          />
+          <span className="absolute right-0 top-0 size-2.5 rounded-full border-2 border-white bg-maaniko-pink" />
         </span>
         <span className="text-left">
           <span className="block text-xs font-black leading-tight">Maaniko AI</span>
-          <span className="block text-[9px] text-white/75">
+          <span className="block text-[9px] text-slate-500">
             কীভাবে সাহায্য করি?
           </span>
         </span>
