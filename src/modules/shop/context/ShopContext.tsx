@@ -10,7 +10,10 @@ import {
   useState,
 } from "react";
 
-import type { MaanikoProduct } from "@/modules/products/types/product";
+import type {
+  MaanikoProduct,
+  ProductVariant,
+} from "@/modules/products/types/product";
 import { commerceApi } from "@/modules/commerce/lib/client";
 import type {
   CartItem,
@@ -39,17 +42,21 @@ function itemType(product: MaanikoProduct): "PRODUCT" | "COMBO" {
   return product.productType === "combo" ? "COMBO" : "PRODUCT";
 }
 
-function regularClientKey(product: MaanikoProduct) {
-  return `${itemType(product)}:${product.id}`;
+function regularClientKey(product: MaanikoProduct, variantId?: string) {
+  return `${itemType(product)}:${product.id}${variantId ? `:${variantId}` : ""}`;
 }
 
 function payloadForCartItem(item: CartItem) {
   const type = itemType(item.product);
-  const isCustomBox = type === "COMBO" && item.product.id === "custom-solution-box";
+  const isCustomBox =
+    type === "COMBO" && item.product.id === "custom-solution-box";
   return {
     itemType: type,
     ...(type === "PRODUCT"
-      ? { productId: item.product.id }
+      ? {
+          productId: item.product.id,
+          variantId: item.selectedVariant?.id,
+        }
       : isCustomBox
         ? {}
         : { comboId: item.product.id }),
@@ -71,6 +78,7 @@ function serverCartToLocal(data: any): CartItem[] {
           : regularClientKey(item.product as MaanikoProduct),
       customConfig: Array.isArray(item.customConfig) ? item.customConfig : null,
       isCustomized: Boolean(item.isCustomized),
+      selectedVariant: item.product.selectedVariant,
     }));
 }
 
@@ -187,23 +195,44 @@ export function ShopProvider({ children }: ShopProviderProps) {
   const closeCart = useCallback(() => setIsCartOpen(false), []);
 
   const addToCart = useCallback(
-    (product: MaanikoProduct, quantity = 1) => {
-      if (product.stock <= 0) return;
-      const key = regularClientKey(product);
+    (product: MaanikoProduct, quantity = 1, variant?: ProductVariant) => {
+      const stock = variant?.stock ?? product.stock;
+      if (stock <= 0) return;
+      if (product.variants?.length && !variant) return;
+      const key = regularClientKey(product, variant?.id);
+      const cartProduct: MaanikoProduct = variant
+        ? {
+            ...product,
+            price: variant.price ?? product.price,
+            compareAtPrice: variant.compareAtPrice ?? product.compareAtPrice,
+            stock: variant.stock,
+            sku: variant.sku,
+            images: variant.imageUrl
+              ? [
+                  variant.imageUrl,
+                  ...product.images.filter(
+                    (image) => image !== variant.imageUrl,
+                  ),
+                ]
+              : product.images,
+            selectedVariant: variant,
+          }
+        : product;
 
       setCartItems((current) => {
         const existing = current.find((item) => item.clientKey === key);
         const safeDelta = Math.max(1, Math.floor(quantity));
         const nextQuantity = existing
-          ? Math.min(existing.quantity + safeDelta, product.stock)
-          : Math.min(safeDelta, product.stock);
+          ? Math.min(existing.quantity + safeDelta, stock)
+          : Math.min(safeDelta, stock);
 
         const nextItem: CartItem = existing
           ? { ...existing, quantity: nextQuantity }
           : {
-              product,
+              product: cartProduct,
               quantity: nextQuantity,
               clientKey: key,
+              selectedVariant: variant,
               customConfig:
                 product.productType === "combo"
                   ? product.comboItems?.map((item) => ({
@@ -272,22 +301,28 @@ export function ShopProvider({ children }: ShopProviderProps) {
     [syncOne],
   );
 
-  const removeFromCart = useCallback((productId: string) => {
+  const removeFromCart = useCallback((identifier: string) => {
     setCartItems((current) => {
-      const targets = current.filter((item) => item.product.id === productId);
+      const exact = current.find((item) => item.clientKey === identifier);
+      const targets = exact
+        ? [exact]
+        : current.filter((item) => item.product.id === identifier);
       for (const target of targets) {
         void commerceApi
           .deleteCartItem(target.clientKey)
           .catch(() => undefined);
       }
-      return current.filter((item) => item.product.id !== productId);
+      const targetKeys = new Set(targets.map((item) => item.clientKey));
+      return current.filter((item) => !targetKeys.has(item.clientKey));
     });
   }, []);
 
   const updateCartQuantity = useCallback(
-    (productId: string, quantity: number) => {
+    (identifier: string, quantity: number) => {
       setCartItems((current) => {
-        const target = current.find((item) => item.product.id === productId);
+        const target =
+          current.find((item) => item.clientKey === identifier) ??
+          current.find((item) => item.product.id === identifier);
         if (!target) return current;
 
         if (quantity <= 0) {

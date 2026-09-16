@@ -22,6 +22,23 @@ export type ProductDetails = {
   preferredFor: SiteText[];
 };
 
+export type ProductVariantSelection = {
+  attribute: string;
+  value: string;
+};
+
+export type ProductVariant = {
+  id: string;
+  sku: string;
+  price?: number | null;
+  compareAtPrice?: number | null;
+  stock: number;
+  imageUrl?: string | null;
+  isActive: boolean;
+  valueIds?: string[];
+  selections: ProductVariantSelection[];
+};
+
 export type MaanikoProduct = {
   id: string;
   slug: string;
@@ -48,6 +65,8 @@ export type MaanikoProduct = {
     name: SiteText;
     values: { id: string; value: SiteText; colorHex?: string | null }[];
   }[];
+  variants?: ProductVariant[];
+  selectedVariant?: ProductVariant;
 };
 
 export type ProductCardProps = {

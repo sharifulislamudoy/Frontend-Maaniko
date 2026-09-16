@@ -1,5 +1,8 @@
 import type { ReactNode } from "react";
-import type { MaanikoProduct } from "@/modules/products/types/product";
+import type {
+  MaanikoProduct,
+  ProductVariant,
+} from "@/modules/products/types/product";
 
 export type CustomComboConfigItem = {
   productId: string;
@@ -12,6 +15,7 @@ export type CartItem = {
   clientKey: string;
   customConfig?: CustomComboConfigItem[] | null;
   isCustomized?: boolean;
+  selectedVariant?: ProductVariant;
 };
 
 export type ShopProviderProps = {
@@ -28,7 +32,11 @@ export type ShopContextValue = {
   isHydrated: boolean;
   openCart: () => void;
   closeCart: () => void;
-  addToCart: (product: MaanikoProduct, quantity?: number) => void;
+  addToCart: (
+    product: MaanikoProduct,
+    quantity?: number,
+    variant?: ProductVariant,
+  ) => void;
   addCustomComboToCart: (
     product: MaanikoProduct,
     config: CustomComboConfigItem[],

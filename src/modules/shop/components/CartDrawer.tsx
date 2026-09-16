@@ -178,11 +178,22 @@ export default function CartDrawer() {
                                     Customized Box
                                   </span>
                                 ) : null}
+
+                                {item.selectedVariant?.selections.length ? (
+                                  <p className="mt-1 text-[11px] font-semibold leading-4 text-slate-500">
+                                    {item.selectedVariant.selections
+                                      .map(
+                                        (selection) =>
+                                          `${selection.attribute}: ${selection.value}`,
+                                      )
+                                      .join(" • ")}
+                                  </p>
+                                ) : null}
                               </div>
 
                               <button
                                 type="button"
-                                onClick={() => removeFromCart(item.product.id)}
+                                onClick={() => removeFromCart(item.clientKey)}
                                 className="grid size-8 place-items-center rounded-full text-slate-400 transition hover:bg-red-50 hover:text-red-500"
                                 aria-label="কার্ট থেকে সরান"
                               >
@@ -199,7 +210,7 @@ export default function CartDrawer() {
                                 type="button"
                                 onClick={() =>
                                   updateCartQuantity(
-                                    item.product.id,
+                                    item.clientKey,
                                     item.quantity - 1,
                                   )
                                 }
@@ -217,7 +228,7 @@ export default function CartDrawer() {
                                 type="button"
                                 onClick={() =>
                                   updateCartQuantity(
-                                    item.product.id,
+                                    item.clientKey,
                                     item.quantity + 1,
                                   )
                                 }

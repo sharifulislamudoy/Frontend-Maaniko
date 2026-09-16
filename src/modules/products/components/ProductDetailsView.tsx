@@ -56,6 +56,37 @@ export default function ProductDetailsView({
   );
 
   const [cartStatus, setCartStatus] = useState<CartStatus>("idle");
+  const activeVariants = useMemo(
+    () => (product.variants ?? []).filter((variant) => variant.isActive),
+    [product.variants],
+  );
+  const hasVariants = activeVariants.length > 0;
+  const [selectedOptions, setSelectedOptions] = useState<
+    Record<string, string>
+  >(() => {
+    const initial =
+      activeVariants.find((variant) => variant.stock > 0) ?? activeVariants[0];
+    return Object.fromEntries(
+      (initial?.selections ?? []).map((selection) => [
+        selection.attribute,
+        selection.value,
+      ]),
+    );
+  });
+
+  const selectedVariant = useMemo(
+    () =>
+      activeVariants.find((variant) =>
+        (product.attributes ?? []).every((attribute) =>
+          variant.selections.some(
+            (selection) =>
+              selection.attribute === attribute.name &&
+              selection.value === selectedOptions[attribute.name],
+          ),
+        ),
+      ),
+    [activeVariants, product.attributes, selectedOptions],
+  );
 
   const resetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -64,8 +95,39 @@ export default function ProductDetailsView({
   const productCategory = text(product.category);
   const productBadge = product.badge ? text(product.badge) : "";
 
-  const isAvailable = product.stock > 0;
+  const effectivePrice = selectedVariant?.price ?? product.price;
+  const effectiveCompareAtPrice =
+    selectedVariant?.compareAtPrice ?? product.compareAtPrice;
+  const effectiveStock = selectedVariant?.stock ?? product.stock;
+  const selectionComplete =
+    !hasVariants ||
+    Boolean(
+      selectedVariant &&
+      (product.attributes ?? []).every(
+        (attribute) => selectedOptions[attribute.name],
+      ),
+    );
+  const isAvailable = selectionComplete && effectiveStock > 0;
   const details = product.details;
+  const displayedProduct = useMemo<MaanikoProduct>(() => {
+    const imageUrl = selectedVariant?.imageUrl;
+    return {
+      ...product,
+      price: effectivePrice,
+      compareAtPrice: effectiveCompareAtPrice,
+      stock: effectiveStock,
+      sku: selectedVariant?.sku ?? product.sku,
+      images: imageUrl
+        ? [imageUrl, ...product.images.filter((image) => image !== imageUrl)]
+        : product.images,
+    };
+  }, [
+    effectiveCompareAtPrice,
+    effectivePrice,
+    effectiveStock,
+    product,
+    selectedVariant,
+  ]);
 
   const priceFormatter = useMemo(
     () =>
@@ -85,7 +147,7 @@ export default function ProductDetailsView({
 
   const discountAmount = Math.max(
     0,
-    (product.compareAtPrice ?? product.price) - product.price,
+    (effectiveCompareAtPrice ?? effectivePrice) - effectivePrice,
   );
 
   const tabs = useMemo(
@@ -131,7 +193,7 @@ export default function ProductDetailsView({
   function handleAddToCart() {
     if (!isAvailable) return;
 
-    addToCart(product);
+    addToCart(product, 1, selectedVariant);
     setCartStatus("added");
 
     if (resetTimerRef.current) {
@@ -149,15 +211,17 @@ export default function ProductDetailsView({
     router.push(
       `/checkout?mode=buy-now&productId=${encodeURIComponent(
         product.id,
-      )}&quantity=1`,
+      )}${selectedVariant ? `&variantId=${encodeURIComponent(selectedVariant.id)}` : ""}&quantity=1`,
     );
   }
 
-  const cartButtonLabel = isAvailable
-    ? cartStatus === "added"
-      ? t("actions.addedToCart")
-      : t("actions.addToCart")
-    : t("product.outOfStock");
+  const cartButtonLabel = !selectionComplete
+    ? "অপশন নির্বাচন করুন"
+    : isAvailable
+      ? cartStatus === "added"
+        ? t("actions.addedToCart")
+        : t("actions.addToCart")
+      : t("product.outOfStock");
 
   return (
     <main className="min-h-screen bg-[#fff9fb] pb-36 pt-2 text-[#062a54] md:pb-40 md:pt-5 xl:pb-0">
@@ -189,7 +253,7 @@ export default function ProductDetailsView({
         </nav>
 
         <section className="grid min-w-0 items-start gap-3 md:gap-5 lg:grid-cols-[0.9fr_1.1fr] lg:items-stretch">
-          <ProductGallery product={product} />
+          <ProductGallery product={displayedProduct} />
 
           <div className="h-fit min-w-0 rounded-2xl border border-[#dce3ec] bg-white p-3 shadow-[0_12px_36px_rgba(6,42,84,0.06)] md:p-5 lg:flex lg:h-full lg:flex-col">
             {productBadge && (
@@ -208,13 +272,13 @@ export default function ProductDetailsView({
 
             <div className="mt-3 flex min-w-0 flex-wrap items-end gap-2 md:mt-5 md:gap-3">
               <span className="break-words text-xl font-black text-[#FC5689] md:text-3xl">
-                {priceFormatter.format(product.price)}
+                {priceFormatter.format(effectivePrice)}
               </span>
 
-              {product.compareAtPrice &&
-                product.compareAtPrice > product.price && (
+              {effectiveCompareAtPrice &&
+                effectiveCompareAtPrice > effectivePrice && (
                   <span className="text-sm font-semibold text-slate-400 line-through md:text-lg">
-                    {priceFormatter.format(product.compareAtPrice)}
+                    {priceFormatter.format(effectiveCompareAtPrice)}
                   </span>
                 )}
 
@@ -225,6 +289,102 @@ export default function ProductDetailsView({
                 </span>
               )}
             </div>
+
+            {hasVariants ? (
+              <section className="mt-4 space-y-4 border-t border-[#dce3ec] pt-4">
+                {(product.attributes ?? []).map((attribute) => (
+                  <div key={attribute.id}>
+                    <div className="mb-2 flex items-center justify-between gap-3">
+                      <h2 className="text-xs font-black text-[#062a54] md:text-sm">
+                        {text(attribute.name)} নির্বাচন করুন
+                      </h2>
+                      <span className="text-[11px] font-bold text-[#FC5689]">
+                        {selectedOptions[attribute.name] || "নির্বাচিত হয়নি"}
+                      </span>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {attribute.values.map((option) => {
+                        const selected =
+                          selectedOptions[attribute.name] === option.value;
+                        const candidates = activeVariants.filter(
+                          (variant) =>
+                            variant.stock > 0 &&
+                            variant.selections.some(
+                              (selection) =>
+                                selection.attribute === attribute.name &&
+                                selection.value === option.value,
+                            ),
+                        );
+                        const available = candidates.length > 0;
+
+                        return (
+                          <button
+                            key={option.id}
+                            type="button"
+                            disabled={!available}
+                            onClick={() => {
+                              const compatible =
+                                candidates.find((variant) =>
+                                  Object.entries(selectedOptions).every(
+                                    ([otherAttribute, otherValue]) =>
+                                      otherAttribute === attribute.name ||
+                                      !otherValue ||
+                                      variant.selections.some(
+                                        (selection) =>
+                                          selection.attribute ===
+                                            otherAttribute &&
+                                          selection.value === otherValue,
+                                      ),
+                                  ),
+                                ) ?? candidates[0];
+                              if (compatible) {
+                                setSelectedOptions(
+                                  Object.fromEntries(
+                                    compatible.selections.map((selection) => [
+                                      selection.attribute,
+                                      selection.value,
+                                    ]),
+                                  ),
+                                );
+                              }
+                              setCartStatus("idle");
+                            }}
+                            className={`inline-flex min-h-10 items-center gap-2 rounded-xl border px-3 py-2 text-xs font-extrabold transition md:text-sm ${
+                              selected
+                                ? "border-[#FC5689] bg-[#fff4f6] text-[#FC5689] ring-2 ring-[#FC5689]/10"
+                                : available
+                                  ? "border-[#dce3ec] bg-white text-[#062a54] hover:border-[#FC5689]"
+                                  : "cursor-not-allowed border-slate-200 bg-slate-100 text-slate-400 line-through"
+                            }`}
+                          >
+                            {option.colorHex ? (
+                              <span
+                                className="size-4 rounded-full border border-black/10 shadow-sm"
+                                style={{ backgroundColor: option.colorHex }}
+                                aria-hidden="true"
+                              />
+                            ) : null}
+                            {text(option.value)}
+                            {selected ? <Check className="size-3.5" /> : null}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
+
+                {selectedVariant ? (
+                  <p className="text-[11px] font-semibold text-slate-500">
+                    SKU: {selectedVariant.sku} • স্টক:{" "}
+                    {numberFormatter.format(selectedVariant.stock)}
+                  </p>
+                ) : (
+                  <p className="text-xs font-bold text-amber-600">
+                    এই অপশন combination-টি বর্তমানে পাওয়া যাচ্ছে না।
+                  </p>
+                )}
+              </section>
+            ) : null}
 
             {product.rating !== undefined && (
               <div className="mt-2 flex flex-wrap items-center gap-1.5 text-xs text-slate-500 md:mt-3 md:gap-2 md:text-sm">

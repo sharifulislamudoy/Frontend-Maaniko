@@ -32,7 +32,16 @@ export default function ProductCard({ product }: ProductCardProps) {
   const productHref = product.href ?? `/products/${product.slug}`;
   const primaryImage = product.images[0] ?? "";
   const secondaryImage = product.images[1] ?? primaryImage;
-  const isAvailable = product.stock > 0;
+  const hasVariants = Boolean(
+    product.variants?.some((variant) => variant.isActive),
+  );
+  const isAvailable = hasVariants
+    ? Boolean(
+        product.variants?.some(
+          (variant) => variant.isActive && variant.stock > 0,
+        ),
+      )
+    : product.stock > 0;
   const wished = isInWishlist(product.id);
   const buyNowLabel = "এখনই কিনুন";
 
@@ -71,6 +80,11 @@ export default function ProductCard({ product }: ProductCardProps) {
   function handleAddToCart() {
     if (!isAvailable) return;
 
+    if (hasVariants) {
+      router.push(productHref);
+      return;
+    }
+
     addToCart(product);
     setCartStatus("added");
 
@@ -83,6 +97,11 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   function handleBuyNow() {
     if (!isAvailable) return;
+
+    if (hasVariants) {
+      router.push(productHref);
+      return;
+    }
 
     router.push(
       `/checkout?mode=buy-now&productId=${encodeURIComponent(product.id)}&quantity=1`,

@@ -68,6 +68,7 @@ export default function CheckoutContent({
 
   const isDirectCheckout = searchParams.get("mode") === "buy-now";
   const requestedId = searchParams.get("productId") ?? "";
+  const requestedVariantId = searchParams.get("variantId") ?? "";
   const requestedQuantity = Math.max(
     1,
     Number.parseInt(searchParams.get("quantity") ?? "1", 10) || 1,
@@ -88,9 +89,10 @@ export default function CheckoutContent({
       : {
           itemType: "PRODUCT" as const,
           productId: directProduct.id,
+          variantId: requestedVariantId || undefined,
           quantity: requestedQuantity,
         };
-  }, [directProduct, requestedQuantity]);
+  }, [directProduct, requestedQuantity, requestedVariantId]);
 
   const quoteInput = useMemo(
     () =>
