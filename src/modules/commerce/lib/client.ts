@@ -156,6 +156,27 @@ export type AiChatMessage = {
   content: string;
 };
 
+export type AiRecommendation = {
+  type: "PRODUCT" | "SOLUTION_BOX" | "CUSTOM_SOLUTION_BOX";
+  name: string;
+  href: string;
+  image: string | null;
+  price: number | null;
+  compareAtPrice: number | null;
+  available: boolean;
+};
+
+export type AiChatResponse = {
+  conversationId: string;
+  messageId: string | null;
+  answer: string;
+  intent: string;
+  needsFollowUp: boolean;
+  resolved: boolean;
+  quickReplies: string[];
+  recommendations: AiRecommendation[];
+};
+
 export type PublicOrderTracking = {
   orderNumber: string;
   status: string;
@@ -190,11 +211,21 @@ export const commerceApi = {
     pagePath?: string;
     customerName?: string;
     customerPhone?: string;
+    conversationId?: string;
   }) =>
-    apiRequest<{ answer: string }>("/ai-assistant/chat", {
+    apiRequest<AiChatResponse>("/ai-assistant/chat", {
       method: "POST",
       body,
     }),
+
+  rateMaanikoAi: (
+    messageId: string,
+    body: { helpful: boolean; feedback?: string },
+  ) =>
+    apiRequest<{ saved: boolean }>(
+      `/ai-assistant/messages/${encodeURIComponent(messageId)}/feedback`,
+      { method: "POST", body },
+    ),
 
   getCart: () => apiRequest<CommerceCart>("/commerce/cart"),
 

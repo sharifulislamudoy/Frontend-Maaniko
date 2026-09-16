@@ -4,20 +4,35 @@ import { AnimatePresence, motion } from "motion/react";
 import {
   ArrowUp,
   Bot,
+  ChevronRight,
   RotateCcw,
   ShieldCheck,
   Sparkles,
+  ThumbsDown,
+  ThumbsUp,
   X,
 } from "lucide-react";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import {
   commerceApi,
   getSavedContact,
+  type AiChatResponse,
   type AiChatMessage,
+  type AiRecommendation,
 } from "@/modules/commerce/lib/client";
 
-type Message = AiChatMessage & { id: string };
+type Message = AiChatMessage & {
+  id: string;
+  serverMessageId?: string | null;
+  needsFollowUp?: boolean;
+  quickReplies?: string[];
+  recommendations?: AiRecommendation[];
+  feedback?: "helpful" | "unhelpful";
+};
+
+const CHAT_STORAGE_KEY = "maaniko-ai-chat-v2";
 
 const starters = [
   "আমার জন্য কোন পণ্যটি ভালো হবে?",
@@ -138,6 +153,61 @@ function RichText({
   );
 }
 
+function RecommendationCard({
+  item,
+  onNavigate,
+}: {
+  item: AiRecommendation;
+  onNavigate: (href: string) => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={() => onNavigate(item.href)}
+      className="group flex w-full items-center gap-3 rounded-2xl border border-[#e7e9ee] bg-white p-2.5 text-left shadow-[0_5px_18px_rgba(6,42,84,.045)] transition hover:-translate-y-0.5 hover:border-[#ef4277]/35 hover:shadow-[0_10px_24px_rgba(6,42,84,.08)]"
+    >
+      <div className="relative size-16 shrink-0 overflow-hidden rounded-xl bg-[#f6f7f9]">
+        {item.image ? (
+          <Image
+            src={item.image}
+            alt={item.name}
+            fill
+            sizes="64px"
+            className="object-cover transition duration-300 group-hover:scale-105"
+          />
+        ) : (
+          <div className="grid size-full place-items-center bg-gradient-to-br from-[#fff0f5] to-[#edf8ff] text-[#ef4277]">
+            <Sparkles className="size-6" />
+          </div>
+        )}
+      </div>
+      <div className="min-w-0 flex-1">
+        <p className="line-clamp-2 text-xs font-black leading-5 text-[#183b60]">
+          {item.name}
+        </p>
+        <div className="mt-1 flex flex-wrap items-center gap-2">
+          {item.price !== null && (
+            <span className="text-sm font-black text-[#ef4277]">
+              ৳{item.price.toLocaleString("bn-BD")}
+            </span>
+          )}
+          {item.compareAtPrice !== null && item.compareAtPrice > (item.price ?? 0) && (
+            <span className="text-[10px] text-slate-400 line-through">
+              ৳{item.compareAtPrice.toLocaleString("bn-BD")}
+            </span>
+          )}
+          {!item.available && (
+            <span className="rounded-full bg-amber-50 px-2 py-0.5 text-[9px] font-bold text-amber-700">
+              স্টক শেষ
+            </span>
+          )}
+        </div>
+      </div>
+      <ChevronRight className="size-4 shrink-0 text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-[#ef4277]" />
+    </button>
+  );
+}
+
 export default function MaanikoAiAssistant({
   open,
   onClose,
@@ -152,9 +222,37 @@ export default function MaanikoAiAssistant({
   const [working, setWorking] = useState(false);
   const [thinkingIndex, setThinkingIndex] = useState(0);
   const [isTyping, setIsTyping] = useState(false);
+  const [conversationId, setConversationId] = useState("");
+  const [hydrated, setHydrated] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const typingTimer = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  useEffect(() => {
+    try {
+      const raw = window.sessionStorage.getItem(CHAT_STORAGE_KEY);
+      if (raw) {
+        const saved = JSON.parse(raw) as {
+          conversationId?: string;
+          messages?: Message[];
+        };
+        if (saved.conversationId) setConversationId(saved.conversationId);
+        if (Array.isArray(saved.messages)) setMessages(saved.messages.slice(-20));
+      }
+    } catch {
+      window.sessionStorage.removeItem(CHAT_STORAGE_KEY);
+    } finally {
+      setHydrated(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!hydrated) return;
+    window.sessionStorage.setItem(
+      CHAT_STORAGE_KEY,
+      JSON.stringify({ conversationId, messages: messages.slice(-20) }),
+    );
+  }, [conversationId, hydrated, messages]);
 
   useEffect(() => {
     if (!open) return;
@@ -193,13 +291,22 @@ export default function MaanikoAiAssistant({
     [],
   );
 
-  function typeAnswer(answer: string) {
+  function typeAnswer(result: AiChatResponse) {
+    const answer = result.answer;
     const id = `assistant-${Date.now()}`;
     let cursor = 0;
     setIsTyping(true);
     setMessages((current) => [
       ...current,
-      { id, role: "assistant", content: "" },
+      {
+        id,
+        role: "assistant",
+        content: "",
+        serverMessageId: result.messageId,
+        needsFollowUp: result.needsFollowUp,
+        quickReplies: result.quickReplies,
+        recommendations: result.recommendations,
+      },
     ]);
 
     const charactersPerTick = Math.max(4, Math.ceil(answer.length / 220));
@@ -244,8 +351,10 @@ export default function MaanikoAiAssistant({
         pagePath: pathname,
         customerName: savedContact.name || undefined,
         customerPhone: savedContact.phone || undefined,
+        conversationId: conversationId || undefined,
       });
-      typeAnswer(result.answer);
+      setConversationId(result.conversationId);
+      typeAnswer(result);
     } catch (error) {
       setMessages((current) => [
         ...current,
@@ -274,6 +383,27 @@ export default function MaanikoAiAssistant({
     setWorking(false);
     setIsTyping(false);
     setInput("");
+    setConversationId("");
+    window.sessionStorage.removeItem(CHAT_STORAGE_KEY);
+  }
+
+  async function rateMessage(message: Message, helpful: boolean) {
+    if (!message.serverMessageId || message.feedback) return;
+    const feedback = helpful ? "helpful" : "unhelpful";
+    setMessages((current) =>
+      current.map((item) =>
+        item.id === message.id ? { ...item, feedback } : item,
+      ),
+    );
+    try {
+      await commerceApi.rateMaanikoAi(message.serverMessageId, { helpful });
+    } catch {
+      setMessages((current) =>
+        current.map((item) =>
+          item.id === message.id ? { ...item, feedback: undefined } : item,
+        ),
+      );
+    }
   }
 
   function navigateTo(href: string) {
@@ -303,7 +433,7 @@ export default function MaanikoAiAssistant({
             transition={{ type: "spring", stiffness: 320, damping: 30 }}
             className="flex h-[min(88dvh,720px)] w-full flex-col overflow-hidden rounded-t-[24px] border border-[#dfe6ee] bg-[#f8fafc] shadow-[0_28px_80px_rgba(6,42,84,.22)] sm:max-w-[520px] sm:rounded-[24px] xl:h-[min(78dvh,720px)]"
           >
-            <header className="relative border-b border-[#e5eaf0] bg-white px-4 pb-4 pt-4 text-[#062a54] sm:px-5">
+            <header className="relative border-b border-[#e5eaf0] bg-gradient-to-r from-white via-[#fff9fb] to-[#f3fbff] px-4 pb-4 pt-4 text-[#062a54] sm:px-5">
               <div className="relative flex items-center gap-3">
                 <div className="relative grid size-11 shrink-0 place-items-center rounded-2xl bg-[#f2f5f8] ring-1 ring-[#dfe6ee]">
                   <Bot className="size-6" />
@@ -373,22 +503,22 @@ export default function MaanikoAiAssistant({
                   </div>
                   <div className="mt-5 flex items-center justify-center gap-1.5 text-[10px] font-semibold text-slate-400">
                     <ShieldCheck className="size-3.5 text-emerald-500" />
-                    ব্যক্তিগত তথ্য সুরক্ষিত রাখা হয়
+                    সংবেদনশীল তথ্য বাদ দিয়ে conversation সুরক্ষিত রাখা হয়
                   </div>
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {messages.map((message) => (
+                  {messages.map((message, index) => (
                     <div
                       key={message.id}
-                      className={`flex ${
+                      className={`flex flex-col ${
                         message.role === "user" ? "justify-end" : "justify-start"
                       }`}
                     >
                       <div
                         className={`max-w-[88%] rounded-2xl px-3.5 py-2.5 text-[13px] shadow-sm sm:text-sm ${
                           message.role === "user"
-                            ? "rounded-br-md bg-[#062a54] text-white"
+                            ? "self-end rounded-br-md bg-[#062a54] text-white"
                             : "rounded-bl-md border border-[#eee3e8] bg-white text-slate-700"
                         }`}
                       >
@@ -401,6 +531,68 @@ export default function MaanikoAiAssistant({
                           message.content
                         )}
                       </div>
+                      {message.role === "assistant" &&
+                        !isTyping &&
+                        Boolean(message.recommendations?.length) && (
+                          <div className="mt-2 grid w-[94%] gap-2">
+                            {message.recommendations?.map((item) => (
+                              <RecommendationCard
+                                key={`${message.id}-${item.href}`}
+                                item={item}
+                                onNavigate={navigateTo}
+                              />
+                            ))}
+                          </div>
+                        )}
+                      {message.role === "assistant" &&
+                        !isTyping &&
+                        index === messages.length - 1 &&
+                        Boolean(message.quickReplies?.length) && (
+                          <div className="mt-2 flex max-w-[94%] flex-wrap gap-1.5">
+                            {message.quickReplies?.map((reply) => (
+                              <button
+                                key={reply}
+                                type="button"
+                                disabled={working}
+                                onClick={() => void send(reply)}
+                                className="rounded-full border border-[#ef4277]/20 bg-[#fff7fa] px-3 py-1.5 text-[11px] font-bold text-[#c83263] transition hover:border-[#ef4277]/45 hover:bg-[#fff0f5] disabled:opacity-50"
+                              >
+                                {reply}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      {message.role === "assistant" &&
+                        !isTyping &&
+                        message.serverMessageId && (
+                          <div className="mt-1.5 flex items-center gap-1 text-[10px] text-slate-400">
+                            <span className="mr-1">উত্তরটি সহায়ক?</span>
+                            <button
+                              type="button"
+                              aria-label="সহায়ক হয়েছে"
+                              onClick={() => void rateMessage(message, true)}
+                              className={`grid size-7 place-items-center rounded-full transition ${
+                                message.feedback === "helpful"
+                                  ? "bg-emerald-100 text-emerald-700"
+                                  : "hover:bg-slate-100 hover:text-emerald-600"
+                              }`}
+                            >
+                              <ThumbsUp className="size-3.5" />
+                            </button>
+                            <button
+                              type="button"
+                              aria-label="সহায়ক হয়নি"
+                              onClick={() => void rateMessage(message, false)}
+                              className={`grid size-7 place-items-center rounded-full transition ${
+                                message.feedback === "unhelpful"
+                                  ? "bg-rose-100 text-rose-700"
+                                  : "hover:bg-slate-100 hover:text-rose-600"
+                              }`}
+                            >
+                              <ThumbsDown className="size-3.5" />
+                            </button>
+                          </div>
+                        )}
                     </div>
                   ))}
                   {working && !isTyping && (
@@ -475,7 +667,7 @@ export default function MaanikoAiAssistant({
                 </motion.button>
               </div>
               <p className="mt-2 text-center text-[9px] text-slate-400">
-                AI ভুল করতে পারে—গুরুত্বপূর্ণ তথ্য যাচাই করুন।
+                সেবা উন্নত করতে সংবেদনশীল তথ্য বাদ দিয়ে chat সংরক্ষিত হয়।
               </p>
             </form>
           </motion.section>
