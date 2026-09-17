@@ -257,7 +257,7 @@ export default function ProductDetailsView({
 
           <div className="h-fit min-w-0 rounded-2xl border border-[#dce3ec] bg-white p-3 shadow-[0_12px_36px_rgba(6,42,84,0.06)] md:p-5 lg:flex lg:h-full lg:flex-col">
             {productBadge && (
-              <span className="inline-flex rounded-full bg-[#FC5689]/10 px-2.5 py-1 text-[10px] font-bold text-[#FC5689] md:px-3 md:text-xs">
+              <span className="w-[12%] text-center rounded-full bg-[#FC5689]/10 px-2.5 py-1 text-[10px] font-bold text-[#FC5689] md:px-3 md:text-xs">
                 {productBadge}
               </span>
             )}

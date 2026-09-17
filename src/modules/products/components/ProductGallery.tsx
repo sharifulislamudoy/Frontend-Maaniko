@@ -50,7 +50,7 @@ export default function ProductGallery({ product }: ProductGalleryProps) {
   }
 
   return (
-    <div className="flex h-fit min-w-0 flex-col rounded-2xl border border-[#dce3ec] bg-white p-2 shadow-[0_12px_36px_rgba(6,42,84,0.06)] md:p-4 lg:h-full">
+    <div className="flex h-fit min-w-0 flex-col self-start rounded-2xl border border-[#dce3ec] bg-white p-2 shadow-[0_12px_36px_rgba(6,42,84,0.06)] md:p-4">
       <div
         className={`relative grid aspect-square place-items-center overflow-hidden rounded-xl bg-[#fff4f6] md:rounded-2xl ${
           hasMultipleImages ? "" : "lg:my-auto"
@@ -121,7 +121,7 @@ export default function ProductGallery({ product }: ProductGalleryProps) {
       </div>
 
       {hasMultipleImages && (
-        <div className="mt-2 min-w-0 md:mt-4 lg:mt-auto lg:pt-4">
+        <div className="mt-2 min-w-0 md:mt-4">
           <div className="flex max-w-full cursor-grab snap-x snap-mandatory justify-start gap-2 overflow-x-auto pb-1 active:cursor-grabbing md:pb-2 lg:justify-center">
             {product.images.map((image, index) => (
               <button
