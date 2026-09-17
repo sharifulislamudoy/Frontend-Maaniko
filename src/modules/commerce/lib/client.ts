@@ -204,6 +204,16 @@ export type PublicOrderTracking = {
   }>;
 };
 
+export type PushInboxItem = {
+  id: string;
+  type: "OFFER" | "ORDER_STATUS" | "TEST";
+  title: string;
+  body: string;
+  imageUrl?: string | null;
+  link?: string | null;
+  createdAt: string;
+};
+
 export const commerceApi = {
   askMaanikoAi: (body: {
     message: string;
@@ -296,6 +306,11 @@ export const commerceApi = {
       method: "DELETE",
       body: { token },
     }),
+
+  getPushInbox: () =>
+    apiRequest<{ notifications: PushInboxItem[] }>(
+      "/commerce/push/inbox",
+    ),
 
   quoteCombo: (
     comboId: string,

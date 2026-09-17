@@ -21,12 +21,15 @@ function isStandalone() {
   return window.matchMedia("(display-mode: standalone)").matches || iosStandalone;
 }
 
-function isIosSafari() {
-  if (typeof window === "undefined") return false;
+function getIosBrowser() {
+  if (typeof window === "undefined") return null;
   const agent = window.navigator.userAgent;
   const isIos = /iPad|iPhone|iPod/.test(agent);
-  const isSafari = /Safari/.test(agent) && !/CriOS|FxiOS|EdgiOS/.test(agent);
-  return isIos && isSafari;
+  if (!isIos) return null;
+  if (/CriOS/.test(agent)) return "chrome" as const;
+  if (/FxiOS/.test(agent)) return "firefox" as const;
+  if (/EdgiOS/.test(agent)) return "edge" as const;
+  return "safari" as const;
 }
 
 function canShowPrompt() {
@@ -43,7 +46,9 @@ export default function PwaInstallPrompt() {
     useState<BeforeInstallPromptEvent | null>(null);
   const [open, setOpen] = useState(false);
   const [installing, setInstalling] = useState(false);
-  const [ios, setIos] = useState(false);
+  const [iosBrowser, setIosBrowser] = useState<
+    "chrome" | "safari" | "firefox" | "edge" | null
+  >(null);
 
   useEffect(() => {
     if ("serviceWorker" in navigator) {
@@ -56,7 +61,7 @@ export default function PwaInstallPrompt() {
     }
 
     window.localStorage.removeItem(INSTALLED_KEY);
-    const iosDevice = isIosSafari();
+    const detectedIosBrowser = getIosBrowser();
 
     const handleInstallPrompt = (event: Event) => {
       event.preventDefault();
@@ -76,9 +81,9 @@ export default function PwaInstallPrompt() {
     window.addEventListener("appinstalled", handleInstalled);
 
     let iosTimer: number | undefined;
-    if (iosDevice) {
+    if (detectedIosBrowser) {
       iosTimer = window.setTimeout(() => {
-        setIos(true);
+        setIosBrowser(detectedIosBrowser);
         if (canShowPrompt()) setOpen(true);
       }, 1200);
     }
@@ -114,7 +119,7 @@ export default function PwaInstallPrompt() {
   }
 
   async function install() {
-    if (ios || !installEvent) return;
+    if (iosBrowser || !installEvent) return;
     setInstalling(true);
     try {
       await installEvent.prompt();
@@ -183,12 +188,22 @@ export default function PwaInstallPrompt() {
                 হোম স্ক্রিন থেকে এক ট্যাপে Maaniko খুলুন। ব্রাউজার খোঁজার ঝামেলা ছাড়াই দ্রুত পণ্য, অর্ডার ও প্রয়োজনীয় গাইড দেখুন।
               </p>
 
-              {ios ? (
+              {iosBrowser ? (
                 <div className="mt-5 space-y-3 rounded-2xl bg-[#f7f9fc] p-4 ring-1 ring-[#e7edf3]">
-                  <p className="text-xs font-black text-[#062a54]">iPhone বা iPad-এ ইনস্টল করুন</p>
+                  <p className="text-xs font-black text-[#062a54]">
+                    {iosBrowser === "chrome"
+                      ? "iPhone Chrome থেকে ইনস্টল করুন"
+                      : "iPhone বা iPad-এ ইনস্টল করুন"}
+                  </p>
                   <div className="flex items-center gap-3 text-xs leading-5 text-slate-600">
                     <span className="grid size-8 shrink-0 place-items-center rounded-xl bg-white text-[#03A7FD] shadow-sm"><Share className="size-4" /></span>
-                    <span>Safari-এর নিচের <strong>Share</strong> বাটনে চাপুন</span>
+                    <span>
+                      {iosBrowser === "chrome" ? (
+                        <>Chrome address bar-এর পাশের <strong>Share</strong> বাটনে চাপুন</>
+                      ) : (
+                        <>Browser-এর <strong>Share</strong> বাটনে চাপুন</>
+                      )}
+                    </span>
                   </div>
                   <div className="flex items-center gap-3 text-xs leading-5 text-slate-600">
                     <span className="grid size-8 shrink-0 place-items-center rounded-xl bg-white text-[#FC5689] shadow-sm"><MoreVertical className="size-4" /></span>
@@ -205,7 +220,7 @@ export default function PwaInstallPrompt() {
                 >
                   এখন নয়
                 </button>
-                {ios ? (
+                {iosBrowser ? (
                   <button
                     type="button"
                     onClick={dismiss}

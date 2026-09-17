@@ -6,6 +6,7 @@ export default function manifest(): MetadataRoute.Manifest {
     short_name: "Maaniko",
     description: "মা ও শিশুর যত্নের বিশ্বস্ত প্ল্যাটফর্ম।",
     start_url: "/",
+    id: "/",
     scope: "/",
     display: "standalone",
     orientation: "portrait-primary",

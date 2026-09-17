@@ -440,6 +440,8 @@ export default function Navbar() {
           </nav>
 
           <div className="flex items-center gap-1.5">
+            <span id="desktop-notification-slot" className="contents" />
+
             <Link
               href="/wishlist"
               aria-label={t("nav.wishlist")}
@@ -500,6 +502,8 @@ export default function Navbar() {
             />
 
             <div className="flex items-center justify-self-end">
+              <span id="mobile-notification-slot" className="contents" />
+
               <Link
                 href="/wishlist"
                 aria-label={t("nav.wishlist")}
