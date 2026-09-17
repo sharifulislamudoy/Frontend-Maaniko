@@ -280,6 +280,23 @@ export const commerceApi = {
   track: (body: unknown) =>
     apiRequest<any>("/commerce/events", { method: "POST", body }),
 
+  registerPushDevice: (body: {
+    token: string;
+    allowOffers: boolean;
+    platform?: string;
+    userAgent?: string;
+  }) =>
+    apiRequest<{ subscribed: boolean }>("/commerce/push/devices", {
+      method: "POST",
+      body,
+    }),
+
+  unregisterPushDevice: (token: string) =>
+    apiRequest<{ subscribed: boolean }>("/commerce/push/devices", {
+      method: "DELETE",
+      body: { token },
+    }),
+
   quoteCombo: (
     comboId: string,
     body: {

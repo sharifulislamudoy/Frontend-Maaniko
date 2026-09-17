@@ -5,6 +5,7 @@ import { Toaster } from "sonner";
 
 import { SiteTextProvider } from "@/modules/site-content/context/SiteTextContext";
 import PwaInstallPrompt from "@/shared/components/PwaInstallPrompt";
+import PushNotificationManager from "@/modules/notifications/components/PushNotificationManager";
 
 import "./globals.css";
 
@@ -114,6 +115,7 @@ export default function RootLayout({
           {children}
 
           <PwaInstallPrompt />
+          <PushNotificationManager />
 
           <Toaster
             position="top-right"
