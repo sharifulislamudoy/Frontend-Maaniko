@@ -100,8 +100,8 @@ export default function PublicOrderTrackingView({ token }: { token: string }) {
   if (!data) {
     return (
       <section className="grid min-h-[68vh] place-items-center bg-[#f8fafc] px-4 py-10">
-        <div className="w-full max-w-md border border-[#e3e8ee] bg-white p-6 text-center shadow-[0_16px_45px_rgba(6,42,84,.07)]">
-          <span className="mx-auto grid size-12 place-items-center bg-[#fff0f5] text-[#e74879]">
+        <div className="w-full max-w-md rounded-3xl border border-[#e3e8ee] bg-white p-6 text-center shadow-[0_16px_45px_rgba(6,42,84,.07)]">
+          <span className="mx-auto grid size-12 place-items-center rounded-2xl bg-[#fff0f5] text-[#e74879]">
             <Clock3 className="size-6" />
           </span>
           <h1 className="mt-5 text-xl font-black text-[#062a54]">
@@ -110,7 +110,7 @@ export default function PublicOrderTrackingView({ token }: { token: string }) {
           <p className="mt-2 text-sm leading-6 text-slate-500">{error}</p>
           <Link
             href="/"
-            className="mt-5 inline-flex h-10 items-center gap-2 bg-[#062a54] px-4 text-sm font-black text-white"
+            className="mt-5 inline-flex h-10 items-center gap-2 rounded-xl bg-[#062a54] px-4 text-sm font-black text-white"
           >
             <ArrowLeft className="size-4" />
             Maaniko হোমে যান
@@ -134,7 +134,7 @@ export default function PublicOrderTrackingView({ token }: { token: string }) {
           Maaniko-তে ফিরে যান
         </Link>
 
-        <section className="border border-[#e3e8ee] bg-white shadow-[0_12px_36px_rgba(6,42,84,.05)]">
+        <section className="overflow-hidden rounded-3xl border border-[#e3e8ee] bg-white shadow-[0_12px_36px_rgba(6,42,84,.05)]">
           <header className="border-b border-[#e7ecf1] px-4 py-5 md:flex md:items-start md:justify-between md:px-6">
             <div>
               <div className="flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.07em] text-emerald-600">
@@ -159,7 +159,7 @@ export default function PublicOrderTrackingView({ token }: { token: string }) {
                 বর্তমান অবস্থা
               </p>
               <span
-                className={`mt-1.5 inline-flex px-3 py-1.5 text-xs font-black ${
+                className={`mt-1.5 inline-flex rounded-full px-3 py-1.5 text-xs font-black ${
                   isCancelled
                     ? "bg-red-50 text-red-600"
                     : data.status === "DELIVERED"
@@ -174,7 +174,7 @@ export default function PublicOrderTrackingView({ token }: { token: string }) {
 
           <div className="px-4 py-5 md:px-6 md:py-6">
             {isCancelled ? (
-              <div className="border border-red-100 bg-red-50 px-4 py-3 text-sm font-bold text-red-600">
+              <div className="rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-bold text-red-600">
                 এই অর্ডারটি বাতিল করা হয়েছে। সহায়তার প্রয়োজন হলে Maaniko-এর সঙ্গে
                 যোগাযোগ করুন।
               </div>
@@ -227,10 +227,10 @@ export default function PublicOrderTrackingView({ token }: { token: string }) {
                     {data.items.reduce((total, item) => total + item.quantity, 0)}টি item
                   </span>
                 </div>
-                <div className="mt-3 divide-y divide-[#e7ecf1] border border-[#e3e8ee]">
+                <div className="mt-3 divide-y divide-[#e7ecf1] overflow-hidden rounded-2xl border border-[#e3e8ee]">
                   {data.items.map((item) => (
                     <div key={item.id} className="flex items-center gap-3 p-3 md:p-4">
-                      <span className="grid size-14 shrink-0 place-items-center overflow-hidden bg-[#f2f5f8] text-slate-400 md:size-16">
+                      <span className="grid size-14 shrink-0 place-items-center overflow-hidden rounded-xl bg-[#f2f5f8] text-slate-400 md:size-16">
                         {item.image ? (
                           <img src={item.image} alt="" className="size-full object-cover" />
                         ) : (
@@ -252,7 +252,7 @@ export default function PublicOrderTrackingView({ token }: { token: string }) {
                   <h2 className="text-sm font-black text-[#062a54]">Order timeline</h2>
                   <div className="mt-3 grid gap-3 sm:grid-cols-2">
                     {data.history.map((history) => (
-                      <div key={history.id} className="border-l-2 border-[#e74879] bg-[#f8fafc] px-3 py-2.5">
+                      <div key={history.id} className="rounded-xl border-l-2 border-[#e74879] bg-[#f8fafc] px-3 py-2.5">
                         <p className="text-xs font-black text-[#183b60]">{STATUS_COPY[history.status] ?? history.status}</p>
                         {history.note ? <p className="mt-1 text-[11px] leading-4 text-slate-500">{history.note}</p> : null}
                         <p className="mt-1 text-[10px] text-slate-400">{new Date(history.createdAt).toLocaleString("bn-BD")}</p>
@@ -263,7 +263,7 @@ export default function PublicOrderTrackingView({ token }: { token: string }) {
               </section>
 
               <aside className="lg:border-l lg:border-[#e7ecf1] lg:pl-5">
-                <div className="bg-[#062a54] p-4 text-white">
+                <div className="rounded-2xl bg-[#062a54] p-4 text-white">
                   <h2 className="flex items-center gap-2 text-sm font-black">
                     <CircleDollarSign className="size-4 text-[#ffbfd3]" />
                     Payment summary
@@ -285,7 +285,7 @@ export default function PublicOrderTrackingView({ token }: { token: string }) {
                 </div>
 
                 {data.steadfastTrackingCode ? (
-                  <div className="mt-3 border border-[#e3e8ee] bg-white p-4">
+                  <div className="mt-3 rounded-2xl border border-[#e3e8ee] bg-white p-4">
                     <h2 className="flex items-center gap-2 text-sm font-black text-[#062a54]">
                       <Truck className="size-4 text-[#e74879]" />
                       Courier details
@@ -302,12 +302,12 @@ export default function PublicOrderTrackingView({ token }: { token: string }) {
                     </dl>
                   </div>
                 ) : (
-                  <div className="mt-3 border border-[#e3e8ee] bg-[#f8fafc] p-4 text-xs leading-5 text-slate-500">
+                  <div className="mt-3 rounded-2xl border border-[#e3e8ee] bg-[#f8fafc] p-4 text-xs leading-5 text-slate-500">
                     Courier tracking code তৈরি হলে এখানেই দেখা যাবে।
                   </div>
                 )}
 
-                <div className="mt-3 flex items-start gap-2 border border-emerald-100 bg-emerald-50 p-3 text-[11px] leading-5 text-emerald-800">
+                <div className="mt-3 flex items-start gap-2 rounded-2xl border border-emerald-100 bg-emerald-50 p-3 text-[11px] leading-5 text-emerald-800">
                   <ShieldCheck className="mt-0.5 size-4 shrink-0" />
                   <p>
                     এই public page-এ customer-এর phone, email বা delivery address

@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { Toaster } from "sonner";
 
 import { SiteTextProvider } from "@/modules/site-content/context/SiteTextContext";
+import PwaInstallPrompt from "@/shared/components/PwaInstallPrompt";
 
 import "./globals.css";
 
@@ -63,6 +64,20 @@ export const metadata: Metadata = {
     template: "%s | Maaniko",
   },
   description: "মানিকো—মায়ের পাশে, প্রতিটি ধাপে।",
+  manifest: "/manifest.webmanifest",
+  applicationName: "Maaniko",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Maaniko",
+  },
+  icons: {
+    icon: [
+      { url: "/icons/pwa-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icons/pwa-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [{ url: "/icons/pwa-192.png", sizes: "192x192" }],
+  },
 };
 
 export default function RootLayout({
@@ -97,6 +112,8 @@ export default function RootLayout({
       <body suppressHydrationWarning>
         <SiteTextProvider>
           {children}
+
+          <PwaInstallPrompt />
 
           <Toaster
             position="top-right"
