@@ -150,7 +150,7 @@ export default function ComboDetailsView({
   function handleBuyNow() {
     if (!isAvailable) return;
     router.push(
-      `/checkout?mode=buy-now&productId=${encodeURIComponent(product.id)}&quantity=1`,
+      `/checkout?mode=buy-now&productId=${encodeURIComponent(product.id)}&itemType=COMBO&quantity=1`,
     );
   }
 
@@ -611,12 +611,8 @@ function GuideSection({
             <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-[#FC5689]" />
 
             <div className="min-w-0">
-              <h3 className="font-black text-[#062a54]">
-                {text(step.title)}
-              </h3>
-              <p className="mt-1 text-slate-500">
-                {text(step.description)}
-              </p>
+              <h3 className="font-black text-[#062a54]">{text(step.title)}</h3>
+              <p className="mt-1 text-slate-500">{text(step.description)}</p>
             </div>
           </li>
         ))}

@@ -104,7 +104,7 @@ export default function ProductCard({ product }: ProductCardProps) {
     }
 
     router.push(
-      `/checkout?mode=buy-now&productId=${encodeURIComponent(product.id)}&quantity=1`,
+      `/checkout?mode=buy-now&productId=${encodeURIComponent(product.id)}&itemType=${product.productType === "combo" ? "COMBO" : "PRODUCT"}&quantity=1`,
     );
   }
 

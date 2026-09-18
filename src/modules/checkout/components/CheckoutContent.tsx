@@ -11,9 +11,8 @@ import {
   ShoppingBag,
   Truck,
 } from "lucide-react";
-import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 
-import type { MaanikoProduct } from "@/modules/products/types/product";
 import { useShop } from "@/modules/shop/context/ShopContext";
 import {
   commerceApi,
@@ -35,6 +34,12 @@ type FormState = {
   marketingConsent: boolean;
 };
 
+type CreatedOrder = {
+  orderNumber: string;
+  status: string;
+  publicTrackingToken?: string | null;
+};
+
 const emptyForm: FormState = {
   name: "",
   phone: "",
@@ -48,11 +53,7 @@ const emptyForm: FormState = {
   marketingConsent: false,
 };
 
-export default function CheckoutContent({
-  products,
-}: {
-  products: MaanikoProduct[];
-}) {
+export default function CheckoutContent() {
   const searchParams = useSearchParams();
   const { cartItems, isHydrated, ensureCartSynced, clearCartAfterOrder } =
     useShop();
@@ -62,45 +63,66 @@ export default function CheckoutContent({
   const [quoteError, setQuoteError] = useState("");
   const [quoteLoading, setQuoteLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const [orderResult, setOrderResult] = useState<any>(null);
+  const [orderResult, setOrderResult] = useState<CreatedOrder | null>(null);
   const [submitError, setSubmitError] = useState("");
   const [trackingCopied, setTrackingCopied] = useState(false);
-  const [rewardPointsToUse, setRewardPointsToUse] = useState(0);
+  const [rewardPointsInput, setRewardPointsInput] = useState("0");
+  const [appliedRewardPoints, setAppliedRewardPoints] = useState(0);
+  const [pointsApplying, setPointsApplying] = useState(false);
+  const lastSavedDraftRef = useRef("");
 
   const isDirectCheckout = searchParams.get("mode") === "buy-now";
   const requestedId = searchParams.get("productId") ?? "";
   const requestedVariantId = searchParams.get("variantId") ?? "";
+  const requestedItemType =
+    searchParams.get("itemType") === "COMBO" ? "COMBO" : "PRODUCT";
   const requestedQuantity = Math.max(
     1,
     Number.parseInt(searchParams.get("quantity") ?? "1", 10) || 1,
   );
 
-  const directProduct = isDirectCheckout
-    ? products.find((product) => product.id === requestedId)
-    : undefined;
-
   const directItem = useMemo(() => {
-    if (!directProduct) return undefined;
-    return directProduct.productType === "combo"
+    if (!isDirectCheckout || !requestedId) return undefined;
+    return requestedItemType === "COMBO"
       ? {
           itemType: "COMBO" as const,
-          comboId: directProduct.id,
+          comboId: requestedId,
           quantity: requestedQuantity,
         }
       : {
           itemType: "PRODUCT" as const,
-          productId: directProduct.id,
+          productId: requestedId,
           variantId: requestedVariantId || undefined,
           quantity: requestedQuantity,
         };
-  }, [directProduct, requestedQuantity, requestedVariantId]);
+  }, [
+    isDirectCheckout,
+    requestedId,
+    requestedItemType,
+    requestedQuantity,
+    requestedVariantId,
+  ]);
 
-  const quoteInput = useMemo(
+  const baseQuoteInput = useMemo(
     () =>
       isDirectCheckout
-        ? { mode: "BUY_NOW" as const, item: directItem, rewardPointsToUse }
-        : { mode: "CART" as const, rewardPointsToUse },
-    [directItem, isDirectCheckout, rewardPointsToUse],
+        ? { mode: "BUY_NOW" as const, item: directItem }
+        : { mode: "CART" as const },
+    [directItem, isDirectCheckout],
+  );
+
+  const quoteInput = useMemo(
+    () => ({ ...baseQuoteInput, rewardPointsToUse: appliedRewardPoints }),
+    [appliedRewardPoints, baseQuoteInput],
+  );
+
+  const cartSignature = useMemo(
+    () =>
+      cartItems
+        .map((item) => `${item.clientKey}:${item.quantity}`)
+        .sort()
+        .join("|"),
+    [cartItems],
   );
 
   const money = useMemo(
@@ -115,12 +137,15 @@ export default function CheckoutContent({
   );
 
   useEffect(() => {
-    const saved = getSavedContact();
-    setForm((current) => ({
-      ...current,
-      name: saved.name || current.name,
-      phone: saved.phone || current.phone,
-    }));
+    const timer = window.setTimeout(() => {
+      const saved = getSavedContact();
+      setForm((current) => ({
+        ...current,
+        name: saved.name || current.name,
+        phone: saved.phone || current.phone,
+      }));
+    }, 0);
+    return () => window.clearTimeout(timer);
   }, []);
 
   useEffect(() => {
@@ -129,12 +154,11 @@ export default function CheckoutContent({
     let cancelled = false;
 
     async function loadQuote() {
-      setQuoteLoading(true);
       setQuoteError("");
       try {
         if (!isDirectCheckout) await ensureCartSynced();
 
-        await commerceApi
+        void commerceApi
           .track({
             type: "CHECKOUT_STARTED",
             path: "/checkout",
@@ -145,8 +169,15 @@ export default function CheckoutContent({
           })
           .catch(() => undefined);
 
-        const nextQuote = await commerceApi.quoteOrder(quoteInput);
-        if (!cancelled) setQuote(nextQuote);
+        const nextQuote = await commerceApi.quoteOrder({
+          ...baseQuoteInput,
+          rewardPointsToUse: 0,
+        });
+        if (!cancelled) {
+          setQuote(nextQuote);
+          setAppliedRewardPoints(0);
+          setRewardPointsInput("0");
+        }
       } catch (error) {
         if (!cancelled) {
           setQuote(null);
@@ -166,11 +197,12 @@ export default function CheckoutContent({
       cancelled = true;
     };
   }, [
+    baseQuoteInput,
     cartItems.length,
+    cartSignature,
     ensureCartSynced,
     isDirectCheckout,
     isHydrated,
-    quoteInput,
   ]);
 
   useEffect(() => {
@@ -182,20 +214,28 @@ export default function CheckoutContent({
     );
     if (!hasAnyDraft) return;
 
+    const draft = {
+      name: form.name,
+      phone: form.phone,
+      email: form.email,
+      address: form.address,
+      area: form.area,
+      city: form.city,
+      note: form.note,
+    };
+    const signature = JSON.stringify(draft);
+    if (signature === lastSavedDraftRef.current) return;
+
     const timer = window.setTimeout(() => {
+      if (signature === lastSavedDraftRef.current) return;
       void commerceApi
-        .saveCheckoutDraft({
-          name: form.name,
-          phone: form.phone,
-          email: form.email,
-          address: form.address,
-          area: form.area,
-          city: form.city,
-          note: form.note,
+        .saveCheckoutDraft(draft)
+        .then((result) => {
+          lastSavedDraftRef.current = signature;
+          saveCustomerIdentity(result);
         })
-        .then((result) => saveCustomerIdentity(result))
         .catch(() => undefined);
-    }, 700);
+    }, 1200);
 
     return () => window.clearTimeout(timer);
   }, [form]);
@@ -207,7 +247,7 @@ export default function CheckoutContent({
   async function fieldBlur(field: keyof FormState) {
     if (field === "marketingConsent") return;
     try {
-      const result = await commerceApi.saveCheckoutDraft({
+      const draft = {
         name: form.name,
         phone: form.phone,
         email: form.email,
@@ -216,10 +256,51 @@ export default function CheckoutContent({
         city: form.city,
         note: form.note,
         completedField: field,
+      };
+      const result = await commerceApi.saveCheckoutDraft(draft);
+      lastSavedDraftRef.current = JSON.stringify({
+        name: draft.name,
+        phone: draft.phone,
+        email: draft.email,
+        address: draft.address,
+        area: draft.area,
+        city: draft.city,
+        note: draft.note,
       });
       saveCustomerIdentity(result);
     } catch {
       // A draft failure should never block checkout typing.
+    }
+  }
+
+  async function applyRewardPoints() {
+    if (!quote || pointsApplying) return;
+    const nextPoints = Math.max(
+      0,
+      Math.min(
+        quote.rewardPointsAvailable,
+        Math.floor(Number(rewardPointsInput) || 0),
+      ),
+    );
+
+    setPointsApplying(true);
+    setQuoteError("");
+    try {
+      const nextQuote = await commerceApi.quoteOrder({
+        ...baseQuoteInput,
+        rewardPointsToUse: nextPoints,
+      });
+      setQuote(nextQuote);
+      setAppliedRewardPoints(nextQuote.rewardPointsUsed);
+      setRewardPointsInput(String(nextQuote.rewardPointsUsed));
+    } catch (error) {
+      setQuoteError(
+        error instanceof Error
+          ? error.message
+          : "Points discount প্রয়োগ করা যায়নি",
+      );
+    } finally {
+      setPointsApplying(false);
     }
   }
 
@@ -574,26 +655,33 @@ export default function CheckoutContent({
                         সর্বোচ্চ অনুমোদিত পরিমাণ প্রযোজ্য হবে
                       </p>
                     </div>
-                    <input
-                      type="number"
-                      min={0}
-                      max={quote.rewardPointsAvailable}
-                      value={rewardPointsToUse}
-                      onChange={(event) =>
-                        setRewardPointsToUse(
-                          Math.max(
-                            0,
-                            Math.min(
-                              quote.rewardPointsAvailable,
-                              Math.floor(Number(event.target.value) || 0),
-                            ),
-                          ),
-                        )
-                      }
-                      className="h-10 w-24 rounded-lg border border-[#ead5dc] bg-white px-2 text-right text-sm font-black outline-none focus:border-[#FC5689]"
-                    />
+                    <div className="flex shrink-0 items-center gap-2">
+                      <input
+                        type="number"
+                        min={0}
+                        max={quote.rewardPointsAvailable}
+                        value={rewardPointsInput}
+                        onChange={(event) =>
+                          setRewardPointsInput(event.target.value)
+                        }
+                        className="h-10 w-20 rounded-lg border border-[#ead5dc] bg-white px-2 text-right text-sm font-black outline-none focus:border-[#FC5689] sm:w-24"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => void applyRewardPoints()}
+                        disabled={pointsApplying}
+                        className="h-10 rounded-lg bg-[#062a54] px-3 text-xs font-black text-white disabled:opacity-60"
+                      >
+                        {pointsApplying ? "হিসাব..." : "Apply"}
+                      </button>
+                    </div>
                   </div>
                 </div>
+              ) : null}
+              {quoteError ? (
+                <p className="rounded-lg bg-red-50 px-3 py-2 text-xs font-bold text-red-600">
+                  {quoteError}
+                </p>
               ) : null}
               {quote.rewardDiscount > 0 ? (
                 <div className="flex justify-between font-bold text-emerald-600">

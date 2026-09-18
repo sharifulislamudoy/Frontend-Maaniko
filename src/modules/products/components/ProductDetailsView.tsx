@@ -212,7 +212,7 @@ export default function ProductDetailsView({
     router.push(
       `/checkout?mode=buy-now&productId=${encodeURIComponent(
         product.id,
-      )}${selectedVariant ? `&variantId=${encodeURIComponent(selectedVariant.id)}` : ""}&quantity=1`,
+      )}&itemType=PRODUCT${selectedVariant ? `&variantId=${encodeURIComponent(selectedVariant.id)}` : ""}&quantity=1`,
     );
   }
 

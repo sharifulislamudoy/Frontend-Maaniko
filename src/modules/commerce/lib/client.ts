@@ -9,6 +9,7 @@ const SESSION_ID_KEY = "maaniko-session-id";
 const API_URL = (
   process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000"
 ).replace(/\/$/, "");
+const inFlightGetRequests = new Map<string, Promise<unknown>>();
 
 function randomId(prefix: string) {
   if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
@@ -78,10 +79,12 @@ async function apiRequest<T>(
   init: Omit<RequestInit, "body"> & { body?: unknown } = {},
 ): Promise<T> {
   const headers = new Headers(init.headers);
-  headers.set("Accept", "application/json");
-  headers.set("X-Maaniko-Guest-Id", getGuestId());
-  headers.set("X-Maaniko-Session-Id", getSessionId());
+  const guestId = getGuestId();
+  const sessionId = getSessionId();
   const token = getCustomerToken();
+  headers.set("Accept", "application/json");
+  headers.set("X-Maaniko-Guest-Id", guestId);
+  headers.set("X-Maaniko-Session-Id", sessionId);
   if (token) headers.set("X-Maaniko-Customer-Token", token);
 
   let body: BodyInit | undefined;
@@ -90,21 +93,35 @@ async function apiRequest<T>(
     body = JSON.stringify(init.body);
   }
 
-  const response = await fetch(`${API_URL}${path}`, {
-    ...init,
-    body,
-    headers,
-    cache: "no-store",
-  });
+  const execute = async () => {
+    const response = await fetch(`${API_URL}${path}`, {
+      ...init,
+      body,
+      headers,
+      cache: "no-store",
+    });
 
-  const data = await response.json().catch(() => null);
-  if (!response.ok) {
-    throw new Error(
-      (data && typeof data.message === "string" && data.message) ||
-        "অনুরোধটি সম্পন্ন করা যায়নি",
-    );
-  }
-  return data as T;
+    const data = await response.json().catch(() => null);
+    if (!response.ok) {
+      throw new Error(
+        (data && typeof data.message === "string" && data.message) ||
+          "অনুরোধটি সম্পন্ন করা যায়নি",
+      );
+    }
+    return data as T;
+  };
+
+  if ((init.method ?? "GET").toUpperCase() !== "GET") return execute();
+
+  const requestKey = `${path}|${guestId}|${token}`;
+  const existing = inFlightGetRequests.get(requestKey);
+  if (existing) return existing as Promise<T>;
+
+  const request = execute().finally(() => {
+    inFlightGetRequests.delete(requestKey);
+  });
+  inFlightGetRequests.set(requestKey, request);
+  return request;
 }
 
 export type CommerceCartItem = {

@@ -128,34 +128,43 @@ export function ShopProvider({ children }: ShopProviderProps) {
 
       setCartItems(localCart);
       setWishlistItems(localWishlist);
+      // localStorage is the instant UI source. Remote reconciliation runs in
+      // the background so a slow API never blocks the whole storefront.
+      setIsHydrated(true);
 
       try {
-        const [serverCart, serverWishlist] = await Promise.all([
+        // Let the current route's own critical request start first.
+        await new Promise((resolve) => window.setTimeout(resolve, 250));
+        if (cancelled) return;
+        const [cartResult, wishlistResult] = await Promise.allSettled([
           commerceApi.getCart(),
           commerceApi.getWishlist(),
         ]);
         if (cancelled) return;
 
-        const serverItems = serverCartToLocal(serverCart);
-        if (serverItems.length > 0) {
-          setCartItems(serverItems);
-        } else if (localCart.length > 0) {
-          await Promise.all(localCart.map(syncOne));
+        if (cartResult.status === "fulfilled") {
+          const serverItems = serverCartToLocal(cartResult.value);
+          if (serverItems.length > 0) {
+            setCartItems(serverItems);
+          } else if (localCart.length > 0) {
+            await Promise.allSettled(localCart.map(syncOne));
+          }
         }
 
-        if (serverWishlist.items.length > 0) {
-          setWishlistItems(serverWishlist.items as MaanikoProduct[]);
-        } else if (localWishlist.length > 0) {
-          await Promise.all(
-            localWishlist.map((product) =>
-              commerceApi.putWishlist(itemType(product), product.id),
-            ),
-          );
+        if (wishlistResult.status === "fulfilled") {
+          const serverWishlist = wishlistResult.value;
+          if (serverWishlist.items.length > 0) {
+            setWishlistItems(serverWishlist.items as MaanikoProduct[]);
+          } else if (localWishlist.length > 0) {
+            await Promise.allSettled(
+              localWishlist.map((product) =>
+                commerceApi.putWishlist(itemType(product), product.id),
+              ),
+            );
+          }
         }
       } catch {
         // localStorage remains the offline/failure fallback.
-      } finally {
-        if (!cancelled) setIsHydrated(true);
       }
     }
 

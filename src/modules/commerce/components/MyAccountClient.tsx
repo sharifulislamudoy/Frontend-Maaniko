@@ -31,7 +31,6 @@ import {
   getSavedContact,
   saveCustomerIdentity,
 } from "@/modules/commerce/lib/client";
-import { useShop } from "@/modules/shop/context/ShopContext";
 
 type OrderHistory = {
   id: string;
@@ -131,7 +130,6 @@ function statusTone(status: string) {
 }
 
 export default function MyAccountClient() {
-  const { refreshCommerceState } = useShop();
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [data, setData] = useState<AccountData | null>(null);
@@ -158,7 +156,6 @@ export default function MyAccountClient() {
     try {
       const result = (await commerceApi.me()) as AccountData;
       setData(result);
-      void refreshCommerceState();
     } catch (err) {
       setData(null);
       setError(err instanceof Error ? err.message : "তথ্য পাওয়া যায়নি");
