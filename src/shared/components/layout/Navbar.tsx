@@ -48,7 +48,7 @@ const policyRoutes = [
 */
 const otherPageRoutes = [
   {
-    label: "প্রয়োজনীয় গাইড",
+    label: "প্রয়োজনীয় গাইড",
     href: "/guide",
   },
   {
@@ -391,8 +391,8 @@ export default function Navbar() {
         <ServiceBar />
 
         {/* Desktop navbar */}
-        <div className="mx-auto hidden h-[72px] w-full max-w-7xl grid-cols-[1fr_auto_1fr] items-center px-6 xl:grid">
-          <div className="flex min-w-0 items-center gap-5">
+        <div className="mx-auto hidden h-[72px] w-full max-w-7xl grid-cols-[auto_1fr_auto] items-center gap-8 px-6 xl:grid">
+          <div className="flex items-center gap-2">
             <AnimatedMenuButton
               open={isMenuOpen}
               label={t("actions.openMenu")}
@@ -400,64 +400,40 @@ export default function Navbar() {
               onClick={() => setIsMenuOpen(true)}
             />
 
-            <nav aria-label="প্রধান নেভিগেশন" className="flex h-[72px] items-center gap-7">
-              {desktopNavigation.slice(0, 2).map((item) => {
-                const active = isRouteActive(pathname, item.href);
-
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    aria-current={active ? "page" : undefined}
-                    className={`relative flex h-full items-center px-1 text-sm font-semibold transition-colors ${
-                      active
-                        ? "text-maaniko-pink"
-                        : "text-maaniko-navy hover:text-maaniko-pink"
-                    }`}
-                  >
-                    {item.label}
-                    {active ? (
-                      <motion.span
-                        layoutId="desktop-navigation-indicator"
-                        className="absolute bottom-0 left-1/2 h-0.5 w-8 -translate-x-1/2 rounded-full bg-maaniko-pink"
-                      />
-                    ) : null}
-                  </Link>
-                );
-              })}
-            </nav>
+            <BrandLogo className="h-15 w-[160px]" priority />
           </div>
 
-          <BrandLogo className="h-10 w-[136px]" priority />
+          <nav
+            aria-label="প্রধান নেভিগেশন"
+            className="flex h-[72px] min-w-0 items-center justify-center gap-8"
+          >
+            {desktopNavigation.map((item) => {
+              const active = isRouteActive(pathname, item.href);
 
-          <div className="flex min-w-0 items-center justify-end gap-1">
-            <nav aria-label="প্রধান নেভিগেশনের দ্বিতীয় অংশ" className="mr-3 flex h-[72px] items-center gap-7">
-              {desktopNavigation.slice(2).map((item) => {
-                const active = isRouteActive(pathname, item.href);
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  aria-current={active ? "page" : undefined}
+                  className={`relative flex h-full items-center px-1 text-sm font-semibold transition-colors ${
+                    active
+                      ? "text-maaniko-pink"
+                      : "text-maaniko-navy hover:text-maaniko-pink"
+                  }`}
+                >
+                  {item.label}
+                  {active ? (
+                    <motion.span
+                      layoutId="desktop-navigation-indicator"
+                      className="absolute bottom-0 left-1/2 h-0.5 w-8 -translate-x-1/2 rounded-full bg-maaniko-pink"
+                    />
+                  ) : null}
+                </Link>
+              );
+            })}
+          </nav>
 
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    aria-current={active ? "page" : undefined}
-                    className={`relative flex h-full items-center px-1 text-sm font-semibold transition-colors ${
-                      active
-                        ? "text-maaniko-pink"
-                        : "text-maaniko-navy hover:text-maaniko-pink"
-                    }`}
-                  >
-                    {item.label}
-                    {active ? (
-                      <motion.span
-                        layoutId="desktop-navigation-indicator"
-                        className="absolute bottom-0 left-1/2 h-0.5 w-8 -translate-x-1/2 rounded-full bg-maaniko-pink"
-                      />
-                    ) : null}
-                  </Link>
-                );
-              })}
-            </nav>
-
+          <div className="flex items-center justify-end gap-1">
             <span id="desktop-notification-slot" className="contents" />
 
             <Link
@@ -501,11 +477,10 @@ export default function Navbar() {
                 controls="maaniko-side-menu"
                 onClick={() => setIsMenuOpen(true)}
               />
-
             </div>
 
             <BrandLogo
-              className="mx-auto h-9 w-[116px] sm:h-10 sm:w-[132px]"
+              className="mx-auto h-12 w-full "
               priority
             />
 

@@ -585,7 +585,7 @@ export default function ProductDetailsView({
       </div>
 
       {/* Mobile and tablet fixed Order Now button */}
-      <div className="fixed inset-x-0 bottom-[calc(72px+env(safe-area-inset-bottom))] z-40 border-t border-[#f0d9e1] bg-white/95 px-2 py-1.5 shadow-[0_-8px_24px_rgba(6,42,84,0.09)] backdrop-blur-xl md:bottom-[calc(76px+env(safe-area-inset-bottom))] md:px-3 xl:hidden">
+      <div className="fixed inset-x-0 bottom-[calc(64px+env(safe-area-inset-bottom))] z-40 border-t border-[#f0d9e1] bg-white/95 px-2 py-1.5 shadow-[0_-8px_24px_rgba(6,42,84,0.09)] backdrop-blur-xl md:bottom-[calc(76px+env(safe-area-inset-bottom))] md:px-3 xl:hidden">
         <div className="mx-auto w-full max-w-5xl">
           <MobileOrderButton
             isAvailable={isAvailable}

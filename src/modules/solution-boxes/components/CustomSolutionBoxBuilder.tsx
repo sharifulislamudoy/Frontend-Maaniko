@@ -746,7 +746,7 @@ export default function CustomSolutionBoxBuilder({
         </div>
       </div>
 
-      <div className="fixed inset-x-0 bottom-[calc(72px+env(safe-area-inset-bottom))] z-[80] border-t border-[#f0dce4] bg-white/95 px-3 py-2 shadow-[0_-10px_30px_rgba(6,42,84,0.1)] backdrop-blur-xl md:bottom-[calc(76px+env(safe-area-inset-bottom))] lg:hidden">
+      <div className="fixed inset-x-0 bottom-[calc(64px+env(safe-area-inset-bottom))] z-[80] border-t border-[#f0dce4] bg-white/95 px-3 py-2 shadow-[0_-10px_30px_rgba(6,42,84,0.1)] backdrop-blur-xl md:bottom-[calc(76px+env(safe-area-inset-bottom))] lg:hidden">
         <div className="mx-auto flex max-w-2xl items-center gap-2">
           <button
             type="button"

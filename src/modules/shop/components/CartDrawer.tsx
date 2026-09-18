@@ -92,9 +92,9 @@ export default function CartDrawer() {
     try {
       await copyText(recoveryUrl);
       setCopied(true);
-      toast.success("Recovery link কপি হয়েছে");
+      toast.success("Recovery link কপি হয়েছে");
     } catch {
-      toast.error("Link কপি করা যায়নি");
+      toast.error("Link কপি করা যায়নি");
     }
   }
 
@@ -252,7 +252,7 @@ export default function CartDrawer() {
                                   )
                                 }
                                 className="grid h-full w-9 place-items-center rounded-r-lg transition hover:bg-slate-50"
-                                aria-label="Quantity বাড়ান"
+                                aria-label="Quantity বাড়ান"
                               >
                                 <Plus className="size-3.5" />
                               </button>
@@ -282,7 +282,7 @@ export default function CartDrawer() {
                     {recoveryUrl ? (
                       <div className="mb-3 rounded-2xl bg-emerald-50 p-3 text-xs font-bold leading-5 text-emerald-700">
                         <p>
-                          কার্ট সেভ হয়েছে। নিচের button-এ click করলে পুরো
+                          কার্ট সেভ হয়েছে। নিচের button-এ click করলে পুরো
                           recovery link clipboard-এ কপি হবে।
                         </p>
 
@@ -303,7 +303,7 @@ export default function CartDrawer() {
                             ) : (
                               <Copy className="size-4" />
                             )}
-                            {copied ? "কপি হয়েছে" : "লিংক কপি"}
+                            {copied ? "কপি হয়েছে" : "লিংক কপি"}
                           </button>
                         </div>
                       </div>
