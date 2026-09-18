@@ -30,6 +30,9 @@ type Message = AiChatMessage & {
   quickReplies?: string[];
   recommendations?: AiRecommendation[];
   feedback?: "helpful" | "unhelpful";
+  supportTicketId?: string | null;
+  supportPending?: boolean;
+  fromSupportTeam?: boolean;
 };
 
 const CHAT_STORAGE_KEY = "maaniko-ai-chat-v2";
@@ -307,6 +310,8 @@ export default function MaanikoAiAssistant({
         needsFollowUp: result.needsFollowUp,
         quickReplies: result.quickReplies,
         recommendations: result.recommendations,
+        supportTicketId: result.supportTicketId,
+        supportPending: result.supportPending,
       },
     ]);
 
@@ -329,6 +334,57 @@ export default function MaanikoAiAssistant({
       }
     }, 16);
   }
+
+  useEffect(() => {
+    if (!open) return;
+    const ticketIds = Array.from(
+      new Set(
+        messages
+          .filter((message) => message.supportPending && message.supportTicketId)
+          .map((message) => message.supportTicketId as string),
+      ),
+    );
+    if (!ticketIds.length) return;
+
+    let cancelled = false;
+    const checkReplies = async () => {
+      await Promise.all(
+        ticketIds.map(async (ticketId) => {
+          try {
+            const support = await commerceApi.getMaanikoAiSupport(ticketId);
+            if (cancelled || support.status !== "REPLIED" || !support.adminReply) return;
+            const adminReply = support.adminReply;
+            setMessages((current) => {
+              const replyId = `support-${ticketId}`;
+              if (current.some((message) => message.id === replyId)) return current;
+              return [
+                ...current.map((message) =>
+                  message.supportTicketId === ticketId
+                    ? { ...message, supportPending: false }
+                    : message,
+                ),
+                {
+                  id: replyId,
+                  role: "assistant",
+                  content: adminReply,
+                  fromSupportTeam: true,
+                },
+              ];
+            });
+          } catch {
+            // Polling failure is silent; the next interval retries automatically.
+          }
+        }),
+      );
+    };
+
+    void checkReplies();
+    const timer = window.setInterval(() => void checkReplies(), 8_000);
+    return () => {
+      cancelled = true;
+      window.clearInterval(timer);
+    };
+  }, [messages, open]);
 
   async function send(text: string) {
     const clean = text.trim();
@@ -358,16 +414,14 @@ export default function MaanikoAiAssistant({
       });
       setConversationId(result.conversationId);
       typeAnswer(result);
-    } catch (error) {
+    } catch {
       setMessages((current) => [
         ...current,
         {
           id: `error-${Date.now()}`,
           role: "assistant",
           content:
-            error instanceof Error
-              ? error.message
-              : "দুঃখিত, এখন উত্তর দেওয়া যাচ্ছে না।",
+            "আপনার প্রশ্নটি পেয়েছি। এই মুহূর্তে স্বয়ংক্রিয় উত্তর তৈরি না হলেও আপনি [WhatsApp-এ আমাদের টিমের সাথে কথা বলতে পারেন](https://wa.me/8801995322033)।",
         },
       ]);
       setWorking(false);
@@ -598,6 +652,17 @@ export default function MaanikoAiAssistant({
                             </button>
                           </div>
                         )}
+                      {message.role === "assistant" && message.supportPending && (
+                        <div className="mt-2 inline-flex max-w-[94%] items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-[10px] font-bold leading-4 text-amber-800">
+                          <span className="size-1.5 shrink-0 animate-pulse rounded-full bg-amber-500" />
+                          আমাদের সাপোর্ট টিমকে জানানো হয়েছে—উত্তর এলে এখানেই দেখাবে।
+                        </div>
+                      )}
+                      {message.role === "assistant" && message.fromSupportTeam && (
+                        <div className="mt-1.5 text-[10px] font-bold text-emerald-700">
+                          Maaniko support team-এর উত্তর
+                        </div>
+                      )}
                     </div>
                   ))}
                   {working && !isTyping && (

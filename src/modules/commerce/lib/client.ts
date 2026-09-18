@@ -240,6 +240,17 @@ export type AiChatResponse = {
   resolved: boolean;
   quickReplies: string[];
   recommendations: AiRecommendation[];
+  responseSource: "GROQ" | "LOCAL_FALLBACK";
+  supportTicketId: string | null;
+  supportPending: boolean;
+};
+
+export type AiSupportStatus = {
+  id: string;
+  status: "PENDING" | "REPLIED" | "CLOSED";
+  adminReply: string | null;
+  repliedAt: string | null;
+  updatedAt: string;
 };
 
 export type PublicOrderTracking = {
@@ -322,6 +333,11 @@ export const commerceApi = {
     apiRequest<{ saved: boolean }>(
       `/ai-assistant/messages/${encodeURIComponent(messageId)}/feedback`,
       { method: "POST", body },
+    ),
+
+  getMaanikoAiSupport: (ticketId: string) =>
+    apiRequest<AiSupportStatus>(
+      `/ai-assistant/support/${encodeURIComponent(ticketId)}`,
     ),
 
   getCart: () => apiRequest<CommerceCart>("/commerce/cart"),
