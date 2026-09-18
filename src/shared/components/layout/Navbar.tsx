@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Fragment, useEffect, useState } from "react";
@@ -113,16 +112,21 @@ function BrandLogo({ className, priority = false }: BrandLogoProps) {
     <Link
       href="/"
       aria-label="Maaniko হোম"
-      className={`relative block shrink-0 ${className}`}
+      className={`relative block shrink-0 overflow-hidden ${className}`}
     >
-      <Image
-        src="/Logo.png"
-        alt="Maaniko"
-        fill
-        priority={priority}
-        sizes="(max-width: 1279px) 116px, 136px"
-        className="object-contain object-center"
-      />
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        disablePictureInPicture
+        preload={priority ? "auto" : "metadata"}
+        poster="/Logo.png"
+        aria-hidden="true"
+        className="absolute inset-0 size-full object-contain object-center"
+      >
+        <source src="/video1.mp4" type="video/mp4" />
+      </video>
     </Link>
   );
 }
@@ -489,7 +493,7 @@ export default function Navbar() {
 
         {/* Tablet and mobile navbar */}
         <div className="xl:hidden">
-          <div className="mx-auto grid h-16 w-full max-w-5xl grid-cols-[1fr_auto_1fr] items-center px-3 sm:h-[68px] sm:px-5">
+          <div className="mx-auto grid h-16 w-full max-w-5xl grid-cols-[5rem_1fr_5rem] items-center px-2.5 sm:h-[68px] sm:grid-cols-[6rem_1fr_6rem] sm:px-5">
             <div className="flex min-w-0 items-center justify-start">
               <AnimatedMenuButton
                 open={isMenuOpen}
@@ -500,7 +504,10 @@ export default function Navbar() {
 
             </div>
 
-            <BrandLogo className="h-9 w-[116px] sm:h-10 sm:w-[132px]" priority />
+            <BrandLogo
+              className="mx-auto h-9 w-[116px] sm:h-10 sm:w-[132px]"
+              priority
+            />
 
             <div className="flex min-w-0 items-center justify-end">
               <span id="mobile-notification-slot" className="contents" />
