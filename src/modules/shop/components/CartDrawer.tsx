@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import {
   Check,
   Copy,
+  Heart,
   Minus,
   Plus,
   Save,
@@ -39,6 +40,7 @@ export default function CartDrawer() {
     cartItems,
     cartCount,
     cartTotal,
+    wishlistCount,
     isCartOpen,
     closeCart,
     removeFromCart,
@@ -90,9 +92,9 @@ export default function CartDrawer() {
     try {
       await copyText(recoveryUrl);
       setCopied(true);
-      toast.success("Recovery link কপি হয়েছে");
+      toast.success("Recovery link কপি হয়েছে");
     } catch {
-      toast.error("Link কপি করা যায়নি");
+      toast.error("Link কপি করা যায়নি");
     }
   }
 
@@ -127,14 +129,31 @@ export default function CartDrawer() {
                   <p className="text-xs text-slate-500">{cartCount} টি পণ্য</p>
                 </div>
 
-                <button
-                  type="button"
-                  onClick={closeCart}
-                  className="grid size-9 place-items-center rounded-full bg-slate-100 text-[#062a54] transition hover:bg-slate-200"
-                  aria-label="কার্ট বন্ধ করুন"
-                >
-                  <X className="size-4" />
-                </button>
+                <div className="flex items-center gap-1.5">
+                  <Link
+                    href="/wishlist"
+                    onClick={closeCart}
+                    aria-label={`পছন্দের তালিকা, ${wishlistCount} টি পণ্য`}
+                    title="পছন্দের তালিকা"
+                    className="relative grid size-9 place-items-center rounded-full bg-[#fff4f6] text-[#FC5689] transition hover:bg-[#ffe8ef]"
+                  >
+                    <Heart className="size-[18px]" strokeWidth={1.9} />
+                    {wishlistCount > 0 ? (
+                      <span className="absolute -right-1 -top-1 flex min-h-4 min-w-4 items-center justify-center rounded-full bg-[#FC5689] px-1 text-[9px] font-bold leading-none text-white ring-2 ring-white">
+                        {wishlistCount > 99 ? "99+" : wishlistCount}
+                      </span>
+                    ) : null}
+                  </Link>
+
+                  <button
+                    type="button"
+                    onClick={closeCart}
+                    className="grid size-9 place-items-center rounded-full bg-slate-100 text-[#062a54] transition hover:bg-slate-200"
+                    aria-label="কার্ট বন্ধ করুন"
+                  >
+                    <X className="size-4" />
+                  </button>
+                </div>
               </div>
 
               {cartItems.length === 0 ? (
@@ -233,7 +252,7 @@ export default function CartDrawer() {
                                   )
                                 }
                                 className="grid h-full w-9 place-items-center rounded-r-lg transition hover:bg-slate-50"
-                                aria-label="Quantity বাড়ান"
+                                aria-label="Quantity বাড়ান"
                               >
                                 <Plus className="size-3.5" />
                               </button>
@@ -263,7 +282,7 @@ export default function CartDrawer() {
                     {recoveryUrl ? (
                       <div className="mb-3 rounded-2xl bg-emerald-50 p-3 text-xs font-bold leading-5 text-emerald-700">
                         <p>
-                          কার্ট সেভ হয়েছে। নিচের button-এ click করলে পুরো
+                          কার্ট সেভ হয়েছে। নিচের button-এ click করলে পুরো
                           recovery link clipboard-এ কপি হবে।
                         </p>
 
@@ -284,7 +303,7 @@ export default function CartDrawer() {
                             ) : (
                               <Copy className="size-4" />
                             )}
-                            {copied ? "কপি হয়েছে" : "লিংক কপি"}
+                            {copied ? "কপি হয়েছে" : "লিংক কপি"}
                           </button>
                         </div>
                       </div>
