@@ -437,6 +437,19 @@ export default function Navbar() {
             <span id="desktop-notification-slot" className="contents" />
 
             <Link
+              href="/orders"
+              aria-label={t("nav.orders")}
+              title={t("nav.orders")}
+              className={`relative inline-flex size-10 items-center justify-center rounded-full transition-colors hover:bg-maaniko-blush ${
+                isRouteActive(pathname, "/orders")
+                  ? "text-maaniko-pink"
+                  : "text-maaniko-navy"
+              }`}
+            >
+              <Package className="size-[23px]" strokeWidth={1.8} />
+            </Link>
+
+            <Link
               href="/wishlist"
               aria-label={t("nav.wishlist")}
               title={t("nav.wishlist")}

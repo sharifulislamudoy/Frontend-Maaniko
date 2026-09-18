@@ -9,11 +9,41 @@ import { toast } from "sonner";
 
 import {
   commerceApi,
-  getCustomerToken,
   type PendingReviewPrompt,
 } from "@/modules/commerce/lib/client";
 
-const BLOCKED_PATHS = ["/checkout", "/cart", "/track-order"];
+const BLOCKED_PATHS = ["/checkout", "/cart"];
+const SHOWN_REVIEW_ORDERS_STORAGE_KEY =
+  "maaniko:shown-review-order-ids:v1";
+
+function getShownReviewOrderIds() {
+  try {
+    const storedValue = window.localStorage.getItem(
+      SHOWN_REVIEW_ORDERS_STORAGE_KEY,
+    );
+    if (!storedValue) return new Set<string>();
+
+    const orderIds: unknown = JSON.parse(storedValue);
+    if (!Array.isArray(orderIds)) return new Set<string>();
+
+    return new Set(orderIds.filter((orderId): orderId is string => typeof orderId === "string"));
+  } catch {
+    return new Set<string>();
+  }
+}
+
+function rememberShownReviewOrder(orderId: string) {
+  try {
+    const shownOrderIds = getShownReviewOrderIds();
+    shownOrderIds.add(orderId);
+    window.localStorage.setItem(
+      SHOWN_REVIEW_ORDERS_STORAGE_KEY,
+      JSON.stringify([...shownOrderIds]),
+    );
+  } catch {
+    // The prompt can still work when private browsing blocks localStorage.
+  }
+}
 
 export default function ExperienceReviewPrompt() {
   const pathname = usePathname();
@@ -36,11 +66,13 @@ export default function ExperienceReviewPrompt() {
 
     let cancelled = false;
     const timer = window.setTimeout(() => {
-      if (!getCustomerToken()) return;
       void commerceApi
         .getPendingReview()
         .then(({ prompt: nextPrompt }) => {
           if (cancelled || !nextPrompt) return;
+          if (getShownReviewOrderIds().has(nextPrompt.orderId)) return;
+
+          rememberShownReviewOrder(nextPrompt.orderId);
           setPrompt(nextPrompt);
           setOpen(true);
         })
