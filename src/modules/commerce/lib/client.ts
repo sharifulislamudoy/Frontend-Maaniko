@@ -214,6 +214,28 @@ export type PushInboxItem = {
   createdAt: string;
 };
 
+export type PendingReviewPrompt = {
+  orderId: string;
+  orderNumber: string;
+  deliveredAt: string;
+  items: Array<{
+    id: string;
+    productId?: string | null;
+    comboId?: string | null;
+    name: string;
+    image?: string | null;
+  }>;
+};
+
+export type VerifiedProductReview = {
+  id: string;
+  rating: number;
+  comment?: string | null;
+  customerName: string;
+  verified: true;
+  createdAt: string;
+};
+
 export const commerceApi = {
   askMaanikoAi: (body: {
     message: string;
@@ -310,6 +332,43 @@ export const commerceApi = {
   getPushInbox: () =>
     apiRequest<{ notifications: PushInboxItem[] }>(
       "/commerce/push/inbox",
+    ),
+
+  getPendingReview: () =>
+    apiRequest<{ prompt: PendingReviewPrompt | null }>(
+      "/commerce/reviews/pending",
+    ),
+
+  submitOrderReview: (body: {
+    orderId: string;
+    rating: number;
+    comment?: string;
+    selectedOrderItemId?: string | null;
+  }) =>
+    apiRequest<{
+      submitted: boolean;
+      reviewId: string;
+      attachedToProduct: boolean;
+      attachedToCombo: boolean;
+    }>("/commerce/reviews", { method: "POST", body }),
+
+  dismissReviewPrompt: (body: {
+    orderId: string;
+    neverAskAgain?: boolean;
+  }) =>
+    apiRequest<{ dismissed: boolean; completed: boolean }>(
+      "/commerce/reviews/dismiss",
+      { method: "POST", body },
+    ),
+
+  getProductReviews: (productId: string) =>
+    apiRequest<{ reviews: VerifiedProductReview[] }>(
+      `/commerce/reviews/products/${encodeURIComponent(productId)}`,
+    ),
+
+  getComboReviews: (comboId: string) =>
+    apiRequest<{ reviews: VerifiedProductReview[] }>(
+      `/commerce/reviews/combos/${encodeURIComponent(comboId)}`,
     ),
 
   quoteCombo: (

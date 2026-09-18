@@ -6,6 +6,7 @@ import { Toaster } from "sonner";
 import { SiteTextProvider } from "@/modules/site-content/context/SiteTextContext";
 import PwaInstallPrompt from "@/shared/components/PwaInstallPrompt";
 import PushNotificationManager from "@/modules/notifications/components/PushNotificationManager";
+import ExperienceReviewPrompt from "@/modules/reviews/components/ExperienceReviewPrompt";
 
 import "./globals.css";
 
@@ -116,6 +117,7 @@ export default function RootLayout({
 
           <PwaInstallPrompt />
           <PushNotificationManager />
+          <ExperienceReviewPrompt />
 
           <Toaster
             position="top-right"

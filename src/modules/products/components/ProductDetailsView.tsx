@@ -27,6 +27,7 @@ import ProductGallery from "@/modules/products/components/ProductGallery";
 import { useSiteText } from "@/modules/site-content/context/SiteTextContext";
 import { useShop } from "@/modules/shop/context/ShopContext";
 import type { MaanikoProduct } from "@/modules/products/types/product";
+import ProductReviewsSection from "@/modules/reviews/components/ProductReviewsSection";
 
 type ProductDetailsViewProps = {
   product: MaanikoProduct;
@@ -525,6 +526,8 @@ export default function ProductDetailsView({
             />
           </div>
         </section>
+
+        <ProductReviewsSection productId={product.id} />
 
         {relatedProducts.length > 0 && (
           <section

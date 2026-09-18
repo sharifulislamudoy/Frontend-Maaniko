@@ -35,6 +35,7 @@ import {
   solutionBoxToProduct,
 } from "@/modules/solution-boxes/lib/solutionBox";
 import type { SolutionBox } from "@/modules/solution-boxes/types/solutionBox";
+import ProductReviewsSection from "@/modules/reviews/components/ProductReviewsSection";
 
 type ComboDetailsViewProps = {
   box: SolutionBox;
@@ -431,6 +432,7 @@ export default function ComboDetailsView({
                     </article>
                   ))}
                 </div>
+                <ProductReviewsSection comboId={box.id} embedded />
               </div>
             )}
 
