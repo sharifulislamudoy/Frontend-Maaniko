@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useCallback, useEffect, useState } from "react";
 import {
   Bot,
   Boxes,
@@ -10,16 +10,16 @@ import {
   House,
   LayoutGrid,
   MessageCircle,
-  Package,
   Phone,
   ShoppingBag,
   Truck,
-  Gift,
+  UserRound,
 } from "lucide-react";
 import { AnimatePresence, MotionConfig, motion } from "motion/react";
 
 import CartDrawer from "@/modules/shop/components/CartDrawer";
 import MaanikoAiAssistant from "@/modules/ai-assistant/components/MaanikoAiAssistant";
+import ProfileDrawer from "@/shared/components/layout/ProfileDrawer";
 import { useSiteText } from "@/modules/site-content/context/SiteTextContext";
 import { useShop } from "@/modules/shop/context/ShopContext";
 import type {
@@ -42,28 +42,13 @@ const policyRoutes = [
   { key: "terms", href: "/terms-and-conditions" },
 ] as const;
 
-/*
-|--------------------------------------------------------------------------
-| Other pages
-|--------------------------------------------------------------------------
-*/
-const otherPageRoutes = [
-  {
-    label: "Rewards ও Referral",
-    href: "/rewards",
-  },
-  {
-    label: "আমার Care Profile",
-    href: "/care-profile",
-  },
-  {
-    label: "প্রয়োজনীয় গাইড",
-    href: "/guide",
-  },
-  {
-    label: "সমস্যা ও সমাধান",
-    href: "/problem-solution",
-  },
+const profileRouteHrefs = [
+  "/orders",
+  "/rewards",
+  "/care-profile",
+  "/guide",
+  "/problem-solution",
+  "/wishlist",
 ] as const;
 
 const drawerVariants = {
@@ -322,10 +307,15 @@ function ServiceBar() {
 export default function Navbar() {
   const pathname = usePathname();
   const { t } = useSiteText();
-  const { cartCount, wishlistCount, openCart } = useShop();
+  const { cartCount, openCart } = useShop();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAiOpen, setIsAiOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const closeProfile = useCallback(() => setIsProfileOpen(false), []);
+  const isProfileRoute = profileRouteHrefs.some((href) =>
+    isRouteActive(pathname, href),
+  );
 
   const desktopNavigation = [
     {
@@ -363,14 +353,17 @@ export default function Navbar() {
       icon: Boxes,
     },
     {
-      label: t("nav.orders"),
-      href: "/orders",
-      icon: Package,
+      label: "প্রোফাইল",
+      href: "#profile",
+      icon: UserRound,
     },
   ];
 
   useEffect(() => {
-    const closeId = window.setTimeout(() => setIsMenuOpen(false), 0);
+    const closeId = window.setTimeout(() => {
+      setIsMenuOpen(false);
+      setIsProfileOpen(false);
+    }, 0);
     return () => window.clearTimeout(closeId);
   }, [pathname]);
 
@@ -445,47 +438,6 @@ export default function Navbar() {
           <div className="flex items-center justify-end gap-1">
             <span id="desktop-notification-slot" className="contents" />
 
-            <Link
-              href="/rewards"
-              aria-label="Rewards"
-              title="Rewards"
-              className={`relative inline-flex size-10 items-center justify-center rounded-full transition-colors hover:bg-maaniko-blush ${
-                isRouteActive(pathname, "/rewards")
-                  ? "text-maaniko-pink"
-                  : "text-maaniko-navy"
-              }`}
-            >
-              <Gift className="size-[22px]" strokeWidth={1.8} />
-            </Link>
-
-            <Link
-              href="/orders"
-              aria-label={t("nav.orders")}
-              title={t("nav.orders")}
-              className={`relative inline-flex size-10 items-center justify-center rounded-full transition-colors hover:bg-maaniko-blush ${
-                isRouteActive(pathname, "/orders")
-                  ? "text-maaniko-pink"
-                  : "text-maaniko-navy"
-              }`}
-            >
-              <Package className="size-[23px]" strokeWidth={1.8} />
-            </Link>
-
-            <Link
-              href="/wishlist"
-              aria-label={t("nav.wishlist")}
-              title={t("nav.wishlist")}
-              className={`relative inline-flex size-10 items-center justify-center rounded-full transition-colors hover:bg-maaniko-blush ${
-                isRouteActive(pathname, "/wishlist")
-                  ? "text-maaniko-pink"
-                  : "text-maaniko-navy"
-              }`}
-            >
-              <Heart className="size-[23px]" strokeWidth={1.8} />
-
-              <CountBadge count={wishlistCount} />
-            </Link>
-
             <button
               type="button"
               onClick={openCart}
@@ -498,6 +450,22 @@ export default function Navbar() {
               <ShoppingBag className="size-[23px]" strokeWidth={1.8} />
 
               <CountBadge count={cartCount} />
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setIsProfileOpen(true)}
+              aria-label="আমার Maaniko খুলুন"
+              aria-expanded={isProfileOpen}
+              aria-controls="maaniko-profile-drawer"
+              title="আমার Maaniko"
+              className={`relative inline-flex size-10 items-center justify-center rounded-full transition-colors hover:bg-maaniko-blush hover:text-maaniko-pink ${
+                isProfileOpen || isProfileRoute
+                  ? "text-maaniko-pink"
+                  : "text-maaniko-navy"
+              }`}
+            >
+              <UserRound className="size-[23px]" strokeWidth={1.8} />
             </button>
           </div>
         </div>
@@ -544,7 +512,42 @@ export default function Navbar() {
         <div className="mx-auto grid h-16 max-w-5xl grid-cols-5 sm:h-[68px]">
           {bottomNavigation.map((item) => {
             const Icon = item.icon;
+            const isProfileItem = item.href === "#profile";
             const active = isRouteActive(pathname, item.href);
+
+            if (isProfileItem) {
+              return (
+                <button
+                  key={item.href}
+                  type="button"
+                  onClick={() => setIsProfileOpen(true)}
+                  aria-label="আমার Maaniko খুলুন"
+                  aria-expanded={isProfileOpen}
+                  aria-controls="maaniko-profile-drawer"
+                  className={`relative flex min-w-0 flex-col items-center justify-center px-0.5 font-semibold transition-colors ${
+                    isProfileOpen || isProfileRoute
+                      ? "text-maaniko-pink"
+                      : "text-maaniko-navy hover:text-maaniko-pink"
+                  }`}
+                >
+                  {isProfileOpen || isProfileRoute ? (
+                    <span className="absolute top-0 h-[3px] w-6 rounded-b-full bg-maaniko-pink" />
+                  ) : null}
+                  <motion.span
+                    whileTap={{ scale: 0.82 }}
+                    className="relative flex flex-col items-center gap-1.5"
+                  >
+                    <UserRound
+                      className="size-[22px] sm:size-[23px]"
+                      strokeWidth={1.8}
+                    />
+                    <span className="text-[10px] leading-none sm:text-[11px]">
+                      প্রোফাইল
+                    </span>
+                  </motion.span>
+                </button>
+              );
+            }
 
             const link = (
               <Link
@@ -723,42 +726,6 @@ export default function Navbar() {
                   ))}
                 </div>
 
-                {/* Divider */}
-                <motion.div
-                  variants={drawerItemVariants}
-                  className="my-4 border-t border-maaniko-line"
-                />
-
-                {/* Other pages */}
-                <motion.p
-                  variants={drawerItemVariants}
-                  className="mb-2 px-3 text-[11px] font-bold uppercase tracking-[0.08em] text-slate-400"
-                >
-                  অন্যান্য পেজ সমূহ
-                </motion.p>
-
-                <div className="space-y-0.5">
-                  {otherPageRoutes.map((item) => (
-                    <motion.div key={item.href} variants={drawerItemVariants}>
-                      <Link
-                        href={item.href}
-                        onClick={() => setIsMenuOpen(false)}
-                        aria-current={
-                          isRouteActive(pathname, item.href)
-                            ? "page"
-                            : undefined
-                        }
-                        className={`block rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
-                          isRouteActive(pathname, item.href)
-                            ? "bg-maaniko-blush text-maaniko-pink"
-                            : "text-maaniko-navy hover:bg-maaniko-blush hover:text-maaniko-pink"
-                        }`}
-                      >
-                        {item.label}
-                      </Link>
-                    </motion.div>
-                  ))}
-                </div>
               </motion.div>
             </motion.aside>
           </motion.div>
@@ -803,6 +770,7 @@ export default function Navbar() {
       <MaanikoAiAssistant open={isAiOpen} onClose={() => setIsAiOpen(false)} />
 
       <CartDrawer />
+      <ProfileDrawer open={isProfileOpen} onClose={closeProfile} />
     </MotionConfig>
   );
 }

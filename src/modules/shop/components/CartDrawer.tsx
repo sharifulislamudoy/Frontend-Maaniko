@@ -5,7 +5,6 @@ import { useEffect, useMemo, useState } from "react";
 import {
   Check,
   Copy,
-  Heart,
   Minus,
   Plus,
   Save,
@@ -40,7 +39,6 @@ export default function CartDrawer() {
     cartItems,
     cartCount,
     cartTotal,
-    wishlistCount,
     isCartOpen,
     closeCart,
     removeFromCart,
@@ -129,22 +127,7 @@ export default function CartDrawer() {
                   <p className="text-xs text-slate-500">{cartCount} টি পণ্য</p>
                 </div>
 
-                <div className="flex items-center gap-1.5">
-                  <Link
-                    href="/wishlist"
-                    onClick={closeCart}
-                    aria-label={`পছন্দের তালিকা, ${wishlistCount} টি পণ্য`}
-                    title="পছন্দের তালিকা"
-                    className="relative grid size-9 place-items-center rounded-full bg-[#fff4f6] text-[#FC5689] transition hover:bg-[#ffe8ef]"
-                  >
-                    <Heart className="size-[18px]" strokeWidth={1.9} />
-                    {wishlistCount > 0 ? (
-                      <span className="absolute -right-1 -top-1 flex min-h-4 min-w-4 items-center justify-center rounded-full bg-[#FC5689] px-1 text-[9px] font-bold leading-none text-white ring-2 ring-white">
-                        {wishlistCount > 99 ? "99+" : wishlistCount}
-                      </span>
-                    ) : null}
-                  </Link>
-
+                <div className="flex items-center">
                   <button
                     type="button"
                     onClick={closeCart}
