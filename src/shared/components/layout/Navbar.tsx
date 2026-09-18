@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Fragment, useEffect, useState } from "react";
@@ -48,7 +49,7 @@ const policyRoutes = [
 */
 const otherPageRoutes = [
   {
-    label: "প্রয়োজনীয় গাইড",
+    label: "প্রয়োজনীয় গাইড",
     href: "/guide",
   },
   {
@@ -112,21 +113,16 @@ function BrandLogo({ className, priority = false }: BrandLogoProps) {
     <Link
       href="/"
       aria-label="Maaniko হোম"
-      className={`relative block shrink-0 overflow-hidden ${className}`}
+      className={`relative block shrink-0 ${className}`}
     >
-      <video
-        autoPlay
-        loop
-        muted
-        playsInline
-        disablePictureInPicture
-        preload={priority ? "auto" : "metadata"}
-        poster="/Logo.png"
-        aria-hidden="true"
-        className="absolute inset-0 size-full object-cover object-center"
-      >
-        <source src="/video1.mp4" type="video/mp4" />
-      </video>
+      <Image
+        src="/Logo.png"
+        alt="Maaniko"
+        fill
+        priority={priority}
+        sizes="(max-width: 1279px) 116px, 136px"
+        className="object-contain object-center"
+      />
     </Link>
   );
 }
@@ -390,9 +386,9 @@ export default function Navbar() {
       <header className="sticky top-0 z-50 border-b border-maaniko-line bg-white shadow-[0_3px_14px_rgba(6,42,84,0.035)]">
         <ServiceBar />
 
-        {/* Desktop navbar — logo stays at the exact viewport centre */}
-        <div className="relative mx-auto hidden h-[72px] w-full max-w-7xl items-center justify-between px-6 xl:flex">
-          <div className="flex items-center gap-5">
+        {/* Desktop navbar */}
+        <div className="mx-auto hidden h-[72px] w-full max-w-7xl grid-cols-[1fr_auto_1fr] items-center px-6 xl:grid">
+          <div className="flex min-w-0 items-center gap-5">
             <AnimatedMenuButton
               open={isMenuOpen}
               label={t("actions.openMenu")}
@@ -428,13 +424,10 @@ export default function Navbar() {
             </nav>
           </div>
 
-          <BrandLogo
-            className="absolute left-1/2 top-1/2 h-10 w-[132px] -translate-x-1/2 -translate-y-1/2"
-            priority
-          />
+          <BrandLogo className="h-10 w-[136px]" priority />
 
-          <div className="flex items-center gap-1">
-            <nav aria-label="প্রধান নেভিগেশনের দ্বিতীয় অংশ" className="mr-3 flex h-[72px] items-center gap-7">
+          <div className="flex min-w-0 items-center justify-end gap-1">
+            <nav aria-label="প্রধান নেভিগেশনের দ্বিতীয় অংশ" className="mr-3 flex h-[72px] items-center gap-7">
               {desktopNavigation.slice(2).map((item) => {
                 const active = isRouteActive(pathname, item.href);
 
@@ -478,19 +471,6 @@ export default function Navbar() {
               <CountBadge count={wishlistCount} />
             </Link>
 
-            <Link
-              href="/orders"
-              aria-label={t("nav.orders")}
-              title={t("nav.orders")}
-              className={`inline-flex size-10 items-center justify-center rounded-full transition-colors hover:bg-maaniko-blush ${
-                isRouteActive(pathname, "/orders")
-                  ? "text-maaniko-pink"
-                  : "text-maaniko-navy"
-              }`}
-            >
-              <Package className="size-[23px]" strokeWidth={1.8} />
-            </Link>
-
             <button
               type="button"
               onClick={openCart}
@@ -509,8 +489,8 @@ export default function Navbar() {
 
         {/* Tablet and mobile navbar */}
         <div className="xl:hidden">
-          <div className="relative mx-auto flex h-[60px] w-full max-w-5xl items-center justify-between px-2.5 sm:h-16 sm:px-5">
-            <div className="flex w-20 items-center sm:w-24">
+          <div className="mx-auto grid h-16 w-full max-w-5xl grid-cols-[1fr_auto_1fr] items-center px-3 sm:h-[68px] sm:px-5">
+            <div className="flex min-w-0 items-center justify-start">
               <AnimatedMenuButton
                 open={isMenuOpen}
                 label={t("actions.openMenu")}
@@ -518,26 +498,11 @@ export default function Navbar() {
                 onClick={() => setIsMenuOpen(true)}
               />
 
-              <Link
-                href="/wishlist"
-                aria-label={t("nav.wishlist")}
-                className={`relative inline-flex size-10 items-center justify-center rounded-full transition-colors hover:bg-maaniko-blush ${
-                  isRouteActive(pathname, "/wishlist")
-                    ? "text-maaniko-pink"
-                    : "text-maaniko-navy"
-                }`}
-              >
-                <Heart className="size-[21px]" strokeWidth={1.8} />
-                <CountBadge count={wishlistCount} />
-              </Link>
             </div>
 
-            <BrandLogo
-              className="absolute left-1/2 top-1/2 h-9 w-[104px] -translate-x-1/2 -translate-y-1/2 sm:h-10 sm:w-[124px]"
-              priority
-            />
+            <BrandLogo className="h-9 w-[116px] sm:h-10 sm:w-[132px]" priority />
 
-            <div className="flex w-20 items-center justify-end sm:w-24">
+            <div className="flex min-w-0 items-center justify-end">
               <span id="mobile-notification-slot" className="contents" />
 
               <button
@@ -557,12 +522,12 @@ export default function Navbar() {
       {/* Tablet and mobile bottom navigation */}
       <nav
         aria-label="নিচের নেভিগেশন"
-        className="fixed inset-x-0 bottom-0 z-50 border-t border-maaniko-line/80 bg-white/95 shadow-[0_-8px_24px_rgba(6,42,84,0.07)] backdrop-blur-xl xl:hidden"
+        className="fixed inset-x-0 bottom-0 z-50 border-t border-maaniko-line/80 bg-white/97 shadow-[0_-6px_20px_rgba(6,42,84,0.07)] backdrop-blur-xl xl:hidden"
         style={{
           paddingBottom: "env(safe-area-inset-bottom)",
         }}
       >
-        <div className="mx-auto grid h-[68px] max-w-5xl grid-cols-5 sm:h-[72px]">
+        <div className="mx-auto grid h-16 max-w-5xl grid-cols-5 sm:h-[68px]">
           {bottomNavigation.map((item) => {
             const Icon = item.icon;
             const active = isRouteActive(pathname, item.href);
@@ -581,7 +546,7 @@ export default function Navbar() {
                 {active && (
                   <motion.span
                     layoutId="bottom-navigation-indicator"
-                    className="absolute top-1.5 h-1 w-5 rounded-full bg-maaniko-pink"
+                    className="absolute top-0 h-[3px] w-6 rounded-b-full bg-maaniko-pink"
                     transition={{
                       type: "spring",
                       stiffness: 420,
@@ -592,10 +557,10 @@ export default function Navbar() {
 
                 <motion.span
                   whileTap={{ scale: 0.82 }}
-                  className="relative flex flex-col items-center gap-1"
+                  className="relative flex flex-col items-center gap-1.5"
                 >
                   <span className="relative">
-                    <Icon className="size-[23px] sm:size-6" strokeWidth={1.8} />
+                    <Icon className="size-[22px] sm:size-[23px]" strokeWidth={1.8} />
 
                     <CountBadge count={item.badgeCount ?? 0} />
                   </span>
@@ -614,15 +579,15 @@ export default function Navbar() {
                     type="button"
                     onClick={() => setIsAiOpen(true)}
                     aria-label="Maaniko AI খুলুন"
-                    className="relative flex min-w-0 flex-col items-center justify-center gap-1 px-0.5 font-semibold text-maaniko-navy transition-colors hover:text-maaniko-pink"
+                    className="relative flex min-w-0 flex-col items-center justify-center px-0.5 font-semibold text-maaniko-navy transition-colors hover:text-maaniko-pink"
                   >
                     <motion.span
                       whileTap={{ scale: 0.82 }}
-                      className="relative flex flex-col items-center gap-1"
+                      className="relative flex flex-col items-center gap-1.5"
                     >
-                      <span className="relative -mt-3 grid size-10 place-items-center rounded-full border border-[#e3e8ef] bg-white text-maaniko-navy shadow-[0_7px_18px_rgba(6,42,84,.12)]">
-                        <Bot className="size-5" strokeWidth={1.8} />
-                        <span className="absolute right-0 top-0 size-2.5 rounded-full border-2 border-white bg-maaniko-pink" />
+                      <span className="relative grid size-9 place-items-center rounded-xl bg-gradient-to-br from-maaniko-pink/15 to-maaniko-blue/15 text-maaniko-navy ring-1 ring-maaniko-pink/15">
+                        <Bot className="size-5" strokeWidth={1.9} />
+                        <span className="absolute -right-0.5 -top-0.5 size-2.5 rounded-full border-2 border-white bg-maaniko-pink" />
                       </span>
                       <span className="text-[10px] leading-none sm:text-[11px]">
                         Maaniko AI
@@ -791,7 +756,7 @@ export default function Navbar() {
         title="WhatsApp-এ কথা বলুন"
         whileHover={{ y: -2 }}
         whileTap={{ scale: 0.94 }}
-        className="fixed bottom-[88px] right-3 z-40 grid size-11 place-items-center rounded-full border border-[#dce9e1] bg-white text-[#1c9c4b] shadow-[0_10px_28px_rgba(6,42,84,.14)] xl:bottom-[102px] xl:right-6 xl:size-12"
+        className="fixed bottom-[calc(4.75rem+env(safe-area-inset-bottom))] right-3 z-40 grid size-11 place-items-center rounded-full border border-[#dce9e1] bg-white text-[#1c9c4b] shadow-[0_10px_28px_rgba(6,42,84,.14)] xl:bottom-[102px] xl:right-6 xl:size-12"
       >
         <MessageCircle className="size-5 xl:size-[22px]" fill="currentColor" />
       </motion.a>
