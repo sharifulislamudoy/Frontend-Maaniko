@@ -227,6 +227,7 @@ export default function MaanikoAiAssistant({
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const typingTimer = useRef<ReturnType<typeof setInterval> | null>(null);
+  const requestLocked = useRef(false);
 
   useEffect(() => {
     try {
@@ -324,13 +325,15 @@ export default function MaanikoAiAssistant({
         typingTimer.current = null;
         setIsTyping(false);
         setWorking(false);
+        requestLocked.current = false;
       }
     }, 16);
   }
 
   async function send(text: string) {
     const clean = text.trim();
-    if (!clean || working) return;
+    if (!clean || requestLocked.current) return;
+    requestLocked.current = true;
 
     const userMessage: Message = {
       id: `user-${Date.now()}`,
@@ -368,6 +371,7 @@ export default function MaanikoAiAssistant({
         },
       ]);
       setWorking(false);
+      requestLocked.current = false;
     }
   }
 
@@ -384,6 +388,7 @@ export default function MaanikoAiAssistant({
     setIsTyping(false);
     setInput("");
     setConversationId("");
+    requestLocked.current = false;
     window.sessionStorage.removeItem(CHAT_STORAGE_KEY);
   }
 
