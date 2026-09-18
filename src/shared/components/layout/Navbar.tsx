@@ -14,6 +14,7 @@ import {
   Phone,
   ShoppingBag,
   Truck,
+  Gift,
 } from "lucide-react";
 import { AnimatePresence, MotionConfig, motion } from "motion/react";
 
@@ -47,6 +48,14 @@ const policyRoutes = [
 |--------------------------------------------------------------------------
 */
 const otherPageRoutes = [
+  {
+    label: "Rewards ও Referral",
+    href: "/rewards",
+  },
+  {
+    label: "আমার Care Profile",
+    href: "/care-profile",
+  },
   {
     label: "প্রয়োজনীয় গাইড",
     href: "/guide",
@@ -437,6 +446,19 @@ export default function Navbar() {
             <span id="desktop-notification-slot" className="contents" />
 
             <Link
+              href="/rewards"
+              aria-label="Rewards"
+              title="Rewards"
+              className={`relative inline-flex size-10 items-center justify-center rounded-full transition-colors hover:bg-maaniko-blush ${
+                isRouteActive(pathname, "/rewards")
+                  ? "text-maaniko-pink"
+                  : "text-maaniko-navy"
+              }`}
+            >
+              <Gift className="size-[22px]" strokeWidth={1.8} />
+            </Link>
+
+            <Link
               href="/orders"
               aria-label={t("nav.orders")}
               title={t("nav.orders")}
@@ -492,10 +514,7 @@ export default function Navbar() {
               />
             </div>
 
-            <BrandLogo
-              className="mx-auto h-12 w-full "
-              priority
-            />
+            <BrandLogo className="mx-auto h-12 w-full " priority />
 
             <div className="flex min-w-0 items-center justify-end">
               <span id="mobile-notification-slot" className="contents" />
@@ -555,7 +574,10 @@ export default function Navbar() {
                   className="relative flex flex-col items-center gap-1.5"
                 >
                   <span className="relative">
-                    <Icon className="size-[22px] sm:size-[23px]" strokeWidth={1.8} />
+                    <Icon
+                      className="size-[22px] sm:size-[23px]"
+                      strokeWidth={1.8}
+                    />
 
                     <CountBadge count={item.badgeCount ?? 0} />
                   </span>
@@ -769,17 +791,16 @@ export default function Navbar() {
           <span className="absolute right-0 top-0 size-2.5 rounded-full border-2 border-white bg-maaniko-pink" />
         </span>
         <span className="text-left">
-          <span className="block text-xs font-black leading-tight">Maaniko AI</span>
+          <span className="block text-xs font-black leading-tight">
+            Maaniko AI
+          </span>
           <span className="block text-[9px] text-slate-500">
             কীভাবে সাহায্য করি?
           </span>
         </span>
       </motion.button>
 
-      <MaanikoAiAssistant
-        open={isAiOpen}
-        onClose={() => setIsAiOpen(false)}
-      />
+      <MaanikoAiAssistant open={isAiOpen} onClose={() => setIsAiOpen(false)} />
 
       <CartDrawer />
     </MotionConfig>

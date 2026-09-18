@@ -65,6 +65,7 @@ export default function CheckoutContent({
   const [orderResult, setOrderResult] = useState<any>(null);
   const [submitError, setSubmitError] = useState("");
   const [trackingCopied, setTrackingCopied] = useState(false);
+  const [rewardPointsToUse, setRewardPointsToUse] = useState(0);
 
   const isDirectCheckout = searchParams.get("mode") === "buy-now";
   const requestedId = searchParams.get("productId") ?? "";
@@ -97,9 +98,9 @@ export default function CheckoutContent({
   const quoteInput = useMemo(
     () =>
       isDirectCheckout
-        ? { mode: "BUY_NOW" as const, item: directItem }
-        : { mode: "CART" as const },
-    [directItem, isDirectCheckout],
+        ? { mode: "BUY_NOW" as const, item: directItem, rewardPointsToUse }
+        : { mode: "CART" as const, rewardPointsToUse },
+    [directItem, isDirectCheckout, rewardPointsToUse],
   );
 
   const money = useMemo(
@@ -561,6 +562,45 @@ export default function CheckoutContent({
                     : money.format(quote.deliveryCharge)}
                 </span>
               </div>
+              {quote.rewardPointsAvailable > 0 ? (
+                <div className="rounded-xl border border-[#f6dce5] bg-[#fff7fa] p-3">
+                  <div className="flex items-center justify-between gap-3">
+                    <div>
+                      <p className="text-xs font-black text-[#062a54]">
+                        Maaniko Points ব্যবহার করুন
+                      </p>
+                      <p className="mt-0.5 text-[11px] text-slate-500">
+                        আছে {quote.rewardPointsAvailable} points • এই order-এ
+                        সর্বোচ্চ অনুমোদিত পরিমাণ প্রযোজ্য হবে
+                      </p>
+                    </div>
+                    <input
+                      type="number"
+                      min={0}
+                      max={quote.rewardPointsAvailable}
+                      value={rewardPointsToUse}
+                      onChange={(event) =>
+                        setRewardPointsToUse(
+                          Math.max(
+                            0,
+                            Math.min(
+                              quote.rewardPointsAvailable,
+                              Math.floor(Number(event.target.value) || 0),
+                            ),
+                          ),
+                        )
+                      }
+                      className="h-10 w-24 rounded-lg border border-[#ead5dc] bg-white px-2 text-right text-sm font-black outline-none focus:border-[#FC5689]"
+                    />
+                  </div>
+                </div>
+              ) : null}
+              {quote.rewardDiscount > 0 ? (
+                <div className="flex justify-between font-bold text-emerald-600">
+                  <span>Points discount ({quote.rewardPointsUsed})</span>
+                  <span>− {money.format(quote.rewardDiscount)}</span>
+                </div>
+              ) : null}
               <div className="flex justify-between border-t border-[#eef1f5] pt-3 text-lg font-black text-[#062a54]">
                 <span>সর্বমোট</span>
                 <span>{money.format(quote.total)}</span>

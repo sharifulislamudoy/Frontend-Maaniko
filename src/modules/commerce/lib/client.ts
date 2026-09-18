@@ -148,7 +148,55 @@ export type OrderQuote = {
   }[];
   subtotal: number;
   deliveryCharge: number;
+  rewardPointsAvailable: number;
+  rewardPointsUsed: number;
+  rewardDiscount: number;
   total: number;
+};
+
+export type EngagementDashboard = {
+  wallet: {
+    points: number;
+    value: number;
+    pointValue: number;
+    earnEveryBdt: number;
+    earnPoints: number;
+  };
+  referral: {
+    code: string;
+    completed: number;
+    pending: number;
+    rewardPoints: number;
+    items: Array<{
+      id: string;
+      name?: string | null;
+      status: string;
+      joinedAt: string;
+    }>;
+  };
+  transactions: Array<{
+    id: string;
+    type: string;
+    points: number;
+    description: string;
+    createdAt: string;
+  }>;
+  reminders: Array<{
+    id: string;
+    status: string;
+    dueAt: string;
+    name: string;
+    image?: string | null;
+    href: string;
+  }>;
+  careProfile: Record<string, unknown>;
+  recommendations: Array<{
+    id: string;
+    name: string;
+    slug: string;
+    price: number;
+    image?: string | null;
+  }>;
 };
 
 export type AiChatMessage = {
@@ -330,9 +378,7 @@ export const commerceApi = {
     }),
 
   getPushInbox: () =>
-    apiRequest<{ notifications: PushInboxItem[] }>(
-      "/commerce/push/inbox",
-    ),
+    apiRequest<{ notifications: PushInboxItem[] }>("/commerce/push/inbox"),
 
   getPendingReview: () =>
     apiRequest<{ prompt: PendingReviewPrompt | null }>(
@@ -352,10 +398,7 @@ export const commerceApi = {
       attachedToCombo: boolean;
     }>("/commerce/reviews", { method: "POST", body }),
 
-  dismissReviewPrompt: (body: {
-    orderId: string;
-    neverAskAgain?: boolean;
-  }) =>
+  dismissReviewPrompt: (body: { orderId: string; neverAskAgain?: boolean }) =>
     apiRequest<{ dismissed: boolean; completed: boolean }>(
       "/commerce/reviews/dismiss",
       { method: "POST", body },
@@ -423,6 +466,24 @@ export const commerceApi = {
 
   updateCareProfile: (body: unknown) =>
     apiRequest<any>("/commerce/care-profile", {
+      method: "PATCH",
+      body,
+    }),
+
+  getEngagement: () => apiRequest<EngagementDashboard>("/commerce/engagement"),
+
+  applyReferral: (code: string) =>
+    apiRequest<{ applied: boolean; referrerName?: string | null }>(
+      "/commerce/engagement/referral",
+      { method: "POST", body: { code } },
+    ),
+
+  updateReorderReminder: (body: {
+    reminderId: string;
+    enabled: boolean;
+    dueAt?: string;
+  }) =>
+    apiRequest<any>("/commerce/engagement/reorder-reminder", {
       method: "PATCH",
       body,
     }),

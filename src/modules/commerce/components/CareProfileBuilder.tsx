@@ -53,6 +53,12 @@ export default function CareProfileBuilder({
   const [interests, setInterests] = useState<string[]>([]);
 
   const [budgetMax, setBudgetMax] = useState(4000);
+  const [profileMode, setProfileMode] = useState<"EXPECTING" | "BABY">("BABY");
+  const [babyBirthDate, setBabyBirthDate] = useState("");
+  const [expectedDeliveryDate, setExpectedDeliveryDate] = useState("");
+  const [babyGender, setBabyGender] = useState("");
+  const [feedingPreference, setFeedingPreference] = useState("");
+  const [reorderRemindersEnabled, setReorderRemindersEnabled] = useState(true);
 
   const saved = getSavedContact();
 
@@ -130,6 +136,12 @@ export default function CareProfileBuilder({
         interests,
         budgetMin: 0,
         budgetMax,
+        babyBirthDate: profileMode === "BABY" ? babyBirthDate || null : null,
+        expectedDeliveryDate:
+          profileMode === "EXPECTING" ? expectedDeliveryDate || null : null,
+        babyGender: babyGender || null,
+        feedingPreference: feedingPreference || null,
+        reorderRemindersEnabled,
       });
 
       setMessage("Care Profile সেভ হয়েছে। পরের visit-এও এটি ব্যবহার করা যাবে।");
@@ -163,6 +175,75 @@ export default function CareProfileBuilder({
             onSubmit={save}
             className="rounded-[24px] bg-white p-5 shadow-[0_8px_24px_rgba(6,42,84,.045)]"
           >
+            <div>
+              <p className="text-sm font-black text-[#062a54]">বর্তমান Stage</p>
+              <div className="mt-2 grid grid-cols-2 gap-2 rounded-xl bg-slate-50 p-1">
+                <button
+                  type="button"
+                  onClick={() => setProfileMode("EXPECTING")}
+                  className={`rounded-lg px-3 py-2 text-xs font-black ${profileMode === "EXPECTING" ? "bg-white text-[#FC5689] shadow-sm" : "text-slate-500"}`}
+                >
+                  Expecting mother
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setProfileMode("BABY")}
+                  className={`rounded-lg px-3 py-2 text-xs font-black ${profileMode === "BABY" ? "bg-white text-[#FC5689] shadow-sm" : "text-slate-500"}`}
+                >
+                  Baby আছে
+                </button>
+              </div>
+            </div>
+
+            <label className="mt-4 block text-sm font-black text-[#062a54]">
+              {profileMode === "EXPECTING"
+                ? "Expected delivery date"
+                : "Baby জন্মতারিখ"}
+              <input
+                type="date"
+                value={
+                  profileMode === "EXPECTING"
+                    ? expectedDeliveryDate
+                    : babyBirthDate
+                }
+                onChange={(event) =>
+                  profileMode === "EXPECTING"
+                    ? setExpectedDeliveryDate(event.target.value)
+                    : setBabyBirthDate(event.target.value)
+                }
+                className="mt-2 h-11 w-full rounded-xl bg-slate-50 px-3 ring-1 ring-[#e8edf3]"
+              />
+            </label>
+
+            <div className="mt-4 grid grid-cols-2 gap-3">
+              <label className="text-sm font-black text-[#062a54]">
+                Baby gender
+                <select
+                  value={babyGender}
+                  onChange={(event) => setBabyGender(event.target.value)}
+                  className="mt-2 h-11 w-full rounded-xl bg-slate-50 px-3 ring-1 ring-[#e8edf3]"
+                >
+                  <option value="">বলতে চাই না</option>
+                  <option value="GIRL">মেয়ে</option>
+                  <option value="BOY">ছেলে</option>
+                </select>
+              </label>
+              <label className="text-sm font-black text-[#062a54]">
+                Feeding
+                <select
+                  value={feedingPreference}
+                  onChange={(event) => setFeedingPreference(event.target.value)}
+                  className="mt-2 h-11 w-full rounded-xl bg-slate-50 px-3 ring-1 ring-[#e8edf3]"
+                >
+                  <option value="">প্রযোজ্য নয়</option>
+                  <option value="BREASTFEEDING">Breastfeeding</option>
+                  <option value="FORMULA">Formula</option>
+                  <option value="MIXED">Mixed</option>
+                  <option value="SOLIDS">Solid food</option>
+                </select>
+              </label>
+            </div>
+
             <label className="text-sm font-black text-[#062a54]">
               আপনার Journey
               <select
@@ -257,6 +338,21 @@ export default function CareProfileBuilder({
                 />
 
                 <span>Maaniko-এর offer/update WhatsApp-এ পেতে চাই।</span>
+              </label>
+
+              <label className="mt-3 flex gap-2 rounded-xl bg-sky-50 p-3 text-[11px] leading-4 text-slate-600">
+                <input
+                  type="checkbox"
+                  checked={reorderRemindersEnabled}
+                  onChange={(event) =>
+                    setReorderRemindersEnabled(event.target.checked)
+                  }
+                  className="mt-0.5 accent-[#03A7FD]"
+                />
+                <span>
+                  Delivered পণ্য আবার প্রয়োজন হওয়ার সম্ভাব্য সময়ে reminder পেতে
+                  চাই।
+                </span>
               </label>
 
               <button
