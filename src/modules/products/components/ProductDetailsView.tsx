@@ -28,6 +28,7 @@ import { useSiteText } from "@/modules/site-content/context/SiteTextContext";
 import { useShop } from "@/modules/shop/context/ShopContext";
 import type { MaanikoProduct } from "@/modules/products/types/product";
 import ProductReviewsSection from "@/modules/reviews/components/ProductReviewsSection";
+import ProductAlertActions from "@/modules/products/components/ProductAlertActions";
 
 type ProductDetailsViewProps = {
   product: MaanikoProduct;
@@ -424,6 +425,13 @@ export default function ProductDetailsView({
                 positive={isAvailable}
               />
             </div>
+
+            <ProductAlertActions
+              productId={product.id}
+              variantId={selectedVariant?.id}
+              productName={productName}
+              outOfStock={!isAvailable}
+            />
 
             {details?.includedItems.length ? (
               <section

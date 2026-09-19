@@ -11,6 +11,17 @@ const API_URL = (
 ).replace(/\/$/, "");
 const inFlightGetRequests = new Map<string, Promise<unknown>>();
 
+export class CommerceApiError extends Error {
+  constructor(
+    message: string,
+    public readonly status: number,
+    public readonly data: Record<string, unknown> | null,
+  ) {
+    super(message);
+    this.name = "CommerceApiError";
+  }
+}
+
 function randomId(prefix: string) {
   if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
     return `${prefix}_${crypto.randomUUID()}`;
@@ -103,9 +114,13 @@ async function apiRequest<T>(
 
     const data = await response.json().catch(() => null);
     if (!response.ok) {
-      throw new Error(
+      throw new CommerceApiError(
         (data && typeof data.message === "string" && data.message) ||
           "অনুরোধটি সম্পন্ন করা যায়নি",
+        response.status,
+        data && typeof data === "object"
+          ? (data as Record<string, unknown>)
+          : null,
       );
     }
     return data as T;
@@ -170,6 +185,25 @@ export type OrderQuote = {
   rewardDiscount: number;
   total: number;
 };
+
+export type CheckoutUnavailableItem = {
+  clientKey: string;
+  itemType: "PRODUCT" | "COMBO";
+  productId?: string;
+  variantId?: string;
+  comboId?: string;
+  name: string;
+  image?: string;
+  requestedQuantity: number;
+  message: string;
+};
+
+export function checkoutUnavailableItems(error: unknown) {
+  if (!(error instanceof CommerceApiError)) return [];
+  if (error.data?.code !== "CHECKOUT_STOCK_CHANGED") return [];
+  const items = error.data.unavailableItems;
+  return Array.isArray(items) ? (items as CheckoutUnavailableItem[]) : [];
+}
 
 export type EngagementDashboard = {
   wallet: {

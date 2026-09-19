@@ -36,6 +36,7 @@ import {
 } from "@/modules/solution-boxes/lib/solutionBox";
 import type { SolutionBox } from "@/modules/solution-boxes/types/solutionBox";
 import ProductReviewsSection from "@/modules/reviews/components/ProductReviewsSection";
+import ProductAlertActions from "@/modules/products/components/ProductAlertActions";
 
 type ComboDetailsViewProps = {
   box: SolutionBox;
@@ -258,6 +259,12 @@ export default function ComboDetailsView({
                 {isAvailable ? copy.available : copy.unavailable}
               </span>
             </div>
+
+            <ProductAlertActions
+              comboId={box.id}
+              productName={text(box.name)}
+              outOfStock={!isAvailable}
+            />
 
             <div className="mt-3 grid grid-cols-3 divide-x divide-[#dce3ec] rounded-xl border border-[#dce3ec] bg-[#fff9fb] py-2 md:mt-4 md:py-3 lg:mt-auto">
               <TrustItem icon={ShieldCheck} label={copy.checked} />

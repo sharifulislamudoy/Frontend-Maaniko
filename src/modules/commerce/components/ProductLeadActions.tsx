@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
-import { BellRing, Headphones, PackageSearch, X } from "lucide-react";
+import { Headphones, X } from "lucide-react";
 import type { MaanikoProduct } from "@/modules/products/types/product";
 import {
   commerceApi,
@@ -62,21 +62,6 @@ export default function ProductLeadActions({
   }
 
   const actions = [
-    ...(product.stock > 0
-      ? [
-          {
-            type: "PRICE_DROP" as const,
-            icon: BellRing,
-            title: "দাম কমলে জানান",
-          },
-        ]
-      : [
-          {
-            type: "BACK_IN_STOCK" as const,
-            icon: PackageSearch,
-            title: "স্টক এলে জানান",
-          },
-        ]),
     {
       type: "CARE_TEAM" as const,
       icon: Headphones,

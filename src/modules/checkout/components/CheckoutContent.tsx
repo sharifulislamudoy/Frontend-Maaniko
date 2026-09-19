@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import {
+  BellRing,
   CheckCircle2,
   Copy,
   ExternalLink,
@@ -10,14 +12,17 @@ import {
   LockKeyhole,
   ShoppingBag,
   Truck,
+  Trash2,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 
 import { useShop } from "@/modules/shop/context/ShopContext";
 import {
   commerceApi,
+  checkoutUnavailableItems,
   getSavedContact,
   saveCustomerIdentity,
+  type CheckoutUnavailableItem,
   type OrderQuote,
 } from "@/modules/commerce/lib/client";
 
@@ -55,8 +60,13 @@ const emptyForm: FormState = {
 
 export default function CheckoutContent() {
   const searchParams = useSearchParams();
-  const { cartItems, isHydrated, ensureCartSynced, clearCartAfterOrder } =
-    useShop();
+  const {
+    cartItems,
+    isHydrated,
+    ensureCartSynced,
+    clearCartAfterOrder,
+    refreshCommerceState,
+  } = useShop();
 
   const [form, setForm] = useState<FormState>(emptyForm);
   const [quote, setQuote] = useState<OrderQuote | null>(null);
@@ -69,6 +79,8 @@ export default function CheckoutContent() {
   const [rewardPointsInput, setRewardPointsInput] = useState("0");
   const [appliedRewardPoints, setAppliedRewardPoints] = useState(0);
   const [pointsApplying, setPointsApplying] = useState(false);
+  const [stockIssues, setStockIssues] = useState<CheckoutUnavailableItem[]>([]);
+  const [quoteReload, setQuoteReload] = useState(0);
   const lastSavedDraftRef = useRef("");
 
   const isDirectCheckout = searchParams.get("mode") === "buy-now";
@@ -180,6 +192,8 @@ export default function CheckoutContent() {
         }
       } catch (error) {
         if (!cancelled) {
+          const unavailable = checkoutUnavailableItems(error);
+          if (unavailable.length) setStockIssues(unavailable);
           setQuote(null);
           setQuoteError(
             error instanceof Error
@@ -203,6 +217,7 @@ export default function CheckoutContent() {
     ensureCartSynced,
     isDirectCheckout,
     isHydrated,
+    quoteReload,
   ]);
 
   useEffect(() => {
@@ -322,13 +337,16 @@ export default function CheckoutContent() {
       setOrderResult(result.order);
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (error) {
+      const unavailable = checkoutUnavailableItems(error);
+      if (unavailable.length) setStockIssues(unavailable);
       setSubmitError(
         error instanceof Error ? error.message : "অর্ডার সম্পন্ন করা যায়নি",
       );
       try {
         setQuote(await commerceApi.quoteOrder(quoteInput));
-      } catch {
-        // Keep the original submit error.
+      } catch (quoteReason) {
+        const refreshedUnavailable = checkoutUnavailableItems(quoteReason);
+        if (refreshedUnavailable.length) setStockIssues(refreshedUnavailable);
       }
     } finally {
       setSubmitting(false);
@@ -426,6 +444,26 @@ export default function CheckoutContent() {
           </p>
         </div>
       </div>
+    );
+  }
+
+  if (stockIssues.length) {
+    return (
+      <StockUnavailableModal
+        items={stockIssues}
+        directCheckout={isDirectCheckout}
+        initialName={form.name}
+        initialPhone={form.phone}
+        onRemoveAndContinue={async () => {
+          await Promise.all(
+            stockIssues.map((item) => commerceApi.deleteCartItem(item.clientKey)),
+          );
+          await refreshCommerceState();
+          setStockIssues([]);
+          setQuoteLoading(true);
+          setQuoteReload((value) => value + 1);
+        }}
+      />
     );
   }
 
@@ -715,6 +753,168 @@ export default function CheckoutContent() {
             </button>
           </aside>
         </form>
+      </div>
+    </section>
+  );
+}
+
+function StockUnavailableModal({
+  items,
+  directCheckout,
+  initialName,
+  initialPhone,
+  onRemoveAndContinue,
+}: {
+  items: CheckoutUnavailableItem[];
+  directCheckout: boolean;
+  initialName: string;
+  initialPhone: string;
+  onRemoveAndContinue: () => Promise<void>;
+}) {
+  const saved = getSavedContact();
+  const [name, setName] = useState(initialName || saved.name);
+  const [phone, setPhone] = useState(initialPhone || saved.phone);
+  const [busy, setBusy] = useState<"remove" | "remind" | null>(null);
+  const [message, setMessage] = useState("");
+
+  async function setReminders() {
+    setBusy("remind");
+    setMessage("");
+    try {
+      const results = await Promise.all(
+        items
+          .filter((item) => item.productId || item.comboId)
+          .map((item) =>
+            commerceApi.createLead({
+              type: "BACK_IN_STOCK",
+              name,
+              phone,
+              productId: item.productId,
+              variantId: item.variantId,
+              comboId: item.comboId,
+            }),
+          ),
+      );
+      const identity = results.at(-1);
+      if (identity) saveCustomerIdentity(identity);
+      setMessage("Stock reminder সেট হয়েছে। পণ্যটি এলে আপনাকে জানানো হবে।");
+    } catch (reason) {
+      setMessage(
+        reason instanceof Error ? reason.message : "Reminder সেট করা যায়নি",
+      );
+    } finally {
+      setBusy(null);
+    }
+  }
+
+  return (
+    <section className="fixed inset-0 z-[130] grid place-items-center overflow-y-auto bg-slate-950/50 p-3 backdrop-blur-sm sm:p-5">
+      <div className="my-auto w-full max-w-xl rounded-3xl bg-white p-4 shadow-2xl sm:p-6">
+        <span className="grid size-12 place-items-center rounded-2xl bg-rose-50 text-[#FC5689]">
+          <ShoppingBag className="size-6" />
+        </span>
+        <h1 className="mt-4 text-xl font-black text-[#062a54] sm:text-2xl">
+          দুঃখিত, কিছু পণ্য এখন স্টকে নেই
+        </h1>
+        <p className="mt-2 text-sm leading-6 text-slate-500">
+          কার্টে যোগ করার সময় পণ্যগুলো available ছিল, কিন্তু checkout-এর আগে
+          stock পরিবর্তন হয়েছে। নিচের পণ্য বাদ দিয়ে checkout করতে পারেন অথবা
+          stock reminder সেট করতে পারেন।
+        </p>
+
+        <div className="mt-4 max-h-56 space-y-2 overflow-y-auto">
+          {items.map((item) => (
+            <article
+              key={item.clientKey}
+              className="flex items-center gap-3 rounded-2xl border border-rose-100 bg-rose-50/50 p-3"
+            >
+              {item.image ? (
+                <Image
+                  src={item.image}
+                  alt=""
+                  width={56}
+                  height={56}
+                  unoptimized
+                  className="size-14 rounded-xl bg-white object-cover"
+                />
+              ) : (
+                <span className="grid size-14 place-items-center rounded-xl bg-white">
+                  <ShoppingBag className="size-5 text-slate-300" />
+                </span>
+              )}
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-black text-[#062a54]">
+                  {item.name}
+                </p>
+                <p className="mt-0.5 text-xs text-rose-600">{item.message}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+
+        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+          <input
+            required
+            value={name}
+            onChange={(event) => setName(event.target.value)}
+            placeholder="আপনার নাম"
+            className="h-11 rounded-xl border border-slate-200 px-3 text-sm outline-none focus:border-[#FC5689]"
+          />
+          <input
+            required
+            inputMode="tel"
+            value={phone}
+            onChange={(event) => setPhone(event.target.value)}
+            placeholder="ফোন নম্বর"
+            className="h-11 rounded-xl border border-slate-200 px-3 text-sm outline-none focus:border-[#FC5689]"
+          />
+        </div>
+        {message ? (
+          <p className="mt-3 rounded-xl bg-slate-50 p-3 text-xs font-bold text-slate-600">
+            {message}
+          </p>
+        ) : null}
+
+        <div className="mt-5 grid gap-2 sm:grid-cols-2">
+          <button
+            type="button"
+            disabled={busy !== null || !name.trim() || !phone.trim()}
+            onClick={() => void setReminders()}
+            className="flex h-12 items-center justify-center gap-2 rounded-xl border border-[#FC5689]/30 bg-[#fff4f6] text-sm font-black text-[#d9366f] disabled:opacity-50"
+          >
+            {busy === "remind" ? (
+              <LoaderCircle className="size-4 animate-spin" />
+            ) : (
+              <BellRing className="size-4" />
+            )}
+            Stock reminder দিন
+          </button>
+          {directCheckout ? (
+            <Link
+              href="/shop"
+              className="flex h-12 items-center justify-center rounded-xl bg-[#062a54] text-sm font-black text-white"
+            >
+              অন্য পণ্য দেখুন
+            </Link>
+          ) : (
+            <button
+              type="button"
+              disabled={busy !== null}
+              onClick={() => {
+                setBusy("remove");
+                void onRemoveAndContinue().finally(() => setBusy(null));
+              }}
+              className="flex h-12 items-center justify-center gap-2 rounded-xl bg-[#062a54] text-sm font-black text-white disabled:opacity-50"
+            >
+              {busy === "remove" ? (
+                <LoaderCircle className="size-4 animate-spin" />
+              ) : (
+                <Trash2 className="size-4" />
+              )}
+              বাদ দিয়ে checkout করুন
+            </button>
+          )}
+        </div>
       </div>
     </section>
   );
